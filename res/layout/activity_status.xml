@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:paddingLeft="0dip" 
+	android:paddingTop="0dip"
+	android:paddingRight="0dip" 
+	android:paddingBottom="0dip" 
+	android:layout_width="320px" 
+	android:layout_height="320px"
+	android:layout_gravity="center"
+	android:background="#ff303030" >
+ 
+    <RelativeLayout 
+    	android:id="@+id/status_bar" 
+    	android:layout_width="fill_parent" 
+    	android:layout_height="48.0px">
+        <LinearLayout 
+        	android:gravity="center_vertical" 
+        	android:orientation="horizontal" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="fill_parent" 
+        	android:layout_marginRight="0.0px" 
+        	android:layout_alignParentLeft="true">
+            <FrameLayout 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="fill_parent" 
+            	android:layout_marginLeft="4.0px">
+                <ImageView 
+                	android:layout_gravity="center" 
+                	android:id="@+id/img_signal" 
+                	android:layout_width="wrap_content" 
+                	android:layout_height="fill_parent" 
+                	android:src="@drawable/stat_sys_mobile_strength_null" />
+                <ImageView 
+                	android:layout_gravity="center" 
+                	android:id="@+id/img_type" 
+                	android:layout_width="wrap_content" 
+                	android:layout_height="fill_parent" />
+            </FrameLayout>
+            <TextView
+            	android:textSize="26.0sp" 
+            	android:textColor="#99ffffff" 
+            	android:ellipsize="marquee" 
+            	android:id="@+id/tv_operator" 
+            	android:focusable="true" 
+            	android:focusableInTouchMode="true" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="fill_parent" 
+            	android:layout_marginLeft="2.0px" 
+            	android:layout_marginTop="-2.0px" 
+            	android:maxWidth="112.0px" 
+            	android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout 
+        	android:gravity="center_vertical" 
+        	android:orientation="horizontal" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="fill_parent" 
+        	android:layout_marginRight="0.0px" 
+        	android:layout_alignParentRight="true">
+            <ImageView 
+            	android:id="@+id/img_bt" 
+            	android:visibility="gone" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="fill_parent" 
+            	android:src="@drawable/stat_sys_bluetooth" />
+            <ImageView 
+            	android:id="@+id/img_wifi" 
+            	android:visibility="gone" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="fill_parent" 
+            	android:src="@drawable/stat_sys_wifi_strength_0" />
+            <ImageView 
+            	android:id="@+id/img_battery" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="fill_parent" 
+            	android:src="@drawable/stat_sys_battery_0" />
+            <TextView 
+            	android:textSize="12.0sp" 
+            	android:textColor="#99ffffff" 
+            	android:id="@+id/tv_battery" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="fill_parent" 
+            	android:gravity="center"
+            	android:layout_marginTop="-3.0px" />
+        </LinearLayout>
+    </RelativeLayout>
+    
+    <LinearLayout 
+    	android:gravity="center" 
+    	android:orientation="vertical" 
+    	android:id="@+id/notify_send_status" 
+    	android:paddingTop="28dp" 
+    	android:paddingBottom="8dip" 
+    	android:layout_below="@+id/status_bar"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content">
+        <LinearLayout 
+        	android:orientation="horizontal" 
+        	android:id="@+id/notify_send_style" 
+        	android:background="@drawable/notify_send_style_background" 
+        	android:layout_width="117.0dip" 
+        	android:layout_height="wrap_content">
+            <ImageView 
+            	android:id="@+id/notify_send_style_1" 
+            	android:clickable="true" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content" 
+            	android:src="@drawable/smart_watch_notify_send_style1_selected" 
+            	android:contentDescription="@string/send_info_text1" 
+            	android:paddingStart="0.0dip" 
+            	android:paddingEnd="20.0dip" />
+            <ImageView 
+            	android:id="@+id/notify_send_style_2" 
+            	android:clickable="true" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content" 
+            	android:src="@drawable/smart_watch_notify_send_style2" 
+            	android:contentDescription="@string/send_info_text2" />
+        </LinearLayout>
+        <LinearLayout 
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content">
+            <TextView 
+            	android:textSize="22.0sp" 
+            	android:textColor="@android:color/darker_gray" 
+            	android:gravity="center" 
+            	android:id="@+id/notify_send_status_text" 
+            	android:layout_width="fill_parent" 
+            	android:layout_height="wrap_content" 
+            	android:text="@string/send_info_text1" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout 
+    	android:gravity="center" 
+    	android:orientation="horizontal" 
+    	android:id="@+id/system_func_settings" 
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:layout_below="@id/notify_send_status">
+        <ImageView 
+        	android:id="@+id/system_screenon_guesture" 
+        	android:clickable="true" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" 
+        	android:src="@drawable/smart_watch_screenon_guesture_on" 
+        	android:contentDescription="@string/screenon_guesture" 
+        	android:padding="6dp"
+        	android:paddingStart="0.0dip" 
+        	android:paddingEnd="0.0dip" />
+        <com.cj.qs.QSTileView 
+        	android:id="@+id/system_airplane_mode" 
+        	android:clickable="true" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" 
+        	android:src="@drawable/smart_watch_airmode_off" 
+        	android:contentDescription="@string/airplane_mode" 
+        	android:padding="6dp"
+        	android:paddingStart="0.0dip" 
+        	android:paddingEnd="0.0dip" />
+        <ImageView 
+        	android:id="@+id/system_connected_device" 
+        	android:visibility="gone" 
+        	android:clickable="true" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" 
+        	android:src="@drawable/smart_watch_connected_device_off" 
+        	android:contentDescription="@string/connected_device" 
+        	android:padding="6dp"
+        	android:paddingStart="0.0dip" 
+        	android:paddingEnd="0.0dip" />
+        <com.cj.qs.QSTileView 
+        	android:id="@+id/mobile_data_settings" 
+        	android:clickable="true" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" 
+        	android:src="@drawable/smart_watch_mobile_data_off" 
+        	android:contentDescription="@string/mobiledata_name" 
+        	android:padding="6dp"
+        	android:paddingEnd="0.0dip" />
+        <com.cj.qs.QSTileView 
+        	android:id="@+id/bt_settings" 
+        	android:clickable="true" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" 
+        	android:src="@drawable/smart_watch_bt_off" 
+        	android:padding="6dp"
+        	android:paddingEnd="0.0dip" />
+        <com.cj.qs.QSTileView 
+        	android:id="@+id/wifi_settings" 
+        	android:clickable="true" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" 
+        	android:padding="6dp"
+        	android:src="@drawable/smart_watch_wifi_off" />
+    </LinearLayout>
+    <LinearLayout 
+    	android:orientation="horizontal" 
+    	android:id="@+id/brightness_setting" 
+    	android:padding="12dip" 
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:paddingLeft="18dp"
+    	android:paddingRight="18dp"
+    	android:layout_below="@id/system_func_settings">
+        <ImageView 
+        	android:paddingTop="5.0dip" 
+        	android:layout_width="40.0dip" 
+        	android:layout_height="40.0dip" 
+        	android:layout_gravity="center_vertical"
+        	android:src="@drawable/smart_watch_brightness_display" 
+        	android:contentDescription="@string/brightness_setting" />
+        <LinearLayout 
+        	android:orientation="horizontal" 
+        	android:background="@drawable/brightness_setting_background" 
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content">
+            <LinearLayout 
+            	android:id="@+id/brightness_low" 
+            	android:clickable="true" 
+            	android:layout_width="0.0dip" 
+            	android:layout_height="wrap_content" 
+            	android:layout_weight="1.0">
+                <TextView 
+                	android:textSize="32.0sp" 
+                	android:textColor="@android:color/white" 
+                	android:gravity="center" 
+                	android:layout_width="fill_parent" 
+                	android:layout_height="fill_parent" 
+                	android:text="@string/low" />
+            </LinearLayout>
+            <LinearLayout 
+            	android:id="@+id/brightness_mid" 
+            	android:clickable="true" 
+            	android:layout_width="0.0dip" 
+            	android:layout_height="wrap_content" 
+            	android:layout_weight="1.0">
+                <TextView 
+                	android:textSize="32.0sp" 
+                	android:textColor="@android:color/white" 
+                	android:gravity="center" 
+                	android:layout_width="fill_parent" 
+                	android:layout_height="fill_parent" 
+                	android:text="@string/middle" />
+            </LinearLayout>
+            <LinearLayout 
+            	android:id="@+id/brightness_hig" 
+            	android:clickable="true" 
+            	android:layout_width="0.0dip" 
+            	android:layout_height="wrap_content" 
+            	android:layout_weight="1.0">
+                <TextView 
+                	android:textSize="32.0sp" 
+                	android:textColor="@android:color/white" 
+                	android:gravity="center" 
+                	android:layout_width="fill_parent" 
+                	android:layout_height="fill_parent" 
+                	android:text="@string/hight" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

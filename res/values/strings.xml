@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WtLauncher</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="today_steps">今日步数</string>
+    <string name="empty_notifications">无提醒信息</string>
+
+</resources>

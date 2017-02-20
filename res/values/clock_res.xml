@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <declare-styleable name="AnalogClock">
+        <attr name="dial" format="reference"/>
+        <attr name="hand_hour" format="reference"/>
+        <attr name="hand_minute" format="reference"/>
+        <attr name="center_point" format="reference"/>
+        <attr name="week_point_drawable" format="reference"/>
+        <attr name="week_point_center_x" format="integer"/>
+        <attr name="week_point_center_y" format="integer"/>
+    </declare-styleable>
+    <declare-styleable name="DigitalClock">
+        <attr name="digit_drawables" format="reference"/>
+        <attr name="digit_colon_drawable" format="reference"/>
+        <attr name="date_text_color" format="reference|color"/>
+    </declare-styleable>
+<!--
+    <array name="wt_style1_digit_drawables">
+       <item>@drawable/wt_style1_digit0</item>
+       <item>@drawable/wt_style1_digit1</item>
+       <item>@drawable/wt_style1_digit2</item>
+       <item>@drawable/wt_style1_digit3</item>
+       <item>@drawable/wt_style1_digit4</item>
+       <item>@drawable/wt_style1_digit5</item>
+       <item>@drawable/wt_style1_digit6</item>
+       <item>@drawable/wt_style1_digit7</item>
+       <item>@drawable/wt_style1_digit8</item>
+       <item>@drawable/wt_style1_digit9</item>
+    </array>
+    <array name="wt_style2_digit_drawables">
+       <item>@drawable/wt_style2_digit0</item>
+       <item>@drawable/wt_style2_digit1</item>
+       <item>@drawable/wt_style2_digit2</item>
+       <item>@drawable/wt_style2_digit3</item>
+       <item>@drawable/wt_style2_digit4</item>
+       <item>@drawable/wt_style2_digit5</item>
+       <item>@drawable/wt_style2_digit6</item>
+       <item>@drawable/wt_style2_digit7</item>
+       <item>@drawable/wt_style2_digit8</item>
+       <item>@drawable/wt_style2_digit9</item>
+    </array>
+-->    
+</resources>

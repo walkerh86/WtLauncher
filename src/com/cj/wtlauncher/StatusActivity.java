@@ -26,6 +26,11 @@ import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.os.UserHandle;
 
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.telephony.SignalStrength;
+import android.telephony.ServiceState;
+
 public class StatusActivity extends Activity{
 	private static final String TAG = "hcj.StatusActivity";
 	private ImageView mBatteryView;
@@ -48,6 +53,10 @@ public class StatusActivity extends Activity{
 	private QSMobileDataTile mMobileDataTile;
 	private QSAirplaneTile mAirplaneTile;
 
+	//signal
+	private ImageView mSignalView;
+	private TextView mOperatorView;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,7 +75,8 @@ public class StatusActivity extends Activity{
 		//mMinimumBacklight = pm.getMinimumScreenBrightnessSetting();
 		//mMaximumBacklight = pm.getMaximumScreenBrightnessSetting();
 		updateBrightnessViews();
-		
+
+		//qs bar
 		QSTileView bluetoothTileView = (QSTileView)findViewById(R.id.bt_settings);
 		mBluetoothTile = new QSBluetoothTile(this,bluetoothTileView);
 		
@@ -78,6 +88,14 @@ public class StatusActivity extends Activity{
 
 		QSTileView airplaneView = (QSTileView)findViewById(R.id.system_airplane_mode);
 		mAirplaneTile = new QSAirplaneTile(this,airplaneView);
+
+		//status bar
+		mSignalView = (ImageView)findViewById(R.id.img_signal);
+		mOperatorView = (TextView)findViewById(R.id.tv_operator);
+		
+		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		telephonyManager.listen(mPhoneStateListener,PhoneStateListener.LISTEN_SERVICE_STATE|PhoneStateListener.LISTEN_SIGNAL_STRENGTHS); 
+		updateTelephony();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
@@ -218,4 +236,63 @@ public class StatusActivity extends Activity{
 
 	private ServiceConnection mConnection = null;
 	private ISettingsService mSettingsService;
+
+	//signal
+	private static final int[] SIGNAL_STRENGTH_ICONS = new int[]{
+		R.drawable.stat_sys_mobile_strength_0,
+		R.drawable.stat_sys_mobile_strength_1,
+		R.drawable.stat_sys_mobile_strength_2,
+		R.drawable.stat_sys_mobile_strength_3,
+		R.drawable.stat_sys_mobile_strength_4,
+	};
+	private SignalStrength mSignalStrength;
+	private ServiceState mServiceState;
+	private boolean mStateConnected;
+	PhoneStateListener mPhoneStateListener = new PhoneStateListener(){
+		@Override
+		public void onSignalStrengthsChanged(SignalStrength signalStrength) { 
+			mSignalStrength = signalStrength;
+			updateTelephony();
+		}
+
+		@Override
+             public void onServiceStateChanged(ServiceState state) {
+             	mServiceState = state;
+		}
+	};
+
+	private void updateTelephony(){
+		mStateConnected = hasService() && mSignalStrength != null;
+		Log.i("hcj","updateTelephony mStateConnected="+mStateConnected);
+		int signalIconId = getSimStateIconId();
+		mSignalView.setImageResource(signalIconId);
+		mOperatorView.setText(mStateConnected ? null : R.string.no_sim_card);
+		
+	}
+
+	private int getSimStateIconId() {
+		if(mStateConnected){
+			int signalLevel = mSignalStrength.getLevel();
+			Log.i("hcj","getSimStateIconId signalLevel="+signalLevel);
+			return SIGNAL_STRENGTH_ICONS[signalLevel];
+		}else{
+			return R.drawable.stat_sys_mobile_strength_null;
+		}
+	}
+
+	private boolean hasService(){
+		if (mServiceState != null) {
+			switch (mServiceState.getVoiceRegState()) {
+				case ServiceState.STATE_POWER_OFF:
+					return false;
+				case ServiceState.STATE_OUT_OF_SERVICE:
+				case ServiceState.STATE_EMERGENCY_ONLY:
+					return mServiceState.getDataRegState() == ServiceState.STATE_IN_SERVICE;
+				default:
+					return true;
+			}
+		} else {
+			return false;
+		}
+	}
 }

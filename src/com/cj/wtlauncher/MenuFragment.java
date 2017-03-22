@@ -36,24 +36,32 @@ import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Log;
 
+import android.content.pm.LauncherApps;
+import android.content.pm.LauncherActivityInfo;
+import android.os.UserHandle;
+
 public class MenuFragment extends Fragment {
 	private static final String TAG = "hcj";
 	private RecyclerView mRecyclerView;
 	private TextView mCurrLabelView;
 	private MyLinearLayoutManager mMyLinearLayoutManager;
 	private PackageManager mPackageManager;
-	//private int mIconDpi;
+	private int mIconDpi;
 	private PageIndicator mPageIndicator;
 	private static final int PAGE_INDICATOR_ITEM_NUM = 8;
+	private MyAdapter mMyAdapter;
+	private Context mContext;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//initData();
+		mContext = getActivity();
 		mPackageManager = getActivity().getPackageManager();
 		ActivityManager activityManager =
                 (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-		//mIconDpi = 160;//activityManager.getLauncherLargeIconDensity();
+		mIconDpi = 240;//activityManager.getLauncherLargeIconDensity();
+		initPackageMonitor(getActivity());
 		loadAllApps();
 	}
 	
@@ -66,9 +74,9 @@ public class MenuFragment extends Fragment {
 		mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
 		mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
 		mRecyclerView.setLayoutManager(mMyLinearLayoutManager);
-		MyAdapter myAdapter = new MyAdapter();
-		myAdapter.setOnItemClickListener(mOnItemClickListener);
-		mRecyclerView.setAdapter(myAdapter);
+		mMyAdapter = new MyAdapter();
+		mMyAdapter.setOnItemClickListener(mOnItemClickListener);
+		mRecyclerView.setAdapter(mMyAdapter);
 	
 		mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState){
@@ -106,19 +114,47 @@ public class MenuFragment extends Fragment {
 		Drawable mIcon;
 		String mLabel;
 		Intent mIntent;
+		String mPackage;
 		public AppInfo(ResolveInfo resolveInfo, PackageManager packageManager){
 			if(resolveInfo == null || packageManager == null){
 				//mLabel = "";
 				return;
 			}
 			
-			mIcon = getIcon(packageManager,resolveInfo.activityInfo,240);
+			//mIcon = getIcon(packageManager,resolveInfo.activityInfo,mIconDpi);
 			//mIcon = resolveInfo.loadIcon(packageManager);
 			mLabel = resolveInfo.loadLabel(packageManager).toString();
+			resolveIntent(new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName, resolveInfo.activityInfo.name));
+			mIcon = getFixIcon(resolveInfo.activityInfo.name);
+			if(mIcon == null){
+				mIcon = getIcon(packageManager,resolveInfo.activityInfo,mIconDpi);
+			}
+		}
+
+		public AppInfo(LauncherActivityInfo actInfo){
+			//mIcon = actInfo.getIcon(mIconDpi);
+			mLabel = actInfo.getLabel().toString();
+			resolveIntent(actInfo.getComponentName());
+			mIcon = getFixIcon(actInfo.getComponentName().getClassName());
+			if(mIcon == null){
+				mIcon = actInfo.getIcon(mIconDpi);
+			}
+		}
+
+		private void resolveIntent(ComponentName cn){
 			mIntent = new Intent(Intent.ACTION_MAIN);
 			mIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-			mIntent.setComponent(new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName, resolveInfo.activityInfo.name));
+			mPackage = cn.getPackageName();
+			mIntent.setComponent(cn);
 			mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		}
+
+		private Drawable getFixIcon(String actName){
+			String name = actName.replaceAll("\\.","_").toLowerCase();
+			android.util.Log.i("hcj","getIcon name="+name);
+			Resources res = mContext.getResources();
+			int resId = res.getIdentifier(name, "mipmap", "com.cj.wtlauncher");
+			return (resId != 0) ? res.getDrawable(resId) : null;
 		}
 	}
 	
@@ -165,6 +201,7 @@ public class MenuFragment extends Fragment {
         	ResolveInfo resolveInfo = apps.get(i);
         	mAllApps.add(new AppInfo(resolveInfo,mPackageManager));
         }
+	 mAllApps.add(new AppInfo(null,null));	
         Log.i(TAG, "loadAllApps end time="+SystemClock.uptimeMillis());
 	}
 	
@@ -447,4 +484,56 @@ public class MenuFragment extends Fragment {
 	private Handler mHandler = new Handler();
 	private String mPendingLabel;
 	private int mPendingIndex;
+
+	private LauncherApps mLauncherApps;
+	private void initPackageMonitor(Context context){
+		mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
+		mLauncherApps.registerCallback(mPkgCallbak);
+	}
+	
+	private LauncherApps.Callback mPkgCallbak = new LauncherApps.Callback(){
+		public void onPackageRemoved(String packageName, UserHandle user){
+			/*
+			List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,user);
+			if(list == null || list.size() == 0){
+				return;
+			}
+			for(LauncherActivityInfo actInfo : list){
+				for(AppInfo appInfo : mAllApps){
+					if(appInfo.mCName.compareTo(actInfo.getComponentName())){
+					}
+				}
+			}
+			*/
+			for (int i = mAllApps.size() - 1; i >= 0; i--) {
+				AppInfo appInfo = mAllApps.get(i);
+				if(packageName.equals(appInfo.mPackage)){
+					mAllApps.remove(appInfo);
+				}
+			}
+			
+			mMyAdapter.notifyDataSetChanged();
+		}
+		
+		public void onPackageAdded(String packageName, UserHandle user){
+			List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,user);
+			if(list == null || list.size() == 0){
+				return;
+			}
+			for(LauncherActivityInfo actInfo : list){
+				mAllApps.add(mAllApps.size()-1,new AppInfo(actInfo));
+			}
+			
+			mMyAdapter.notifyDataSetChanged();
+		}
+		
+		public void onPackageChanged(String packageName, UserHandle user){
+		}
+		
+		public void onPackagesAvailable(String[] packageNames, UserHandle user,boolean replacing){
+		}
+                
+		public void onPackagesUnavailable(String[] packageNames, UserHandle user,boolean replacing){
+		}
+	};
 }

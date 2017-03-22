@@ -26,6 +26,10 @@ public class QSAirplaneTile extends QSTile{
 		filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
 		context.registerReceiver(mReceiver, filter);		
 	}
+	
+	public void onDestroy(Context context){
+		context.unregisterReceiver(mReceiver);
+	}
 
 	private void updateView(boolean isOn){
 		mTileView.setImageResource(isOn ? R.drawable.smart_watch_airmode_on : R.drawable.smart_watch_airmode_off);

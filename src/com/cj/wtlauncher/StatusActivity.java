@@ -78,10 +78,12 @@ public class StatusActivity extends Activity{
 
 		//qs bar
 		QSTileView bluetoothTileView = (QSTileView)findViewById(R.id.bt_settings);
-		mBluetoothTile = new QSBluetoothTile(this,bluetoothTileView);
+		ImageView btStatusView = (ImageView)findViewById(R.id.img_bt);
+		mBluetoothTile = new QSBluetoothTile(this,bluetoothTileView,btStatusView);
 		
 		QSTileView wifiTileView = (QSTileView)findViewById(R.id.wifi_settings);
-		mWifiTile = new QSWifiTile(this,wifiTileView);
+		ImageView wifiStatusView = (ImageView)findViewById(R.id.img_wifi);
+		mWifiTile = new QSWifiTile(this,wifiTileView,wifiStatusView);
 		
 		QSTileView mobileDataView = (QSTileView)findViewById(R.id.mobile_data_settings);
 		mMobileDataTile = new QSMobileDataTile(this,mobileDataView);
@@ -108,6 +110,10 @@ public class StatusActivity extends Activity{
 	public void onDestroy(){
 		super.onDestroy();
 		unregisterReceiver(mReceiver);
+		mBluetoothTile.onDestroy(this);
+		mWifiTile.onDestroy(this);
+		mAirplaneTile.onDestroy(this);
+		mMobileDataTile.onDestroy(this);
 	}
 
 	private void updateBrightnessViews(){
@@ -175,7 +181,7 @@ public class StatusActivity extends Activity{
 		@Override
 		public void onReceive(Context context, Intent intent){
 			String action = intent.getAction();
-			Log.i(TAG,"onReceive action="+action);
+			//Log.i(TAG,"onReceive action="+action);
 			if(Intent.ACTION_BATTERY_CHANGED.equals(action)){
 				mBatteryLevel = (int)(100f
                     		* intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)

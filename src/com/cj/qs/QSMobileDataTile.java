@@ -32,6 +32,10 @@ public class QSMobileDataTile extends QSTile{
 		//filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
 		context.registerReceiver(mReceiver, filter);		
 	}
+	
+	public void onDestroy(Context context){
+		context.unregisterReceiver(mReceiver);
+	}
 
 	public void setSettingsService(ISettingsService service){
 		super.setSettingsService(service);

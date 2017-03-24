@@ -23,14 +23,14 @@ public class MainActivity extends FragmentActivity{
 		mViewPager = (HorizontalViewPager)findViewById(R.id.view_pager);
 		ArrayList<Fragment> fragmentList = new ArrayList<Fragment>();
 		fragmentList.add(new QuickFragment());
-		ClockFragment clockFragment = new ClockFragment();
-		clockFragment.setOnClockPageSelectListener(new ClockFragment.OnClockPageSelectListener(){
+		VPagerFragment vPagerFragment = new VPagerFragment();
+		vPagerFragment.setOnClockPageSelectListener(new VPagerFragment.OnClockPageSelectListener(){
 			@Override
 			public void onClockPageSelect(boolean selected){
 				mViewPager.setSwipeEnable(selected);
 			}
 		});
-		fragmentList.add(clockFragment);
+		fragmentList.add(vPagerFragment);
 		fragmentList.add(new MenuFragment());
 		mViewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), fragmentList));
 		mViewPager.setCurrentItem(1);

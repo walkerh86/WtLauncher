@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ClockFragment  extends Fragment{
+public class NotificationFragment extends Fragment{
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -14,7 +14,7 @@ public class ClockFragment  extends Fragment{
 	
 	@Override  
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.clock_layout_style1, container, false);
+		View rootView = inflater.inflate(R.layout.notification_panel, container, false);
 		return rootView;
 	}
 	

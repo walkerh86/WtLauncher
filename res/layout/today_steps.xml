@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/today_steps_bg" >
-
+<!-- 
 	<TextView
 	    android:id="@+id/step_title"
 	    android:layout_width="wrap_content"
@@ -35,6 +35,5 @@
 	    style="@android:style/TextAppearance.Large"
 	    android:textSize="32sp"
 	    android:text="0km"/>
-
-
+ -->
 </RelativeLayout>

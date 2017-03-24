@@ -1,5 +1,6 @@
 package com.cj.wtlauncher;
 
+import com.android.internal.telephony.TelephonyIntents;
 import com.cj.aidl.ISettingsService;
 import com.cj.qs.QSAirplaneTile;
 import com.cj.qs.QSBluetoothTile;
@@ -30,6 +31,11 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.SignalStrength;
 import android.telephony.ServiceState;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
+import android.telephony.SubscriptionManager.OnSubscriptionsChangedListener;
+
+import java.util.List;
 
 public class StatusActivity extends Activity{
 	private static final String TAG = "hcj.StatusActivity";
@@ -56,6 +62,8 @@ public class StatusActivity extends Activity{
 	//signal
 	private ImageView mSignalView;
 	private TextView mOperatorView;
+
+	private SubscriptionManager mSubscriptionManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +109,12 @@ public class StatusActivity extends Activity{
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+		filter.addAction(TelephonyIntents.ACTION_SIM_STATE_CHANGED);
+		filter.addAction(TelephonyIntents.ACTION_SUBINFO_RECORD_UPDATED);
 		registerReceiver(mReceiver, filter);
+
+		mSubscriptionManager = SubscriptionManager.from(this);
+		mSubscriptionManager.addOnSubscriptionsChangedListener(mSubscriptionListener);
 
 		setupSettingsService(this);
 	}
@@ -109,6 +122,7 @@ public class StatusActivity extends Activity{
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
+		mSubscriptionManager.removeOnSubscriptionsChangedListener(mSubscriptionListener);
 		unregisterReceiver(mReceiver);
 		mBluetoothTile.onDestroy(this);
 		mWifiTile.onDestroy(this);
@@ -192,6 +206,10 @@ public class StatusActivity extends Activity{
 				int imgLevel = mBatteryLevel/20;
 				mBattLvlDrawableId = charging ? BATT_LVL_CHARGE_DRAWABLES[imgLevel] : BATT_LVL_DRAWABLES[imgLevel];
 				updateBatteryViews();
+			}else if(TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)){
+				updateSimState();
+			}else if(TelephonyIntents.ACTION_SUBINFO_RECORD_UPDATED.equals(action)){
+				updateSimState();
 			}
 		}
 	};
@@ -257,12 +275,14 @@ public class StatusActivity extends Activity{
 	PhoneStateListener mPhoneStateListener = new PhoneStateListener(){
 		@Override
 		public void onSignalStrengthsChanged(SignalStrength signalStrength) { 
+			Log.i("hcj","onSignalStrengthsChanged signalStrength="+signalStrength);
 			mSignalStrength = signalStrength;
 			updateTelephony();
 		}
 
 		@Override
              public void onServiceStateChanged(ServiceState state) {
+             	Log.i("hcj","onServiceStateChanged state="+state);
              	mServiceState = state;
 		}
 	};
@@ -272,7 +292,11 @@ public class StatusActivity extends Activity{
 		Log.i("hcj","updateTelephony mStateConnected="+mStateConnected);
 		int signalIconId = getSimStateIconId();
 		mSignalView.setImageResource(signalIconId);
-		mOperatorView.setText(mStateConnected ? null : R.string.no_sim_card);
+		if(mNoSims){
+			mOperatorView.setText(R.string.no_sim_card);
+		}else{
+			mOperatorView.setText(null);
+		}
 		
 	}
 
@@ -282,12 +306,13 @@ public class StatusActivity extends Activity{
 			Log.i("hcj","getSimStateIconId signalLevel="+signalLevel);
 			return SIGNAL_STRENGTH_ICONS[signalLevel];
 		}else{
-			return R.drawable.stat_sys_mobile_strength_null;
+			return mNoSims ? R.drawable.stat_sys_mobile_strength_null : R.drawable.stat_sys_mobile_strength_0;
 		}
 	}
 
 	private boolean hasService(){
 		if (mServiceState != null) {
+			Log.i("hcj","hasService state="+mServiceState.getVoiceRegState());
 			switch (mServiceState.getVoiceRegState()) {
 				case ServiceState.STATE_POWER_OFF:
 					return false;
@@ -301,4 +326,25 @@ public class StatusActivity extends Activity{
 			return false;
 		}
 	}
+
+	private boolean mNoSims;
+	private void updateSimState(){
+		List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
+		if(subscriptions == null || subscriptions.size() < 1){
+			mNoSims = true;
+		}else{
+			mNoSims = false;
+		}
+		Log.i(TAG, "updateSimState mNoSims="+mNoSims);
+		updateTelephony();
+	}
+	
+    private final OnSubscriptionsChangedListener mSubscriptionListener =
+            new OnSubscriptionsChangedListener() {
+        @Override
+        public void onSubscriptionsChanged() {
+            Log.i(TAG, "onSubscriptionsChanged");
+            updateSimState();
+        };
+    };
 }

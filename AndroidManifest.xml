@@ -36,6 +36,10 @@
         <activity
             android:name=".StatusActivity">
         </activity>
+
+        <activity
+            android:name=".ChooseClockActivity">
+        </activity>
     </application>
 
 </manifest>

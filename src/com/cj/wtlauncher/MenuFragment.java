@@ -51,6 +51,9 @@ public class MenuFragment extends Fragment {
 	private static final int PAGE_INDICATOR_ITEM_NUM = 8;
 	private MyAdapter mMyAdapter;
 	private Context mContext;
+	private static final int MENU_STYLE_H = 0;
+	private static final int MENU_STYLE_GRID = 1;
+	private int mMenuStyle = MENU_STYLE_GRID;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,44 +73,45 @@ public class MenuFragment extends Fragment {
     		Log.i(TAG,"MenuFragment onCreateView");
 		View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 		mRecyclerView = (RecyclerView)rootView.findViewById(R.id.list_view);
-		mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//
-		mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
-		mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
-		mRecyclerView.setLayoutManager(mMyLinearLayoutManager);
+		mRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+		
+		mCurrLabelView = (TextView)rootView.findViewById(R.id.curr_label_view);
+		mPageIndicator = (PageIndicator)rootView.findViewById(R.id.page_indicator);
+
+		if(mMenuStyle == MENU_STYLE_H){
+			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//
+			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
+			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
+			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);
+			mRecyclerView.addItemDecoration(new MyItemDecoration());
+			
+			mPageIndicator.setPageNum(PAGE_INDICATOR_ITEM_NUM);
+			mPageIndicator.setPageCurr(0);
+		}else{
+			mCurrLabelView.setVisibility(View.GONE);
+			mPageIndicator.setVisibility(View.GONE);
+
+			mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
+		}
 		mMyAdapter = new MyAdapter();
 		mMyAdapter.setOnItemClickListener(mOnItemClickListener);
 		mRecyclerView.setAdapter(mMyAdapter);
 	
 		mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState){
-				mMyLinearLayoutManager.onScrollStateChanged(recyclerView,newState);
+				if(mMenuStyle == MENU_STYLE_H){
+					mMyLinearLayoutManager.onScrollStateChanged(recyclerView,newState);
+				}
 			}
+			
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-				mMyLinearLayoutManager.onScrolled();
+				if(mMenuStyle == MENU_STYLE_H){
+					mMyLinearLayoutManager.onScrolled();
+				}
 			}
 		});
-		mRecyclerView.addItemDecoration(new MyItemDecoration());
-		mRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-		
-		mCurrLabelView = (TextView)rootView.findViewById(R.id.curr_label_view);
-		
-		mPageIndicator = (PageIndicator)rootView.findViewById(R.id.page_indicator);
-		mPageIndicator.setPageNum(PAGE_INDICATOR_ITEM_NUM);
-		mPageIndicator.setPageCurr(0);
 		
 		return rootView;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 	
 	private class AppInfo{
@@ -193,7 +197,6 @@ public class MenuFragment extends Fragment {
         	Log.i(TAG, "loadAllApps apps == null");
         	return;
         }
-        mAllApps.add(new AppInfo(null,null));
         Log.i(TAG, "loadAllApps start time="+SystemClock.uptimeMillis());
         int count = apps.size();
         for(int i=0;i<count;i++){
@@ -201,7 +204,11 @@ public class MenuFragment extends Fragment {
         	ResolveInfo resolveInfo = apps.get(i);
         	mAllApps.add(new AppInfo(resolveInfo,mPackageManager));
         }
-	 mAllApps.add(new AppInfo(null,null));	
+		
+	  if(mMenuStyle == MENU_STYLE_H){
+	        mAllApps.add(new AppInfo(null,null));
+		  mAllApps.add(mAllApps.size()-1,new AppInfo(null,null));
+	  }
         Log.i(TAG, "loadAllApps end time="+SystemClock.uptimeMillis());
 	}
 	
@@ -416,7 +423,9 @@ public class MenuFragment extends Fragment {
 				super(view);				
 				mIconView = (ImageView) view.findViewById(R.id.icon_view);
 				mLabelView = (TextView) view.findViewById(R.id.label_view);
-				mLabelView.setVisibility(View.GONE);
+				if(mMenuStyle == MENU_STYLE_H){
+					mLabelView.setVisibility(View.GONE);
+				}
 				mRootView = view;
 				mRootView.setOnClickListener(new View.OnClickListener(){
 					@Override

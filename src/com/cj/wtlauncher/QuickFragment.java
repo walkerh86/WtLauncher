@@ -74,6 +74,14 @@ public class QuickFragment extends Fragment{
 				startMusicActivity();
 			}
 		});		
+
+		View quickWeather = rootView.findViewById(R.id.quick_weather);
+		quickWeather.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View arg0) {
+				startWeatherActivity();
+			}
+		});		
 		
 		return rootView;
 	}
@@ -106,6 +114,15 @@ public class QuickFragment extends Fragment{
 		intent.setAction(Intent.ACTION_MAIN);
 		intent.setComponent(new ComponentName("com.android.music","com.android.music.TrackBrowserActivity"));
 		this.startActivity(intent);
+	}
+	
+	private void startWeatherActivity(){
+		try{
+			Intent intent = new Intent();
+			intent.setComponent(new ComponentName("com.android.watchweather","com.android.watchweather.WeatherActivity"));
+			this.startActivity(intent);
+		}catch(Exception e){
+		}
 	}
 	
 	private void setupSettingsService() {

@@ -2,10 +2,7 @@
 <resources>
 
     <string name="app_name">WtLauncher</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="today_steps">今日步数</string>
     <string name="empty_notifications">无提醒信息</string>
-    <string name="no_sim_card">无SIM卡</string>
 
 </resources>

@@ -19,7 +19,7 @@ public class VPagerFragment extends Fragment{
 	
 	@Override  
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_clock, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_vpager, container, false);
 		mViewPager = (VerticalViewPager)rootView.findViewById(R.id.vertical_view_pager);
 		/*
 		View stepsView = inflater.inflate(R.layout.today_steps, container, false);
@@ -104,5 +104,9 @@ public class VPagerFragment extends Fragment{
 	private OnClockPageSelectListener mOnClockPageSelectListener;
 	public void setOnClockPageSelectListener(OnClockPageSelectListener listener){
 		mOnClockPageSelectListener = listener;
+	}
+
+	public void showClockPage(){
+		mViewPager.setCurrentItem(PAGE_CLOCK_INDEX);
 	}
 }

@@ -57,6 +57,7 @@ public class QSAirplaneTile extends QSTile{
 	}
 	
 	 public void setEnabled(boolean enabled) {
+	 	Log.i("SettingsService","setEnabled enabled="+enabled);
 	 	//Settings.Global.putInt(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_ON, enabled ? 1: 0);
 	 	try{
 			if(mSettingsService != null){

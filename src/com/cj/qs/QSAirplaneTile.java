@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.View;
+import android.os.UserHandle;
+import android.net.ConnectivityManager;
 
 public class QSAirplaneTile extends QSTile{
 	private static final String TAG = "hcj.QSAirplaneTile";
@@ -39,6 +41,7 @@ public class QSAirplaneTile extends QSTile{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
+			Log.i(TAG,"action="+action);
 			if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
 				updateView(isEnabled());
 			}
@@ -57,12 +60,11 @@ public class QSAirplaneTile extends QSTile{
 	}
 	
 	 public void setEnabled(boolean enabled) {
-	 	Log.i("SettingsService","setEnabled enabled="+enabled);
-	 	//Settings.Global.putInt(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_ON, enabled ? 1: 0);
+	 	Log.i(TAG,"setEnabled enabled="+enabled);
 	 	try{
-			if(mSettingsService != null){
-				mSettingsService.setAirplaneModeEnabled(enabled);
-			}
+			//Settings.Global.putInt(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_ON, enabled ? 1: 0);
+			final ConnectivityManager mgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+			mgr.setAirplaneMode(enabled);
 		}catch(Exception e){
 			Log.i(TAG,"setEnabled e="+e);
 		}

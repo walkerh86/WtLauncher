@@ -62,11 +62,18 @@ public class QSMobileDataTile extends QSTile{
 	
 	public boolean isEnabled() {
 		//reflection way must put apk in /system/priv-app/
-		//if(mTelephonyManager == null){
-		//	return false;
-		//}
-		//Boolean ret = (Boolean)ReflectUtil.reflectCallMethod(mTelephonyManager, "getDataEnabled", null, null);
-		//return ret != null && ret.booleanValue();
+		boolean enabled = false;
+		try{
+			if(mTelephonyManager == null){
+				return false;
+			}
+			Boolean ret = (Boolean)ReflectUtil.reflectCallMethod(mTelephonyManager, "getDataEnabled", null, null);
+			enabled = (ret != null && ret.booleanValue());
+		}catch(Exception e){
+			Log.i(TAG,"isEnabled e="+e);
+		}
+		return enabled;
+		/*
 		boolean enabled = false;
 		try{
 			if(mSettingsService != null){
@@ -75,16 +82,13 @@ public class QSMobileDataTile extends QSTile{
 		}catch(Exception e){
 			Log.i(TAG,"isEnabled e="+e);
 		}
-		return enabled;
+		return enabled;*/
 	}
 	
 	public void setEnabled(boolean enabled) {
-		//if (mTelephonyManager != null) {
-		//	mTelephonyManager.setDataEnabled(enabled);
-		//}
 		try{
-			if(mSettingsService != null){
-				mSettingsService.setDataEnabled(enabled);
+			if (mTelephonyManager != null) {
+				mTelephonyManager.setDataEnabled(enabled);
 			}
 		}catch(Exception e){
 			Log.i(TAG,"setEnabled e="+e);

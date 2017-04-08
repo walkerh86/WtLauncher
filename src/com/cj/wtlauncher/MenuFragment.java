@@ -53,7 +53,7 @@ public class MenuFragment extends Fragment {
 	private Context mContext;
 	private static final int MENU_STYLE_H = 0;
 	private static final int MENU_STYLE_GRID = 1;
-	private int mMenuStyle = MENU_STYLE_GRID;
+	private int mMenuStyle = MENU_STYLE_H;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

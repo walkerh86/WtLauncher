@@ -32,8 +32,6 @@ public class QuickFragment extends Fragment{
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction("com.cj.action.audio_profile_change");
 		getActivity().registerReceiver(mReceiver, mIntentFilter);
-		
-		setupSettingsService();
 	}
 	
 	@Override  
@@ -51,7 +49,8 @@ public class QuickFragment extends Fragment{
 					}else{
 						profileKey = "mtk_audioprofile_silent";
 					}
-					mSettingsService.setActiveProfile(profileKey);
+					mProfileManager.setActiveProfile(profileKey);
+					updateProfileView();
 				}catch(Exception e){
 					Log.i(TAG, "e="+e);
 				}
@@ -100,7 +99,6 @@ public class QuickFragment extends Fragment{
 	public void onDestroy(){
 		super.onDestroy();
 		getActivity().unregisterReceiver(mReceiver);
-		getActivity().unbindService(mConnection);
 	}
 	
 	private void startStatusActivity(){
@@ -124,33 +122,6 @@ public class QuickFragment extends Fragment{
 		}catch(Exception e){
 		}
 	}
-	
-	private void setupSettingsService() {
-		Log.i(TAG,"setupSettingsService");
-		final Intent serviceIntent = new Intent(ISettingsService.class.getName());
-		serviceIntent.setComponent(new ComponentName("com.android.settings","com.cj.settings.SettingsService"));
-		if (mConnection == null || mSettingsService == null) {
-			if(mConnection == null) {
-				mConnection = new SettingsServiceConnection();
-			}
-		}
-		if (!getActivity().bindService(serviceIntent, mConnection,Context.BIND_AUTO_CREATE)) {
-			Log.i(TAG,"can not bind SettingsService");
-		}
-	}
-	private class SettingsServiceConnection implements ServiceConnection {
-		@Override
-		public void onServiceConnected (ComponentName className, IBinder service){
-			Log.i(TAG,"SettingsServiceConnection onServiceConnected service="+service);
-			mSettingsService = ISettingsService.Stub.asInterface(service);
-		}
-		@Override
-		public void onServiceDisconnected (ComponentName className){
-			mSettingsService = null;
-		}
-	}
-	private ServiceConnection mConnection = null;
-	private ISettingsService mSettingsService;
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
 		@Override

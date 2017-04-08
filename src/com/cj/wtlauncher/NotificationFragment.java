@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class NotificationFragment extends Fragment{
+	public static final int MODE_NORMAL = 0;
+	public static final int MODE_VIBRATE = 1;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);

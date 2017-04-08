@@ -138,7 +138,7 @@
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 
     	android:layout_below="@id/notify_send_status">
-        <ImageView 
+        <com.cj.qs.QSTileView  
         	android:id="@+id/system_screenon_guesture" 
         	android:clickable="true" 
         	android:layout_width="wrap_content" 

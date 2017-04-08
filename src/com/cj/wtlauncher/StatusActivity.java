@@ -5,6 +5,7 @@ import com.cj.aidl.ISettingsService;
 import com.cj.qs.QSAirplaneTile;
 import com.cj.qs.QSBluetoothTile;
 import com.cj.qs.QSMobileDataTile;
+import com.cj.qs.QSRaiseWakeTile;
 import com.cj.qs.QSTileView;
 import com.cj.qs.QSWifiTile;
 
@@ -19,6 +20,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.SystemProperties;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
@@ -58,12 +60,17 @@ public class StatusActivity extends Activity{
 	private QSWifiTile mWifiTile;
 	private QSMobileDataTile mMobileDataTile;
 	private QSAirplaneTile mAirplaneTile;
+	private QSRaiseWakeTile mQSRaiseWakeTile;
 
 	//signal
 	private ImageView mSignalView;
 	private TextView mOperatorView;
 
 	private SubscriptionManager mSubscriptionManager;
+
+	//notification mode
+	private ImageView mNotfiyModeNormalBtn;
+	private ImageView mNotfiyModeVibrateBtn;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +106,9 @@ public class StatusActivity extends Activity{
 		QSTileView airplaneView = (QSTileView)findViewById(R.id.system_airplane_mode);
 		mAirplaneTile = new QSAirplaneTile(this,airplaneView);
 
+		QSTileView raiseWakeView = (QSTileView)findViewById(R.id.system_screenon_guesture);
+		mQSRaiseWakeTile = new QSRaiseWakeTile(this,raiseWakeView);
+
 		//status bar
 		mSignalView = (ImageView)findViewById(R.id.img_signal);
 		mOperatorView = (TextView)findViewById(R.id.tv_operator);
@@ -116,7 +126,12 @@ public class StatusActivity extends Activity{
 		mSubscriptionManager = SubscriptionManager.from(this);
 		mSubscriptionManager.addOnSubscriptionsChangedListener(mSubscriptionListener);
 
-		setupSettingsService(this);
+		//notification mode
+		mNotfiyModeNormalBtn = (ImageView)findViewById(R.id.notify_send_style_1);
+		mNotfiyModeNormalBtn.setOnClickListener(mOnClickListener);
+		mNotfiyModeVibrateBtn = (ImageView)findViewById(R.id.notify_send_style_2);
+		mNotfiyModeVibrateBtn.setOnClickListener(mOnClickListener);
+		updateNotificationModeView(getNotificationMode());
 	}
 
 	@Override
@@ -217,49 +232,20 @@ public class StatusActivity extends Activity{
 	private View.OnClickListener mOnClickListener = new View.OnClickListener(){
 		@Override
 		public void onClick(View view){
-			if(view == mBrightnessLowView){
+			int id = view.getId();
+			if(id == R.id.brightness_low){
 				setBrightnessValue(BRIGHTNESS_VALUE_LOW);
-			}else if(view == mBrightnessMediumView){
+			}else if(id == R.id.brightness_mid){
 				setBrightnessValue(BRIGHTNESS_VALUE_MEDIUM);
-			}else if(view == mBrightnessHighView){
+			}else if(id == R.id.brightness_hig){
 				setBrightnessValue(BRIGHTNESS_VALUE_HIGH);
+			}else if(id == R.id.notify_send_style_1){
+				setNotificationMode(NotificationFragment.MODE_NORMAL);
+			}else if(id == R.id.notify_send_style_2){
+				setNotificationMode(NotificationFragment.MODE_VIBRATE);
 			}
 		}
 	};
-
-	private void setupSettingsService(Context context) {
-		Log.i(TAG,"setupSettingsService");
-		final Intent serviceIntent = new Intent(ISettingsService.class.getName());
-		serviceIntent.setComponent(new ComponentName("com.android.settings","com.cj.settings.SettingsService"));
-		if (mConnection == null || mSettingsService == null) {
-			if(mConnection == null) {
-				mConnection = new SettingsServiceConnection();
-			}
-		}
-		if (!context.bindService(serviceIntent, mConnection,Context.BIND_AUTO_CREATE)) {
-			Log.i(TAG,"can not bind SettingsService");
-		}
-	}
-
-	private class SettingsServiceConnection implements ServiceConnection {
-		@Override
-		public void onServiceConnected (ComponentName className, IBinder service){
-			Log.i(TAG,"SettingsServiceConnection onServiceConnected service="+service);
-			mSettingsService = ISettingsService.Stub.asInterface(service);
-
-			mBluetoothTile.setSettingsService(mSettingsService);
-			mWifiTile.setSettingsService(mSettingsService);
-			mMobileDataTile.setSettingsService(mSettingsService);
-			mAirplaneTile.setSettingsService(mSettingsService);
-		}
-		@Override
-		public void onServiceDisconnected (ComponentName className){
-			mSettingsService = null;
-		}
-	}
-
-	private ServiceConnection mConnection = null;
-	private ISettingsService mSettingsService;
 
 	//signal
 	private static final int[] SIGNAL_STRENGTH_ICONS = new int[]{
@@ -347,4 +333,23 @@ public class StatusActivity extends Activity{
             updateSimState();
         };
     };
+
+	private void setNotificationMode(int mode){
+		SystemProperties.set("persist.sys.notify.coming", String.valueOf(mode));
+		updateNotificationModeView(mode);
+	}
+
+	private int getNotificationMode(){
+		return SystemProperties.getInt("persist.sys.notify.coming", NotificationFragment.MODE_NORMAL);
+	}
+
+	private void updateNotificationModeView(int mode){
+		if(mode == NotificationFragment.MODE_VIBRATE){
+			mNotfiyModeNormalBtn.setImageResource(R.drawable.smart_watch_notify_send_style1);
+			mNotfiyModeVibrateBtn.setImageResource(R.drawable.smart_watch_notify_send_style2_selected);
+		}else{
+			mNotfiyModeNormalBtn.setImageResource(R.drawable.smart_watch_notify_send_style1_selected);
+			mNotfiyModeVibrateBtn.setImageResource(R.drawable.smart_watch_notify_send_style2);
+		}
+	}
 }

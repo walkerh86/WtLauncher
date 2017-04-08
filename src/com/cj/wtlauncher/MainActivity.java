@@ -52,6 +52,12 @@ public class MainActivity extends FragmentActivity{
 		unregisterReceiver(mScreenUpdateReceiver);
 	}
 	
+	@Override
+	public void onWindowFocusChanged(boolean focused){
+		super.onWindowFocusChanged(focused);
+		WatchApp.setTopActivityStatus(focused);
+	}
+	
 	public class MyFragmentPagerAdapter extends FragmentPagerAdapter{
 		ArrayList<Fragment> list;
 		public MyFragmentPagerAdapter(android.support.v4.app.FragmentManager fm,ArrayList<Fragment> list) {

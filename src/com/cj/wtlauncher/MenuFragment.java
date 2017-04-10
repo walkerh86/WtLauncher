@@ -206,8 +206,8 @@ public class MenuFragment extends Fragment {
         }
 		
 	  if(mMenuStyle == MENU_STYLE_H){
-	        mAllApps.add(new AppInfo(null,null));
-		  mAllApps.add(mAllApps.size()-1,new AppInfo(null,null));
+	        mAllApps.add(0,new AppInfo(null,null));
+		  mAllApps.add(mAllApps.size(),new AppInfo(null,null));
 	  }
         Log.i(TAG, "loadAllApps end time="+SystemClock.uptimeMillis());
 	}

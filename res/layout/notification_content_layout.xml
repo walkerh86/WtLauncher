@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/card_background" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+  <!--
+    <com.mediatek.watchapp.NotificationScrollView android:layout_gravity="center" android:id="@id/card_scroll_view" android:layout_width="fill_parent" android:layout_height="fill_parent" android:drawSelectorOnTop="false" android:fastScrollEnabled="false" android:overScrollMode="never">
+        <FrameLayout android:id="@id/card_scroll_content" android:focusable="true" android:clickable="true" android:addStatesFromChildren="true" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="@dimen/note_padding_gap" android:layout_marginTop="@dimen/note_padding_gap" android:layout_marginRight="@dimen/note_padding_gap" android:layout_marginBottom="@dimen/note_padding_gap">
+            <LinearLayout android:orientation="vertical" android:id="@id/card_frame1" android:background="@drawable/notification_text_background" android:layout_width="fill_parent" android:layout_height="fill_parent">
+                <TextView android:textSize="30.0px" android:textColor="#ccffffff" android:ellipsize="end" android:id="@id/title" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="8.0dip" android:singleLine="true" android:layout_marginStart="100.0px" android:layout_marginEnd="16.0dip" />
+                <Chronometer android:textAppearance="@style/NotificationEventTime" android:id="@id/chronometer" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginStart="90.0px" android:layout_marginEnd="16.0dip"
+                   />
+                <com.mediatek.watchapp.DateTimeView android:textAppearance="@style/NotificationEventTime" android:id="@id/time" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="5.0px" android:layout_marginStart="100.0px" android:layout_marginEnd="16.0dip"
+                  xmlns:android="http://schemas.android.com/apk/res/android" />
+                <TextView android:textSize="28.0dip" android:textColor="#99ffffff" android:ellipsize="end" android:id="@id/text" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip" android:layout_marginBottom="10.0dip" android:maxLines="2" android:singleLine="false" android:layout_marginStart="10.0dip" android:layout_marginEnd="10.0dip" />
+                <ImageButton android:id="@id/options" android:src="@drawable/notification_expand" android:text="@string/options" style="@style/NotificationButtonWithOutBG" />
+                <Button android:id="@id/action1" android:visibility="gone" style="@style/NotificationButton" />
+                <Button android:id="@id/action2" android:visibility="gone" style="@style/NotificationButton" />
+                <Button android:id="@id/action3" android:visibility="gone" style="@style/NotificationButton" />
+                <Button android:id="@id/open" android:visibility="gone" android:text="@string/open" style="@style/NotificationButton" />
+                <Button android:id="@id/close" android:visibility="gone" android:text="@string/close" style="@style/NotificationRoundButton" />
+            </LinearLayout>
+            <ImageView android:layout_gravity="center|left|top" android:id="@id/icon" android:layout_width="80.0px" android:layout_height="80.0px" android:layout_marginTop="10.0px" android:scaleType="centerCrop" android:layout_marginStart="10.0px" />
+            <LinearLayout android:layout_gravity="center|right|top" android:orientation="vertical" android:visibility="gone" android:layout_width="60.0px" android:layout_height="60.0px" android:layout_marginTop="20.0dip" android:layout_marginStart="6.0dip">
+                <ImageView android:layout_gravity="center" android:id="@id/type_icon" android:layout_width="30.0px" android:layout_height="30.0px" />
+                <TextView android:textSize="20.0sp" android:textColor="#ff010101" android:layout_gravity="center" android:id="@id/type_text" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+            </LinearLayout>
+        </FrameLayout>
+    </com.mediatek.watchapp.NotificationScrollView>
+    -->
+</FrameLayout>

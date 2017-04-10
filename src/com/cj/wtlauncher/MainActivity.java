@@ -91,4 +91,7 @@ public class MainActivity extends FragmentActivity{
 			}
 		}
 	};
+
+	public void backToNoteView(boolean paramBoolean){
+	}
 }

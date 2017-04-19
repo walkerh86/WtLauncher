@@ -29,7 +29,10 @@ public class WtRecyclerView extends RecyclerView{
 	
 	
 	@Override
-	protected int getChildDrawingOrder(int childCount, int i) {		
+	protected int getChildDrawingOrder(int childCount, int i) {
+	       if(!mAdjustDrawingOrder){
+		   	return super.getChildDrawingOrder(childCount, i);
+	       }
 		int count = getChildCount();
 		
 		int centerX = getWidth()/2;
@@ -58,6 +61,11 @@ public class WtRecyclerView extends RecyclerView{
 		//Log.i("hcj", "getChildDrawingOrder centerIdx ="+centerIdx+",i="+i+",drawIndex="+drawIndex);
         return drawIndex;
     }
+
+	private boolean mAdjustDrawingOrder;
+	public void setAdjustDrawingOrder(boolean adjust){
+		mAdjustDrawingOrder = adjust;
+	}
 	/*
 	private int mInitTouchX;
 	@Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/mtk_framework_51"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mtk_51_framework"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mediatek-common-51"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hsframework"/>

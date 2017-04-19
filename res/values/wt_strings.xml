@@ -140,4 +140,8 @@
     <string name="clock_title_s83_2">Dusk</string>
     <string name="wallpaper_title">Theme</string>
     <string name="no_sim_card">No SIM</string>
+    <string-array name="menu_style_items">
+        <item>4宫格</item>
+        <item>1宫格</item>
+    </string-array>
 </resources>

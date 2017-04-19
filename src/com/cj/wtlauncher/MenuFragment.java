@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -34,6 +35,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Recycler;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
 import android.content.pm.LauncherApps;
@@ -51,9 +53,10 @@ public class MenuFragment extends Fragment {
 	private static final int PAGE_INDICATOR_ITEM_NUM = 8;
 	private MyAdapter mMyAdapter;
 	private Context mContext;
-	private static final int MENU_STYLE_H = 0;
-	private static final int MENU_STYLE_GRID = 1;
-	private int mMenuStyle = MENU_STYLE_H;
+	public static final int MENU_STYLE_H = 0;
+	public static final int MENU_STYLE_GRID = 1;
+	public static final int MENU_STYLE_V = 2;
+	private int mMenuStyle = MENU_STYLE_V;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +67,21 @@ public class MenuFragment extends Fragment {
 		ActivityManager activityManager =
                 (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
 		mIconDpi = 240;//activityManager.getLauncherLargeIconDensity();
+		mMenuStyle = getMenuStyle();
 		initPackageMonitor(getActivity());
 		loadAllApps();
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		
+		int menuStyle = getMenuStyle();
+		android.util.Log.i("hcj", "menuStyle="+menuStyle);
+		if(mMenuStyle != menuStyle){
+			mMenuStyle = menuStyle;
+			switchMenuStyle();
+		}
 	}
 	
 	@Override  
@@ -87,11 +103,20 @@ public class MenuFragment extends Fragment {
 			
 			mPageIndicator.setPageNum(PAGE_INDICATOR_ITEM_NUM);
 			mPageIndicator.setPageCurr(0);
+		}else if(mMenuStyle == MENU_STYLE_V){
+			mCurrLabelView.setVisibility(View.GONE);
+			mPageIndicator.setVisibility(View.GONE);
+		
+			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);//
+			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
+			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
+			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);			
 		}else{
 			mCurrLabelView.setVisibility(View.GONE);
 			mPageIndicator.setVisibility(View.GONE);
 
-			mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
+			mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2,LinearLayoutManager.HORIZONTAL,false));
+			//mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
 		}
 		mMyAdapter = new MyAdapter();
 		mMyAdapter.setOnItemClickListener(mOnItemClickListener);
@@ -99,13 +124,13 @@ public class MenuFragment extends Fragment {
 	
 		mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState){
-				if(mMenuStyle == MENU_STYLE_H){
+				if(mMenuStyle == MENU_STYLE_H || mMenuStyle == MENU_STYLE_V){
 					mMyLinearLayoutManager.onScrollStateChanged(recyclerView,newState);
 				}
 			}
 			
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-				if(mMenuStyle == MENU_STYLE_H){
+				if(mMenuStyle == MENU_STYLE_H || mMenuStyle == MENU_STYLE_V){
 					mMyLinearLayoutManager.onScrolled();
 				}
 			}
@@ -227,10 +252,12 @@ public class MenuFragment extends Fragment {
 		private int mScrolledX;//avoid overscroll loop
 		private RecyclerView mRecyclerView;
 		private int mCenterItemPosition = -1;
+		private int mMyOrientation;
 
 		public MyLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
 			super(context, orientation, reverseLayout);
 			mScrolledX = 0;
+			mMyOrientation = orientation;
 		}
 
 		public void setRecyclerView(RecyclerView recyclerView){
@@ -253,16 +280,14 @@ public class MenuFragment extends Fragment {
 		
 		@Override
 		public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-			/*
-			final float speedRatio = 0.4f;
-	        int a = super.scrollHorizontallyBy((int)(speedRatio*dx), recycler, state);//屏蔽之后无滑动效果，证明滑动的效果就是由这个函数实现
-	        //Log.i("hcj", "scrollHorizontallyBy a="+a+"dx="+dx);
-	        if(a == (int)(speedRatio*dx)){
-	            return dx;
-	        }
-	        return a;
-	        */
 			int scrollBy = super.scrollHorizontallyBy(dx, recycler, state);
+			mScrolledX += scrollBy;
+			return scrollBy;
+		}
+
+		@Override
+		public int scrollVerticallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
+			int scrollBy = super.scrollVerticallyBy(dx, recycler, state);
 			mScrolledX += scrollBy;
 			return scrollBy;
 		}
@@ -278,16 +303,15 @@ public class MenuFragment extends Fragment {
 		private View getCenterItemView(boolean checkCenter){
 			View centerView = null;
 			int count = getChildCount();
-			int centerX = getWidth()/2;
+			int centerX = getCenterXY();
 			for(int i=0;i<count;i++){
 				View view = getChildAt(i);
-				int childRight = getDecoratedRight(view);
+				int childRight = getChildRightBottom(view);
 				if(childRight >= centerX){
-					int childLeft = getDecoratedLeft(view);
+					int childLeft = getChildLeftTop(view);
 					if(childLeft <= centerX){
 						if(checkCenter){
-							int childWidth = getDecoratedRight(view)-getDecoratedLeft(view);
-							int childCenterX = childLeft+childWidth/2;
+							int childCenterX = getChildCenterXY(view);
 							//in item layout center
 							if(childCenterX == centerX){
 								centerView = view;
@@ -304,29 +328,36 @@ public class MenuFragment extends Fragment {
 		}
 
 		private boolean isItemViewCenterFix(View view){
-			int centerX = getWidth()/2;
-			int childLeft = getDecoratedLeft(view);
-			int childWidth = getDecoratedRight(view)-childLeft;
-			int childCenterX = childLeft+childWidth/2;
+			int centerX = getCenterXY();
+			int childLeft = getChildLeftTop(view);
+			int childRight = getChildRightBottom(view);	
+			//int childWidth = childRight-childLeft;
+			int childCenterX = getChildCenterXY(view);
 			return (childCenterX == centerX);
 		}
 		
 		private void updateItemViewsScale(){
 			int count = getChildCount();
-			int centerX = getWidth()/2;
+			int centerX = getCenterXY();
 			View firstChild = getChildAt(0);
-			int childWidth = getDecoratedRight(firstChild)-getDecoratedLeft(firstChild);
+			int childWidth = getChildWH(firstChild);
 			for(int i=0;i<count;i++){
 				View view = getChildAt(i);
-				int childCenterX = getDecoratedLeft(view)+childWidth/2;
+				int childLeft = getChildLeftTop(view);
+				int childCenterX = childLeft+childWidth/2;
 				int deltaX = Math.abs(childCenterX-centerX);
 				float scaleX = 1.0f;
-				if(deltaX < childWidth){
+				if(mMyOrientation == VERTICAL){
+					scaleX = 1.0f-0.6f*deltaX/centerX;
+				}else if(mMyOrientation == HORIZONTAL  && deltaX < childWidth){
 					scaleX = 1.0f+0.6f*(childWidth-deltaX)/childWidth;
 				}
-				//float scaleX = 1.5f - 1.0f*deltaX/centerX;
-				view.setScaleX(scaleX);
-				view.setScaleY(scaleX);
+				//view.setScaleX(scaleX);
+				//view.setScaleY(scaleX);
+				view.findViewById(R.id.icon_view).setScaleX(scaleX);
+				view.findViewById(R.id.icon_view).setScaleY(scaleX);
+				view.findViewById(R.id.label_view).setScaleX(scaleX);
+				view.findViewById(R.id.label_view).setScaleY(scaleX);
 			}
 			View centerView = getCenterItemView(false);
 			if(centerView == null || mOnLayoutListener == null){
@@ -344,14 +375,14 @@ public class MenuFragment extends Fragment {
 		
 		private void adjustItemViewsPosition(RecyclerView recyclerView){
 			int count = getChildCount();
-			int centerX = getWidth()/2;
+			int centerX = getCenterXY();
 			View view;
 			int scrollX = 0;
 			for(int i=0;i<count;i++){
 				view = getChildAt(i);
-				int childRight = getDecoratedRight(view);
+				int childRight = getChildRightBottom(view);
 				if(childRight >= centerX){
-					int childLeft = getDecoratedLeft(view);
+					int childLeft = getChildLeftTop(view);
 					int decoratedW = childRight-childLeft;
 					if(childLeft <= centerX){
 						int childCenterX = childLeft+decoratedW/2;
@@ -369,11 +400,14 @@ public class MenuFragment extends Fragment {
 
 		public void adjustItemViewToCenter(RecyclerView recyclerView, View view){
 			int scrollX = 0;
-			int centerX = getWidth()/2;
-			int childRight = getDecoratedRight(view);
-			int childLeft = getDecoratedLeft(view);
+			int centerX = getCenterXY();
+			/*
+			int childRight = getChildRightBottom(view);
+			int childLeft = getChildLeftTop(view);
 			int decoratedW = childRight-childLeft;
 			int childCenterX = childLeft+decoratedW/2;
+			*/
+			int childCenterX = getChildCenterXY(view);
 			scrollX = childCenterX-centerX;
 			
 			if(scrollX != 0){
@@ -384,13 +418,36 @@ public class MenuFragment extends Fragment {
 				}
 			}
 		}
+
+		private int getCenterXY(){
+			return (mMyOrientation == HORIZONTAL) ? getWidth()/2 : getHeight()/2;
+		}
+
+		private int getChildCenterXY(View view){
+			int childWH = (mMyOrientation == HORIZONTAL) ?  (getDecoratedRight(view)-getDecoratedLeft(view))
+				: (getDecoratedBottom(view)-getDecoratedTop(view));
+			return getChildLeftTop(view)+childWH/2;
+		}
+
+		private int getChildLeftTop(View view){
+			return (mMyOrientation == HORIZONTAL) ? getDecoratedLeft(view) : getDecoratedTop(view);
+		}
+
+		private int getChildRightBottom(View view){
+			return (mMyOrientation == HORIZONTAL) ? getDecoratedRight(view) : getDecoratedBottom(view);
+		}
+
+		private int getChildWH(View view){
+			return (mMyOrientation == HORIZONTAL) ?  (getDecoratedRight(view)-getDecoratedLeft(view))
+				: (getDecoratedBottom(view)-getDecoratedTop(view));
+		}
 		
 		private OnLayoutListener mOnLayoutListener;
 		public void setOnLayoutListener(OnLayoutListener listener){
 			mOnLayoutListener = listener;
 		}
 	}
-
+	
 	public interface OnItemClickListener{
 		void onItemClick(View view);
 	}
@@ -398,7 +455,9 @@ public class MenuFragment extends Fragment {
 	private class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
 		@Override
 		public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-			MyViewHolder holder = new MyViewHolder(LayoutInflater.from(MenuFragment.this.getActivity()).inflate(R.layout.list_item, parent,false)); 
+		android.util.Log.i("hcj","onCreateViewHolder mMenuStyle="+mMenuStyle);
+			int layoutId = (mMenuStyle == MENU_STYLE_V) ? R.layout.list_item_vertical: R.layout.list_item;
+			MyViewHolder holder = new MyViewHolder(LayoutInflater.from(MenuFragment.this.getActivity()).inflate(layoutId, parent,false)); 
             return holder;
 		}
 		
@@ -452,9 +511,12 @@ public class MenuFragment extends Fragment {
 			if(appInfo.mIntent == null){
 				return;
 			}
-			//getActivity().startActivity(appInfo.mIntent);
-			mMyLinearLayoutManager.adjustItemViewToCenter(mRecyclerView,view);
-			mLaunchCenter = true;
+			if(mMenuStyle == MENU_STYLE_H){
+				mMyLinearLayoutManager.adjustItemViewToCenter(mRecyclerView,view);
+				mLaunchCenter = true;
+			}else{
+				getActivity().startActivity(appInfo.mIntent);
+			}
 		}			
 	};
 
@@ -545,4 +607,44 @@ public class MenuFragment extends Fragment {
 		public void onPackagesUnavailable(String[] packageNames, UserHandle user,boolean replacing){
 		}
 	};
+		
+	public int getMenuStyle(){
+		SharedPreferences settings = getActivity().getSharedPreferences("setting", 0);
+		int style = settings.getInt("menu_style", this.MENU_STYLE_GRID);
+		return style;
+	}
+	
+	private void switchMenuStyle(){
+		if(mMenuStyle == MENU_STYLE_H){
+			mCurrLabelView.setVisibility(View.VISIBLE);
+			mPageIndicator.setVisibility(View.VISIBLE);
+			
+			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//
+			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
+			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
+			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);
+			mRecyclerView.addItemDecoration(new MyItemDecoration());
+			
+			mPageIndicator.setPageNum(PAGE_INDICATOR_ITEM_NUM);
+			mPageIndicator.setPageCurr(0);
+		}else if(mMenuStyle == MENU_STYLE_V){
+			mCurrLabelView.setVisibility(View.GONE);
+			mPageIndicator.setVisibility(View.GONE);
+		
+			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);//
+			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
+			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
+			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);			
+		}else{
+			mCurrLabelView.setVisibility(View.GONE);
+			mPageIndicator.setVisibility(View.GONE);
+
+			mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2,LinearLayoutManager.HORIZONTAL,false));
+			//mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
+		}
+		
+		mMyAdapter = new MyAdapter();
+		mMyAdapter.setOnItemClickListener(mOnItemClickListener);
+		mRecyclerView.setAdapter(mMyAdapter);
+	}
 }

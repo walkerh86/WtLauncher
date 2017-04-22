@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.cj.clock.WtClockRoot 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:clock="http://schemas.android.com/apk/res/com.cj.wtlauncher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wt_clock_1_dial">
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_hour2"
+    android:layout_width="90px"
+    android:layout_height="90px"   
+    android:layout_marginLeft="60px"
+    android:layout_marginTop="120px" 
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:pointer_drawable="@drawable/wt_clock_1_other"
+    clock:pointer_center_x="45"
+    clock:pointer_center_y="45">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_min2"
+    android:layout_width="90px"
+    android:layout_height="90px"  
+    android:layout_gravity="right"
+    android:layout_marginRight="60px"
+    android:layout_marginTop="120px" 
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:pointer_drawable="@drawable/wt_clock_1_other"
+    clock:pointer_center_x="45"
+    clock:pointer_center_y="45">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_hour"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:pointer_drawable="@drawable/wt_clock_1_hour"
+    clock:pointer_center_x="160"
+    clock:pointer_center_y="160">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_min"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="59"
+    clock:pointer_drawable="@drawable/wt_clock_1_min"
+    clock:pointer_center_x="160"
+    clock:pointer_center_y="160">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_sec"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="59"
+    clock:pointer_drawable="@drawable/wt_clock_1_sec"
+    clock:pointer_center_x="160"
+    clock:pointer_center_y="160">
+</com.cj.clock.WtClock>
+
+</com.cj.clock.WtClockRoot>

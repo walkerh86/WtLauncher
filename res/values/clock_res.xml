@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <attr name="clkstyle">
+        <enum name="pointer" value="0" />
+        <enum name="digit" value="1" />
+    </attr>
+    <declare-styleable name="WtClock">
+        <attr name="clkstyle"/>
+        <attr name="value_min" format="integer"/>
+        <attr name="value_max" format="integer"/>
+        
+        <attr name="pointer_drawable" format="reference"/>
+        <attr name="pointer_center_x" format="integer"/>
+        <attr name="pointer_center_y" format="integer"/>
+        
+        <attr name="digiimg_drawables" format="reference"/>        
+        
+    </declare-styleable>
+    
     <declare-styleable name="AnalogClock">
         <attr name="dial" format="reference"/>
         <attr name="hand_hour" format="reference"/>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.cj.clock.AnalogClock
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:clock="http://schemas.android.com/apk/res/com.cj.wtlauncher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    clock:dial="@drawable/wt_clock_2_dial"
+    clock:center_point="@drawable/wt_clock_2_sec"
+    clock:hand_hour="@drawable/wt_clock_2_hour"
+    clock:hand_minute="@drawable/wt_clock_2_min"
+    clock:week_point_drawable="@null"
+    clock:week_point_center_x="161"
+    clock:week_point_center_y="225">
+</com.cj.clock.AnalogClock>

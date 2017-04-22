@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.cj.clock.WtClockRoot 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:clock="http://schemas.android.com/apk/res/com.cj.wtlauncher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wt_clock_5_dial">
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_hour"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="digit"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:digitext_drawables="@array/wt_clock_5_digit_drawables"
+    clock:digitext_x="60"
+    clock:digitext_y="226">
+</com.cj.clock.WtClock>
+
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="140px"
+    android:layout_marginTop="226px"
+    android:src="@drawable/wt_clock_5_digit_sep"/>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_min"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="digit"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:digitext_drawables="@array/wt_clock_5_digit_drawables"
+    clock:digitext_x="170"
+    clock:digitext_y="226">
+</com.cj.clock.WtClock>
+
+</com.cj.clock.WtClockRoot>

@@ -74,7 +74,7 @@ public class ClockFragment  extends Fragment{
 	}
 
 	public void setClockStyle(int index){
-		android.util.Log.i(TAG,"setClockStyle index="+index+",mClockIdx="+mClockIdx+",mClockHost="+mClockHost);
+		android.util.Log.i(TAG,"setClockStyle index="+index+",mClockIdx="+mClockIdx+",clockNum="+ClockUtil.mClockList.length);
 		if(mClockIdx == index || mClockHost == null){
 			return;
 		}

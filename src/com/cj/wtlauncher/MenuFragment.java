@@ -110,7 +110,9 @@ public class MenuFragment extends Fragment {
 			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);//
 			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
 			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
-			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);			
+			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);	
+			mRecyclerView.addItemDecoration(new MyItemDecoration());
+			((WtRecyclerView)mRecyclerView).setAdjustDrawingOrder(true);
 		}else{
 			mCurrLabelView.setVisibility(View.GONE);
 			mPageIndicator.setVisibility(View.GONE);
@@ -239,7 +241,11 @@ public class MenuFragment extends Fragment {
 	
 	public class MyItemDecoration extends RecyclerView.ItemDecoration {
 		public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
-			outRect.set(0,26,0,0);
+			if(mMenuStyle == MENU_STYLE_H){
+				outRect.set(0,26,0,0);
+			}else{
+				outRect.set(0,-28,0,-28);
+			}
 		}
 	}
 
@@ -348,7 +354,7 @@ public class MenuFragment extends Fragment {
 				int deltaX = Math.abs(childCenterX-centerX);
 				float scaleX = 1.0f;
 				if(mMyOrientation == VERTICAL){
-					scaleX = 1.0f-0.6f*deltaX/centerX;
+					scaleX = 1.0f-0.8f*deltaX/centerX;
 				}else if(mMyOrientation == HORIZONTAL  && deltaX < childWidth){
 					scaleX = 1.0f+0.6f*(childWidth-deltaX)/childWidth;
 				}

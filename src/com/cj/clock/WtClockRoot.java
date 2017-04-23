@@ -1,5 +1,7 @@
 package com.cj.clock;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TimeZone;
 
 import android.content.BroadcastReceiver;
@@ -9,17 +11,22 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.text.format.Time;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.cj.wtlauncher.R;
 
 public class WtClockRoot extends FrameLayout {
 	private Time mCalendar;
+	private Date mDate;
 	private final Handler mHandler = new Handler();
 	private boolean mAttached;
 	private WtClock mClockHour;
 	private WtClock mClockMin;
 	private WtClock mClockSec;
+	private TextView mClockDate;
+	private static final SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy/MM/dd  E");
 	
 	public WtClockRoot(Context context) {
         this(context, null);
@@ -36,9 +43,22 @@ public class WtClockRoot extends FrameLayout {
     protected void onFinishInflate() {
     	super.onFinishInflate();
     	
-    	mClockHour = (WtClock)findViewById(R.id.clk_hour);
-    	mClockMin = (WtClock)findViewById(R.id.clk_min);
-    	mClockSec = (WtClock)findViewById(R.id.clk_sec);
+    	View clockItem = findViewById(R.id.clk_hour);
+    	if(clockItem != null){
+    		mClockHour = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_min);
+    	if(clockItem != null){
+    		mClockMin = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_sec);
+    	if(clockItem != null){
+    		mClockSec = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_date);
+    	if(clockItem != null){
+    		mClockDate = (TextView)clockItem;
+    	}
     }
     
     @Override
@@ -60,6 +80,7 @@ public class WtClockRoot extends FrameLayout {
         }
         
         mCalendar = new Time();
+        mDate = new Date();
         onTimeChanged();   
     }
     
@@ -90,6 +111,10 @@ public class WtClockRoot extends FrameLayout {
         }
         if(mClockSec != null){
         	mClockSec.setValue(second);
+        }
+        if(mClockDate != null){
+        	mDate.setTime(System.currentTimeMillis());
+        	mClockDate.setText(mDateFormat.format(mDate));
         }
     }
     

@@ -9,15 +9,15 @@
 
     <ImageView
         android:id="@+id/icon_view"
-        android:layout_width="72px"
-        android:layout_height="72px" />
+        android:layout_width="112px"
+        android:layout_height="112px" />
     <TextView
         android:id="@+id/label_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="marquee"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textColor="#ff414141"/>
 
 </LinearLayout>

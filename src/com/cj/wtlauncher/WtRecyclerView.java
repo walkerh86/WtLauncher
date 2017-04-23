@@ -34,7 +34,7 @@ public class WtRecyclerView extends RecyclerView{
 		   	return super.getChildDrawingOrder(childCount, i);
 	       }
 		int count = getChildCount();
-		
+		/*
 		int centerX = getWidth()/2;
 		View firstChild = getChildAt(0);
 		int childWidth = firstChild.getWidth();
@@ -45,6 +45,23 @@ public class WtRecyclerView extends RecyclerView{
 		for(int j=0;j<count;j++){
 			View view = getChildAt(j);
 			int childCenterX = this.getLayoutManager().getDecoratedLeft(view)+childWidth/2;
+			int deltaX = Math.abs(childCenterX-centerX);
+			if(deltaX < minDeltaX){
+				minDeltaX = deltaX;
+				centerIdx = j;
+			}
+		}
+		*/
+		int centerX = getHeight()/2;
+		View firstChild = getChildAt(0);
+		int childWidth = firstChild.getHeight();
+		int childStart = this.getLayoutManager().getDecoratedTop(firstChild);
+		//Log.i("hcj", "onScrollChanged count="+count+",childStart="+childStart);
+		int centerIdx = count/2;
+		int minDeltaX = centerX;
+		for(int j=0;j<count;j++){
+			View view = getChildAt(j);
+			int childCenterX = this.getLayoutManager().getDecoratedTop(view)+childWidth/2;
 			int deltaX = Math.abs(childCenterX-centerX);
 			if(deltaX < minDeltaX){
 				minDeltaX = deltaX;

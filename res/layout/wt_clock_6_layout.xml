@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.cj.clock.WtClockRoot 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:clock="http://schemas.android.com/apk/res/com.cj.wtlauncher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wt_clock_6_dial">
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_batt"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="100"
+    clock:pointer_drawable="@drawable/wt_clock_6_pointer_batt"
+    clock:pointer_center_x="53"
+    clock:pointer_center_y="56"
+    clock:clk_min_angle="312"
+    clock:clk_max_angle="58">
+</com.cj.clock.WtClock>
+
+</com.cj.clock.WtClockRoot>

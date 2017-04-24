@@ -22,6 +22,8 @@ public class WtClock extends View {
     private Drawable mPointerDrawable;
     private int mPointerCenterX;
     private int mPointerCenterY;
+    private int mClockMinAngle;
+    private int mClockMaxAngle;
     
     private int mDigitTextSize;
     private int mDigitTextColor;
@@ -50,6 +52,8 @@ public class WtClock extends View {
         mValueMin = a.getInt(R.styleable.WtClock_value_min, 0);
         mValueMax = a.getInt(R.styleable.WtClock_value_max, 0);
         mValue = mValueMin;
+        mClockMinAngle = a.getInt(R.styleable.WtClock_clk_min_angle, 0);
+        mClockMaxAngle = a.getInt(R.styleable.WtClock_clk_max_angle, 360);
         
         mPointerDrawable = a.getDrawable(R.styleable.WtClock_pointer_drawable);        
         mPointerCenterX = a.getInt(R.styleable.WtClock_pointer_center_x, -1);
@@ -98,7 +102,12 @@ public class WtClock extends View {
         
         if(isPointerStyle()){
         	canvas.save();
-            canvas.rotate((float)mValue/ (mValueMax-mValueMin+1) * 360.0f, mPointerCenterX, mPointerCenterY);
+        	int fullAngle = (mClockMaxAngle > mClockMinAngle) ? (mClockMaxAngle-mClockMinAngle) : (360-mClockMinAngle+mClockMaxAngle);
+        	float currAngle = mClockMinAngle + (float)mValue/ (mValueMax-mValueMin+1) * fullAngle;
+        	if(mClockMaxAngle < mClockMinAngle){
+        		currAngle = currAngle%360;
+        	}
+            canvas.rotate(currAngle, mPointerCenterX, mPointerCenterY);
         	mPointerDrawable.draw(canvas);
         	canvas.restore();
         }else if(isDigitTextStyle()){

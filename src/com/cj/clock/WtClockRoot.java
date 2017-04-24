@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.text.format.Time;
 import android.util.AttributeSet;
@@ -26,6 +27,7 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockMin;
 	private WtClock mClockSec;
 	private TextView mClockDate;
+	private WtClock mClockBatt;
 	private static final SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy/MM/dd  E");
 	
 	public WtClockRoot(Context context) {
@@ -59,6 +61,10 @@ public class WtClockRoot extends FrameLayout {
     	if(clockItem != null){
     		mClockDate = (TextView)clockItem;
     	}
+    	clockItem = findViewById(R.id.clk_batt);
+    	if(clockItem != null){
+    		mClockBatt = (WtClock)clockItem;
+    	}
     }
     
     @Override
@@ -72,6 +78,7 @@ public class WtClockRoot extends FrameLayout {
             filter.addAction(Intent.ACTION_TIME_TICK);
             filter.addAction(Intent.ACTION_TIME_CHANGED);
             filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+            filter.addAction(Intent.ACTION_BATTERY_CHANGED);
 
             getContext().registerReceiverAsUser(mIntentReceiver,
                     android.os.Process.myUserHandle(), filter, null, mHandler);
@@ -121,7 +128,18 @@ public class WtClockRoot extends FrameLayout {
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
+        	String action = intent.getAction();
+        	if(action.equals(Intent.ACTION_BATTERY_CHANGED)){
+        		if(mClockBatt != null){
+        			int level = (int)(100f
+                    		* intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+                    		/ intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100));
+        			mClockBatt.setValue(level);
+        		}
+        		return;
+        	}
+        	
+            if (action.equals(Intent.ACTION_TIMEZONE_CHANGED)) {
                 String tz = intent.getStringExtra("time-zone");
                 mCalendar = new Time(TimeZone.getTimeZone(tz).getID());
             }

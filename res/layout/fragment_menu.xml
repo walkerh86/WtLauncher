@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/wallpaper_00"
+    android:background="@drawable/bg_app"
     tools:context="com.cj.wtlauncher.MenuFragment" >
 
     <com.cj.wtlauncher.WtRecyclerView

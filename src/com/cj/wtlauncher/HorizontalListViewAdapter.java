@@ -51,14 +51,14 @@ public class HorizontalListViewAdapter extends BaseAdapter{
 			holder = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.choose_clock_horizontal_list_item, null);
 			holder.mImage = (ImageView)convertView.findViewById(R.id.img_list_item);
-			holder.mTitle = (TextView)convertView.findViewById(R.id.text_list_item);
+			//holder.mTitle = (TextView)convertView.findViewById(R.id.text_list_item);
 			convertView.setTag(holder);
 		}else{
 			holder = (ViewHolder)convertView.getTag();
 		}
 		android.util.Log.i("hcj","getView iconId="+mIconIDs[position]+",position="+position);
 
-		holder.mTitle.setText(this.mContext.getResources().getString(this.mTitleIds[position]));
+		//holder.mTitle.setText(this.mContext.getResources().getString(this.mTitleIds[position]));
 		this.iconBitmap = getPropThumnail(this.mIconIDs[position]);
 		holder.mImage.setImageBitmap(this.iconBitmap);
 		
@@ -69,7 +69,7 @@ public class HorizontalListViewAdapter extends BaseAdapter{
   
 	private static class ViewHolder{
 		private ImageView mImage;
-		private TextView mTitle;
+		//private TextView mTitle;
 	}
 }
 

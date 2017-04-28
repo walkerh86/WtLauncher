@@ -10,8 +10,8 @@
         android:id="@+id/icon_view"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="10dp"
-        android:layout_width="120px"
-        android:layout_height="120px" />
+        android:layout_width="64px"
+        android:layout_height="64px" />
     <TextView
         android:id="@+id/label_view"
         android:layout_width="0dp"

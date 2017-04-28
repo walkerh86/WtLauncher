@@ -244,7 +244,7 @@ public class MenuFragment extends Fragment {
 			if(mMenuStyle == MENU_STYLE_H){
 				outRect.set(0,26,0,0);
 			}else{
-				outRect.set(0,-28,0,-28);
+				outRect.set(0,0,0,0);
 			}
 		}
 	}

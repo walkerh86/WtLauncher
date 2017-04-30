@@ -5,7 +5,7 @@
     xmlns:clock="http://schemas.android.com/apk/res/com.cj.wtlauncher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wt_clock_5_dial">
+    android:background="@drawable/wt_clock_10_dial">
 
 <com.cj.clock.WtClock
     android:id="@+id/clk_hour"
@@ -14,17 +14,17 @@
     clock:clkstyle="digit"
     clock:value_min="0"
     clock:value_max="11"
-    clock:digitext_drawables="@array/wt_clock_5_digit_drawables"
-    clock:digitext_x="66"
-    clock:digitext_y="226">
+    clock:digitext_drawables="@array/wt_clock_10_digit_drawables"
+    clock:digitext_x="42"
+    clock:digitext_y="128">
 </com.cj.clock.WtClock>
 
 <ImageView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="140px"
-    android:layout_marginTop="226px"
-    android:src="@drawable/wt_clock_5_digit_sep"/>
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="128px"
+		android:layout_marginLeft="138px"
+		android:src="@drawable/wt_clock_10_digit_sep"/>
 
 <com.cj.clock.WtClock
     android:id="@+id/clk_min"
@@ -33,20 +33,20 @@
     clock:clkstyle="digit"
     clock:value_min="0"
     clock:value_max="11"
-    clock:digitext_drawables="@array/wt_clock_5_digit_drawables"
-    clock:digitext_x="180"
-    clock:digitext_y="226">
+    clock:digitext_drawables="@array/wt_clock_10_digit_drawables"
+    clock:digitext_x="182"
+    clock:digitext_y="128">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtDate
     android:id="@+id/clk_date"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layout_marginLeft="60px"
-    android:layout_marginBottom="10dp"
-    clock:date_format="yyyy/MM/dd  E"
+    android:layout_gravity="right"
+    android:layout_marginRight="20px"
+    android:layout_marginTop="20px"
+    clock:date_format="MM/dd  E"
     android:textSize="26sp"
-    android:textColor="#ffffffff"/>
+    android:textColor="#ff000000"/>
 
 </com.cj.clock.WtClockRoot>

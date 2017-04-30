@@ -17,8 +17,8 @@
     clock:value_min="0"
     clock:value_max="11"
     clock:pointer_drawable="@drawable/wt_clock_1_other"
-    clock:pointer_center_x="45"
-    clock:pointer_center_y="45">
+    clock:pointer_center_x="44"
+    clock:pointer_center_y="47">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock
@@ -32,8 +32,8 @@
     clock:value_min="0"
     clock:value_max="11"
     clock:pointer_drawable="@drawable/wt_clock_1_other"
-    clock:pointer_center_x="45"
-    clock:pointer_center_y="45">
+    clock:pointer_center_x="47"
+    clock:pointer_center_y="47">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock

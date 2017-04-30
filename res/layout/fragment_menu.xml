@@ -3,12 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_app"
+    android:background="@drawable/bg_app"    
     tools:context="com.cj.wtlauncher.MenuFragment" >
 
     <com.cj.wtlauncher.WtRecyclerView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:layout_height="0dp"
         android:layout_weight="1" />
     <TextView 

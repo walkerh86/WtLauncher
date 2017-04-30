@@ -44,9 +44,7 @@ public class WtClock extends View {
     public WtClock(Context context, AttributeSet attrs,int defStyle) {                       
         super(context, attrs, defStyle);
         
-        TypedArray a =
-                context.obtainStyledAttributes(
-                        attrs, R.styleable.WtClock, defStyle, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WtClock, defStyle, 0); 
         
         mClockStyle = a.getInt(R.styleable.WtClock_clkstyle, CLOCK_STYLE_POINTER);
         mValueMin = a.getInt(R.styleable.WtClock_value_min, 0);
@@ -66,18 +64,10 @@ public class WtClock extends View {
         
         mDigitTextSize = a.getInt(R.styleable.WtClock_digitext_size, 0);
         mDigitTextColor = a.getColor(R.styleable.WtClock_digitext_color, 0);
-        mDigitTextStrokeSize = a.getInt(R.styleable.WtClock_digitext_strokesize, 0);
+        mDigitTextStrokeSize = a.getInt(R.styleable.WtClock_digitext_strokesize, 2);
         mDigitTextX = a.getInt(R.styleable.WtClock_digitext_x, -1);
         mDigitTextY = a.getInt(R.styleable.WtClock_digitext_y, -1);
-        if(isDigitTextStyle()){
-        	mDigitTextPaint = new Paint();
-        	mDigitTextPaint.setAntiAlias(true);
-        	mDigitTextPaint.setTextSize(mDigitTextSize);
-        	mDigitTextPaint.setColor(mDigitTextColor);
-        	mDigitTextPaint.setStyle(Paint.Style.STROKE);
-        	mDigitTextPaint.setStrokeWidth(mDigitTextStrokeSize);
-        }
-        
+                
         int digitDrawablesId = a.getResourceId(R.styleable.WtClock_digitext_drawables, -1);
         if(digitDrawablesId > 0){
         	Resources res = context.getResources();
@@ -91,6 +81,15 @@ public class WtClock extends View {
         		}
         	}
         	ar.recycle();
+        }
+        
+        if(isDigitTextStyle()){
+        	mDigitTextPaint = new Paint();
+        	mDigitTextPaint.setAntiAlias(true);
+        	mDigitTextPaint.setTextSize(mDigitTextSize);
+        	mDigitTextPaint.setColor(mDigitTextColor);
+        	mDigitTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        	mDigitTextPaint.setStrokeWidth(mDigitTextStrokeSize);
         }
         
         a.recycle();
@@ -110,8 +109,8 @@ public class WtClock extends View {
             canvas.rotate(currAngle, mPointerCenterX, mPointerCenterY);
         	mPointerDrawable.draw(canvas);
         	canvas.restore();
-        }else if(isDigitTextStyle()){
-        	canvas.drawText(Integer.toString(mValue), mDigitTextX, mDigitTextY, mDigitTextPaint);
+        }else if(isDigitTextStyle()){        	
+        	canvas.drawText(String.format("%02d", mValue), mDigitTextX, mDigitTextY, mDigitTextPaint);
         }else if(isDigitDrawableStyle()){
         	int offsetX = mDigitTextX;
         	int value1 = mValue/10;

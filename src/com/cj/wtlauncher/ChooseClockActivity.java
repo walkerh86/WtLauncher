@@ -46,5 +46,6 @@ public class ChooseClockActivity extends Activity{
 				ChooseClockActivity.this.overridePendingTransition(0, R.anim.exit_anim);
 			}
 		});
+		myGallery.setSelection(getSharedPreferences("clockview_settings", 0).getInt("clockview_index", 0));
 	}
 }

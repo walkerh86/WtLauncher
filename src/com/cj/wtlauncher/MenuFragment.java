@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -343,6 +344,41 @@ public class MenuFragment extends Fragment {
 		}
 		
 		private void updateItemViewsScale(){
+			/*
+			if(mMyOrientation == VERTICAL){
+				int offset = mScrolledX%20;
+				int count = getChildCount();
+				int childH = 0;
+				int prevH = 0;
+				for(int i=0;i<count;i++){
+					if(i == 0){
+						childH = 40-offset*2;
+						prevH += childH;
+					}else if(i == 1){
+						childH = 60-offset*3;
+						prevH += childH;
+					}else if(i == 2){
+						childH = 120-offset*6;	
+						prevH += childH;
+					}else if(i == 3){
+						childH = 60+offset*3;	
+						prevH += childH;
+					}else if(i == 4){
+						childH = 40+offset*2;	
+						prevH += childH;
+					}else if(i == 5){
+						childH = 320-prevH;					
+					}
+					View view = getChildAt(i);
+					View iconView = view.findViewById(R.id.icon_view);
+					LayoutParams lp = (LayoutParams)iconView.getLayoutParams();
+					lp.height = childH;
+					lp.width = childH;
+					iconView.setLayoutParams(lp);
+				}
+				return;
+			}
+			*/
 			int count = getChildCount();
 			int centerX = getCenterXY();
 			View firstChild = getChildAt(0);
@@ -354,7 +390,7 @@ public class MenuFragment extends Fragment {
 				int deltaX = Math.abs(childCenterX-centerX);
 				float scaleX = 1.0f;
 				if(mMyOrientation == VERTICAL){
-					scaleX = 1.0f-0.8f*deltaX/centerX;
+					scaleX = 1.6f-1.2f*deltaX/centerX;
 				}else if(mMyOrientation == HORIZONTAL  && deltaX < childWidth){
 					scaleX = 1.0f+0.6f*(childWidth-deltaX)/childWidth;
 				}

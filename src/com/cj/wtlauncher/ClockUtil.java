@@ -8,7 +8,9 @@ public class ClockUtil{
 	public static final ClockSet mWtClock5 = new ClockSet(R.layout.wt_clock_5_layout, R.string.clock_title_5, R.drawable.wt_clock_5_preview);
 	public static final ClockSet mWtClock6 = new ClockSet(R.layout.wt_clock_6_layout, R.string.clock_title_5, R.drawable.wt_clock_6_preview);
 	public static final ClockSet mWtClock8 = new ClockSet(R.layout.wt_clock_8_layout, R.string.clock_title_5, R.drawable.wt_clock_8_preview);
-	public static final ClockSet[] mClockList = {mWtClock1,mWtClock2,mWtClock3,mWtClock4,mWtClock5,mWtClock6,mWtClock8};
+	public static final ClockSet mWtClock9 = new ClockSet(R.layout.wt_clock_9_layout, R.string.clock_title_5, R.drawable.wt_clock_9_preview);
+	public static final ClockSet mWtClock10 = new ClockSet(R.layout.wt_clock_10_layout, R.string.clock_title_5, R.drawable.wt_clock_10_preview);
+	public static final ClockSet[] mClockList = {mWtClock1,mWtClock2,mWtClock3,mWtClock4,mWtClock5,mWtClock6,mWtClock8,mWtClock9,mWtClock10};
 	
 	public static class ClockSet{
 		public int mThumbImageId;

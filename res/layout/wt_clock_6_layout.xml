@@ -21,4 +21,56 @@
     clock:clk_max_angle="58">
 </com.cj.clock.WtClock>
 
+<com.cj.clock.WtClock
+    android:id="@+id/clk_hour"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"       
+    clock:clkstyle="digit"
+    clock:digitext_size="30"
+    clock:digitext_color="#ffffffff"
+    clock:digitext_strokesize="2"
+    clock:value_min="0"
+    clock:value_max="11"    
+    clock:digitext_x="146"
+    clock:digitext_y="260">
+</com.cj.clock.WtClock>
+<com.cj.clock.WtClock
+    android:id="@+id/clk_min"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"  
+    clock:clkstyle="digit"
+    clock:digitext_size="60"
+    clock:digitext_color="#ffffffff"
+    clock:digitext_strokesize="4"
+    clock:value_min="0"
+    clock:value_max="59"    
+    clock:digitext_x="128"
+    clock:digitext_y="220">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_sec"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="59"
+    clock:pointer_drawable="@drawable/wt_clock_6_pointer_sec"
+    clock:pointer_center_x="161"
+    clock:pointer_center_y="227"
+    clock:clk_min_angle="240"
+    clock:clk_max_angle="120">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtDate
+    android:id="@+id/clk_date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginLeft="90px"
+    android:layout_marginBottom="10dp"
+    clock:date_format="yyyy/MM/dd"
+    android:textSize="26sp"
+    android:textColor="#ffffffff"/>
+
 </com.cj.clock.WtClockRoot>

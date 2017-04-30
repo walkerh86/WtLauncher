@@ -26,9 +26,9 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockHour;
 	private WtClock mClockMin;
 	private WtClock mClockSec;
-	private TextView mClockDate;
+	private WtDate mClockDate;
 	private WtClock mClockBatt;
-	private static final SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy/MM/dd  E");
+	private SimpleDateFormat mDateFormat;
 	
 	public WtClockRoot(Context context) {
         this(context, null);
@@ -59,7 +59,8 @@ public class WtClockRoot extends FrameLayout {
     	}
     	clockItem = findViewById(R.id.clk_date);
     	if(clockItem != null){
-    		mClockDate = (TextView)clockItem;
+    		mClockDate = (WtDate)clockItem;
+    		mDateFormat = new SimpleDateFormat(mClockDate.getDateFormat());
     	}
     	clockItem = findViewById(R.id.clk_batt);
     	if(clockItem != null){

@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -104,6 +105,8 @@ public class StepFragment extends Fragment{
             hostView.setPadding(0, 0, 0, 0);
             mRootView.addView(hostView);
         }
+        
+        notifyStepChanged();
 	}
 	
     private static AppWidgetProviderInfo getStepWidgetProvider(Context context) {
@@ -119,5 +122,9 @@ public class StepFragment extends Fragment{
             }
         }
         return appWidgetProviderInfo;
+    }
+    
+    private void notifyStepChanged(){
+    	getActivity().sendBroadcast(new Intent("com.wt.health.APPWIDGET_UPDATE"));
     }
 }

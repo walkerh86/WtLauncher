@@ -1,6 +1,5 @@
 package com.cj.qs;
 
-import com.cj.aidl.ISettingsService;
 import com.cj.util.ReflectUtil;
 import com.cj.wtlauncher.R;
 
@@ -37,11 +36,6 @@ public class QSMobileDataTile extends QSTile{
 		context.unregisterReceiver(mReceiver);
 	}
 
-	public void setSettingsService(ISettingsService service){
-		super.setSettingsService(service);
-		updateView(isEnabled());
-	}
-	
 	private void updateView(boolean isOn){
 		mTileView.setImageResource(isOn ? R.drawable.smart_watch_mobile_data_on : R.drawable.smart_watch_mobile_data_off);
 	}

@@ -1,7 +1,6 @@
 package com.cj.wtlauncher;
 
 import com.android.internal.telephony.TelephonyIntents;
-import com.cj.aidl.ISettingsService;
 import com.cj.qs.QSAirplaneTile;
 import com.cj.qs.QSBluetoothTile;
 import com.cj.qs.QSMobileDataTile;

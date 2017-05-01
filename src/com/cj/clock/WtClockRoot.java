@@ -5,20 +5,29 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.BatteryManager;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.Parcel;
+import android.os.RemoteException;
 import android.text.format.Time;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cj.wtlauncher.R;
+import com.wt.health.IExtStepService;
+import com.wt.health.IExtStepServiceCB;
 
 public class WtClockRoot extends FrameLayout {
+	private static final String TAG = "hcj.WtClockRoot";
 	private Time mCalendar;
 	private Date mDate;
 	private final Handler mHandler = new Handler();
@@ -29,6 +38,7 @@ public class WtClockRoot extends FrameLayout {
 	private WtDate mClockDate;
 	private WtClock mClockBatt;
 	private SimpleDateFormat mDateFormat;
+	private TextView mClockStep;
 	
 	public WtClockRoot(Context context) {
         this(context, null);
@@ -66,6 +76,11 @@ public class WtClockRoot extends FrameLayout {
     	if(clockItem != null){
     		mClockBatt = (WtClock)clockItem;
     	}
+    	clockItem = findViewById(R.id.clk_step);
+    	if(clockItem != null){
+    		mClockStep = (TextView)clockItem;
+    		setupStepService();
+    	}     	
     }
     
     @Override
@@ -159,5 +174,55 @@ public class WtClockRoot extends FrameLayout {
     		
     		mHandler.postDelayed(this, 1000);
     	}
+    };
+    
+    private void setupStepService(){
+    	if(mStepService != null){
+    		return;
+    	}
+    	Intent intent = new Intent("com.wt.health.action.ExtStepService");
+    	intent.setComponent(new ComponentName("com.wt.health","com.wt.health.ExtStepService"));
+    	getContext().bindService(intent, mStepConnection, Context.BIND_AUTO_CREATE);
+    }
+    
+    private void stopStepService(){
+    	getContext().unbindService(mStepConnection);
+    }
+    
+    private IExtStepService mStepService;
+    
+    private IExtStepServiceCB mStepServiceCB = new IExtStepServiceCB(){
+		@Override
+		public void stepsChanged(int value) {
+			Log.i(TAG, "stepsChanged value="+value);
+			mClockStep.setText(String.valueOf(value));
+		}
+
+		@Override
+		public IBinder asBinder() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+    };
+    
+    private ServiceConnection mStepConnection = new ServiceConnection(){
+
+		@Override
+		public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+			mStepService = IExtStepService.Stub.asInterface(arg1);
+			Log.i(TAG, "onServiceConnected mStepServiceCB="+mStepServiceCB);
+			try{
+				mStepService.registerExtCB(mStepServiceCB);
+			}catch(Exception e){
+				Log.i(TAG, "onServiceConnected registerExtCB e="+e);
+			}
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+			Log.i(TAG, "onServiceDisconnected");
+			mStepService = null;
+		}
+    	
     };
 }

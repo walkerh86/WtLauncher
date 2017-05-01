@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.cj.aidl.ISettingsService;
 import com.mediatek.audioprofile.AudioProfileManager;
 
 public class QuickFragment extends Fragment{

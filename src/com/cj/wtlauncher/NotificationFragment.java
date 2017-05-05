@@ -7,6 +7,7 @@ import com.cj.widget.HorizontalViewPager;
 
 import android.animation.LayoutTransition;
 import android.app.INotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -185,8 +186,17 @@ public class NotificationFragment extends Fragment{
 		mNoMan = INotificationManager.Stub.asInterface(ServiceManager.getService("notification"));
 
 		try{
-			//mListener.registerAsSystemService(mContext, new ComponentName(mContext.getPackageName(), getClass().getCanonicalName()), -1);
+			mListener.registerAsSystemService(mContext, new ComponentName(mContext.getPackageName(), getClass().getCanonicalName()), -1);
 			//init white black list
+			String[] whiteList = mContext.getResources().getStringArray(R.array.notification_whitelist);
+			for(int i=0;i<whiteList.length;i++){
+				mMapWhiteList.put(whiteList[i],"1");
+			}
+			//init white black list
+			String[] blackList = mContext.getResources().getStringArray(R.array.notification_blacklist);
+			for(int i=0;i<blackList.length;i++){
+				mMapBlackList.put(blackList[i],"1");
+			}
 		}catch(Exception e){
 		}
 	}
@@ -243,8 +253,8 @@ public class NotificationFragment extends Fragment{
 	
 	@Override
 	public void onDestroy(){
-		super.onDestroy();
 		sInstance = null;
+		super.onDestroy();
 	}
 	
 	@Override

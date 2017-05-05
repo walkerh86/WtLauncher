@@ -16,5 +16,37 @@
     <style name="AppTheme" parent="android:Theme.NoTitleBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="NotificationButtonWithOutBG">
+        <item name="android:textSize">26.0px</item>
+        <item name="android:textColor">#99ffffff</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">38.0dip</item>
+        <item name="android:layout_marginBottom">2.0dip</item>
+    </style>
+    <style name="NotificationButton" parent="@style/NotificationButtonWithOutBG">
+        <item name="android:background">@drawable/notification_button</item>
+        <item name="android:layout_height">70.0dip</item>
+    </style>
+    <style name="NotificationRoundButton" parent="@style/NotificationButton">
+        <item name="android:background">@drawable/notification_button_round</item>
+    </style>
+    <style name="NotificationEventTime">
+        <item name="android:textSize">24.0px</item>
+        <item name="android:textColor">#99ffffff</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="chooseClockview" parent="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen">
+        <item name="android:windowSwipeToDismiss">false</item>
+    </style>
+    <style name="CustomDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
 </resources>

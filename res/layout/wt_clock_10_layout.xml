@@ -53,8 +53,8 @@
 		android:id="@+id/clk_step"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="right|bottom"
-		android:layout_marginRight="20px"
+		android:layout_gravity="bottom"
+		android:layout_marginLeft="150px"
 		android:layout_marginBottom="20px"
 		android:textSize="26sp"
     android:textColor="#ff000000"/>

@@ -43,4 +43,18 @@
     clock:pointer_center_y="160">
 </com.cj.clock.WtClock>
 
+<com.cj.clock.WtClock
+    android:id="@+id/clk_batt"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="100"
+    clock:pointer_drawable="@drawable/wt_clock_3_pointer_batt"
+    clock:pointer_center_x="160"
+    clock:pointer_center_y="30"
+    clock:clk_min_angle="238"
+    clock:clk_max_angle="122">
+</com.cj.clock.WtClock>
+
 </com.cj.clock.WtClockRoot>

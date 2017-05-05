@@ -21,6 +21,15 @@
     clock:clk_max_angle="58">
 </com.cj.clock.WtClock>
 
+<ImageView
+    android:id="@+id/clk_dial"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right"
+    android:layout_marginTop="12px"
+    android:layout_marginRight="12px"
+    android:src="@drawable/wt_clock_6_call" />
+
 <com.cj.clock.WtClock
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"

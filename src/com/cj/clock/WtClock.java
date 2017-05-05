@@ -14,6 +14,7 @@ import com.cj.wtlauncher.R;
 public class WtClock extends View {
     public static final int CLOCK_STYLE_POINTER = 0;
     public static final int CLOCK_STYLE_DIGIT = 1;
+    public static final int CLOCK_STYLE_IMAGES = 2;
     private int mClockStyle;
     private int mValueMin;
     private int mValueMax;
@@ -32,7 +33,8 @@ public class WtClock extends View {
     private int mDigitTextY;
     private Paint mDigitTextPaint;
 	private Drawable[] mDigitTextDrawables;
-
+	private int mDigitTextNum;
+	
     public WtClock(Context context) {
         this(context, null);
     }
@@ -53,43 +55,64 @@ public class WtClock extends View {
         mClockMinAngle = a.getInt(R.styleable.WtClock_clk_min_angle, 0);
         mClockMaxAngle = a.getInt(R.styleable.WtClock_clk_max_angle, 360);
         
-        mPointerDrawable = a.getDrawable(R.styleable.WtClock_pointer_drawable);        
-        mPointerCenterX = a.getInt(R.styleable.WtClock_pointer_center_x, -1);
-        mPointerCenterY = a.getInt(R.styleable.WtClock_pointer_center_y, -1);
-        if(mPointerDrawable != null){
-        	int dw = mPointerDrawable.getIntrinsicWidth();
-        	int dh = mPointerDrawable.getIntrinsicHeight();
-        	mPointerDrawable.setBounds(mPointerCenterX-dw/2, mPointerCenterY-dh/2, mPointerCenterX+dw/2, mPointerCenterY+dh/2);
-        }
-        
-        mDigitTextSize = a.getInt(R.styleable.WtClock_digitext_size, 0);
-        mDigitTextColor = a.getColor(R.styleable.WtClock_digitext_color, 0);
-        mDigitTextStrokeSize = a.getInt(R.styleable.WtClock_digitext_strokesize, 2);
-        mDigitTextX = a.getInt(R.styleable.WtClock_digitext_x, -1);
-        mDigitTextY = a.getInt(R.styleable.WtClock_digitext_y, -1);
-                
-        int digitDrawablesId = a.getResourceId(R.styleable.WtClock_digitext_drawables, -1);
-        if(digitDrawablesId > 0){
-        	Resources res = context.getResources();
-        	TypedArray ar = res.obtainTypedArray(digitDrawablesId);
-        	int len = ar.length();
-        	mDigitTextDrawables = new Drawable[len];
-        	for(int i=0;i<len;i++){
-        		int resId = ar.getResourceId(i, 0);
-        		if(resId > 0){
-        			mDigitTextDrawables[i] = res.getDrawable(resId);
-        		}
+        if(mClockStyle == CLOCK_STYLE_POINTER){
+        	mPointerDrawable = a.getDrawable(R.styleable.WtClock_pointer_drawable);        
+        	mPointerCenterX = a.getInt(R.styleable.WtClock_pointer_center_x, -1);
+        	mPointerCenterY = a.getInt(R.styleable.WtClock_pointer_center_y, -1);
+        	if(mPointerDrawable != null){
+        		int dw = mPointerDrawable.getIntrinsicWidth();
+        		int dh = mPointerDrawable.getIntrinsicHeight();
+        		mPointerDrawable.setBounds(mPointerCenterX-dw/2, mPointerCenterY-dh/2, mPointerCenterX+dw/2, mPointerCenterY+dh/2);
         	}
-        	ar.recycle();
-        }
-        
-        if(isDigitTextStyle()){
-        	mDigitTextPaint = new Paint();
-        	mDigitTextPaint.setAntiAlias(true);
-        	mDigitTextPaint.setTextSize(mDigitTextSize);
-        	mDigitTextPaint.setColor(mDigitTextColor);
-        	mDigitTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        	mDigitTextPaint.setStrokeWidth(mDigitTextStrokeSize);
+        }else if(mClockStyle == CLOCK_STYLE_DIGIT){        
+	        mDigitTextSize = a.getInt(R.styleable.WtClock_digitext_size, 0);
+	        mDigitTextColor = a.getColor(R.styleable.WtClock_digitext_color, 0);
+	        mDigitTextStrokeSize = a.getInt(R.styleable.WtClock_digitext_strokesize, 2);
+	        mDigitTextX = a.getInt(R.styleable.WtClock_digitext_x, -1);
+	        mDigitTextY = a.getInt(R.styleable.WtClock_digitext_y, -1);
+	                
+	        int digitDrawablesId = a.getResourceId(R.styleable.WtClock_digitext_drawables, -1);
+	        if(digitDrawablesId > 0){
+	        	Resources res = context.getResources();
+	        	TypedArray ar = res.obtainTypedArray(digitDrawablesId);
+	        	int len = ar.length();
+	        	mDigitTextDrawables = new Drawable[len];
+	        	for(int i=0;i<len;i++){
+	        		int resId = ar.getResourceId(i, 0);
+	        		if(resId > 0){
+	        			mDigitTextDrawables[i] = res.getDrawable(resId);
+	        		}
+	        	}
+	        	mDigitTextNum = len;
+	        	ar.recycle();
+	        }
+	        
+	        if(isDigitTextStyle()){
+	        	mDigitTextPaint = new Paint();
+	        	mDigitTextPaint.setAntiAlias(true);
+	        	mDigitTextPaint.setTextSize(mDigitTextSize);
+	        	mDigitTextPaint.setColor(mDigitTextColor);
+	        	mDigitTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+	        	mDigitTextPaint.setStrokeWidth(mDigitTextStrokeSize);
+	        }
+        }else if(mClockStyle == CLOCK_STYLE_IMAGES){ 
+        	mDigitTextX = a.getInt(R.styleable.WtClock_digitext_x, -1);
+	        mDigitTextY = a.getInt(R.styleable.WtClock_digitext_y, -1);
+	        int digitDrawablesId = a.getResourceId(R.styleable.WtClock_digitext_drawables, -1);
+	        if(digitDrawablesId > 0){
+	        	Resources res = context.getResources();
+	        	TypedArray ar = res.obtainTypedArray(digitDrawablesId);
+	        	int len = ar.length();
+	        	mDigitTextDrawables = new Drawable[len];
+	        	for(int i=0;i<len;i++){
+	        		int resId = ar.getResourceId(i, 0);
+	        		if(resId > 0){
+	        			mDigitTextDrawables[i] = res.getDrawable(resId);
+	        		}
+	        	}
+	        	mDigitTextNum = len;
+	        	ar.recycle();
+	        }
         }
         
         a.recycle();
@@ -113,7 +136,7 @@ public class WtClock extends View {
         	canvas.drawText(String.format("%02d", mValue), mDigitTextX, mDigitTextY, mDigitTextPaint);
         }else if(isDigitDrawableStyle()){
         	int offsetX = mDigitTextX;
-        	int value1 = mValue/10;
+        	int value1 = mValue/mDigitTextNum;
         	Drawable dr = mDigitTextDrawables[value1];
         	if(dr != null){
         		int w = dr.getIntrinsicWidth();
@@ -123,12 +146,25 @@ public class WtClock extends View {
         		offsetX += w;
         	}
         	
-        	int value2 = mValue%10;
+        	int value2 = mValue%mDigitTextNum;
         	dr = mDigitTextDrawables[value2];
         	if(dr != null){
         		int w = dr.getIntrinsicWidth();
         		int h = dr.getIntrinsicHeight();
         		dr.setBounds(offsetX, mDigitTextY, offsetX+w, mDigitTextY+h);
+        		dr.draw(canvas);
+        	}
+        }else if(iImaegsDrawableStyle()){
+        	int segment = (mValueMax-mValueMin+1)/mDigitTextNum;
+        	int index = mValue/segment;
+        	if(index >= mDigitTextNum){
+        		index = mDigitTextNum-1;
+        	}
+        	Drawable dr = mDigitTextDrawables[index];
+        	if(dr != null){
+        		int w = dr.getIntrinsicWidth();
+        		int h = dr.getIntrinsicHeight();
+        		dr.setBounds(mDigitTextX, mDigitTextY, mDigitTextX+w, mDigitTextY+h);
         		dr.draw(canvas);
         	}
         }
@@ -144,10 +180,14 @@ public class WtClock extends View {
     }
     
     private boolean isDigitTextStyle(){
-    	return(mClockStyle == CLOCK_STYLE_DIGIT && mDigitTextDrawables == null);
+    	return (mClockStyle == CLOCK_STYLE_DIGIT && mDigitTextDrawables == null);
     }
     
     private boolean isDigitDrawableStyle(){
-    	return(mClockStyle == CLOCK_STYLE_DIGIT && mDigitTextDrawables != null);
+    	return (mClockStyle == CLOCK_STYLE_DIGIT && mDigitTextDrawables != null);
+    }
+    
+    private boolean iImaegsDrawableStyle(){
+    	return (mClockStyle == CLOCK_STYLE_IMAGES && mDigitTextDrawables != null);
     }
 }

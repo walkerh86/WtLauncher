@@ -4,6 +4,7 @@
     <attr name="clkstyle">
         <enum name="pointer" value="0" />
         <enum name="digit" value="1" />
+        <enum name="images" value="2" />
     </attr>
     <declare-styleable name="WtClock">
         <attr name="clkstyle"/>
@@ -66,5 +67,13 @@
        <item>@drawable/wt_clock_10_digit_7</item>
        <item>@drawable/wt_clock_10_digit_8</item>
        <item>@drawable/wt_clock_10_digit_9</item>
+    </array> 
+    
+    <array name="wt_clock_8_batt_drawables">
+       <item>@drawable/wt_clock_8_batt_0</item>
+       <item>@drawable/wt_clock_8_batt_1</item>
+       <item>@drawable/wt_clock_8_batt_2</item>
+       <item>@drawable/wt_clock_8_batt_3</item>
+       <item>@drawable/wt_clock_8_batt_4</item>
     </array> 
 </resources>

@@ -1,10 +1,35 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    
+    <dimen name="activity_horizontal_margin">16.0dip</dimen>
+    <dimen name="activity_vertical_margin">16.0dip</dimen>
     <dimen name="thumnail_default_width">180.0dip</dimen>
     <dimen name="thumnail_default_height">180.0dip</dimen>
+    <dimen name="applist_padding_left">35.0dip</dimen>
+    <dimen name="onebox_text_small_margin">6.0dip</dimen>
+    <dimen name="onebox_content_font_size">14.0sp</dimen>
+    <dimen name="onebox_tempriture_big_img_size">64.0dip</dimen>
+    <dimen name="onebox_title_font_size">16.0sp</dimen>
+    <dimen name="onebox_tempriture_media_font_size">16.0sp</dimen>
+    <dimen name="weather_activity_horizontal_margin">20.0dip</dimen>
+    <dimen name="weather_activity_vertical_margin">20.0dip</dimen>
+    <dimen name="onebox_tempriture_small_img_size">28.0dip</dimen>
+    <dimen name="onebox_text_smaller_margin">4.0dip</dimen>
+    <dimen name="onebox_tempriture_small_font_size">12.0sp</dimen>
+    <dimen name="onebox_card_activity_width">250.0dip</dimen>
+    <dimen name="onebox_card_activity_height">120.0dip</dimen>
+    <dimen name="onebox_text_margin">8.0dip</dimen>
+    <dimen name="card_content_padding_rect_left">4.0dip</dimen>
+    <dimen name="card_content_padding_rect_right">4.0dip</dimen>
+    <dimen name="card_content_padding_rect_top">16.0dip</dimen>
+    <dimen name="switch_icon_size">68.0dip</dimen>
+    <dimen name="light_height">60.0dip</dimen>
+    <dimen name="roundlist_app_icon_size">80.0px</dimen>
+    <dimen name="note_padding_gap">10.0px</dimen>
+    <dimen name="note_view_width">300.0dip</dimen>
+    <dimen name="note_view_height">300.0dip</dimen>
+    <dimen name="fancy_list_height">240.0px</dimen>
+    <dimen name="fancy_item_size">180.0px</dimen>
+    <dimen name="fancy_item_spacing">-60.0px</dimen>
 
 </resources>

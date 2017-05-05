@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.text.format.Time;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -39,6 +40,9 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockBatt;
 	private SimpleDateFormat mDateFormat;
 	private TextView mClockStep;
+	private WtClock mClockHour2;
+	private WtClock mClockMin2;
+	private View mClockDial;
 	
 	public WtClockRoot(Context context) {
         this(context, null);
@@ -78,9 +82,29 @@ public class WtClockRoot extends FrameLayout {
     	}
     	clockItem = findViewById(R.id.clk_step);
     	if(clockItem != null){
-    		mClockStep = (TextView)clockItem;
-    		setupStepService();
-    	}     	
+    		mClockStep = (TextView)clockItem;    
+    		mClockStep.setText(String.valueOf(getCurrentSteps()));
+    	}
+    	
+    	clockItem = findViewById(R.id.clk_hour2);
+    	if(clockItem != null){
+    		mClockHour2 = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_min2);
+    	if(clockItem != null){
+    		mClockMin2 = (WtClock)clockItem;
+    	}
+    	
+    	clockItem = findViewById(R.id.clk_dial);
+    	if(clockItem != null){
+    		mClockDial = clockItem;
+    		mClockDial.setOnClickListener(new View.OnClickListener() {				
+				@Override
+				public void onClick(View arg0) {
+					startDialActivity();
+				}
+			});
+    	}
     }
     
     @Override
@@ -139,6 +163,13 @@ public class WtClockRoot extends FrameLayout {
         	mDate.setTime(System.currentTimeMillis());
         	mClockDate.setText(mDateFormat.format(mDate));
         }
+        
+        if(mClockHour2 != null){
+        	mClockHour2.setValue(h);
+        }
+        if(mClockMin2 != null){
+        	mClockMin2.setValue(m);
+        }
     }
     
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
@@ -174,55 +205,16 @@ public class WtClockRoot extends FrameLayout {
     		
     		mHandler.postDelayed(this, 1000);
     	}
-    };
+    };  
     
-    private void setupStepService(){
-    	if(mStepService != null){
-    		return;
-    	}
-    	Intent intent = new Intent("com.wt.health.action.ExtStepService");
-    	intent.setComponent(new ComponentName("com.wt.health","com.wt.health.ExtStepService"));
-    	getContext().bindService(intent, mStepConnection, Context.BIND_AUTO_CREATE);
+    private int getCurrentSteps(){
+    	return Settings.System.getInt(getContext().getContentResolver(), "today_steps", 0);
     }
     
-    private void stopStepService(){
-    	getContext().unbindService(mStepConnection);
+    private void startDialActivity(){
+    	Intent intent = new Intent();
+    	intent.setComponent(new ComponentName("com.android.dialer","com.wt.WtDialtactsActivity"));
+    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    	getContext().startActivity(intent);
     }
-    
-    private IExtStepService mStepService;
-    
-    private IExtStepServiceCB mStepServiceCB = new IExtStepServiceCB(){
-		@Override
-		public void stepsChanged(int value) {
-			Log.i(TAG, "stepsChanged value="+value);
-			mClockStep.setText(String.valueOf(value));
-		}
-
-		@Override
-		public IBinder asBinder() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-    };
-    
-    private ServiceConnection mStepConnection = new ServiceConnection(){
-
-		@Override
-		public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-			mStepService = IExtStepService.Stub.asInterface(arg1);
-			Log.i(TAG, "onServiceConnected mStepServiceCB="+mStepServiceCB);
-			try{
-				mStepService.registerExtCB(mStepServiceCB);
-			}catch(Exception e){
-				Log.i(TAG, "onServiceConnected registerExtCB e="+e);
-			}
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			Log.i(TAG, "onServiceDisconnected");
-			mStepService = null;
-		}
-    	
-    };
 }

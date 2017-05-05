@@ -40,7 +40,6 @@
     clock:value_max="100"
     clock:digitext_drawables="@array/wt_clock_8_batt_drawables"
     clock:digitext_x="130"
-    clock:digitext_y="215">
-</com.cj.clock.WtClock>
+    clock:digitext_y="215"/>
 
 </com.cj.clock.WtClockRoot>

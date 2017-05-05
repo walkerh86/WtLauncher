@@ -76,4 +76,18 @@
        <item>@drawable/wt_clock_8_batt_3</item>
        <item>@drawable/wt_clock_8_batt_4</item>
     </array> 
+    
+    <array name="wt_clock_9_batt_drawables">
+       <item>@drawable/wt_clock_9_batt_1</item>
+       <item>@drawable/wt_clock_9_batt_2</item>
+       <item>@drawable/wt_clock_9_batt_3</item>
+       <item>@drawable/wt_clock_9_batt_4</item>
+       <item>@drawable/wt_clock_9_batt_5</item>
+    </array> 
+    
+    <array name="wt_clock_10_batt_drawables">
+       <item>@drawable/wt_clock_10_batt_1</item>
+       <item>@drawable/wt_clock_10_batt_2</item>
+       <item>@drawable/wt_clock_10_batt_3</item>
+    </array> 
 </resources>

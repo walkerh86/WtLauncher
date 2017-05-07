@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="menu_style_grid">宫格</string>
+    <string name="menu_style_list">列表</string>
+    
     <string name="options">选项</string>
     <string name="close">清除</string>
     <string name="open">开启</string>

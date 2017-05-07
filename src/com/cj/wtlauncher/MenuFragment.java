@@ -390,7 +390,7 @@ public class MenuFragment extends Fragment {
 				int deltaX = Math.abs(childCenterX-centerX);
 				float scaleX = 1.0f;
 				if(mMyOrientation == VERTICAL){
-					scaleX = 1.6f-1.2f*deltaX/centerX;
+					scaleX = 1.0f-0.6f*deltaX/centerX;
 				}else if(mMyOrientation == HORIZONTAL  && deltaX < childWidth){
 					scaleX = 1.0f+0.6f*(childWidth-deltaX)/childWidth;
 				}
@@ -550,6 +550,7 @@ public class MenuFragment extends Fragment {
 		@Override
 		public void onItemClick(View view) {
 			AppInfo appInfo = (AppInfo)view.getTag();
+			Log.i("hcj", "appInfo.mIntent="+appInfo.mIntent);
 			if(appInfo.mIntent == null){
 				return;
 			}
@@ -557,7 +558,12 @@ public class MenuFragment extends Fragment {
 				mMyLinearLayoutManager.adjustItemViewToCenter(mRecyclerView,view);
 				mLaunchCenter = true;
 			}else{
-				getActivity().startActivity(appInfo.mIntent);
+				if(appInfo.mIntent.getComponent().getClassName().equals("com.cj.wtlauncher.StyleSettingActivity")){
+					Intent intent = new Intent(getActivity(),StyleSettingActivity.class);
+					getActivity().startActivity(intent);
+				}else{
+					getActivity().startActivity(appInfo.mIntent);
+				}
 			}
 		}			
 	};

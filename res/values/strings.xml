@@ -4,5 +4,8 @@
     <string name="app_name">WtLauncher</string>
     <string name="today_steps">今日步数</string>
     <string name="empty_notifications">无提醒信息</string>
+    
+    <string name="menu_style_grid">Grid</string>
+    <string name="menu_style_list">List</string>
 
 </resources>

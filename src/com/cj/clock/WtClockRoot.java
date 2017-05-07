@@ -24,8 +24,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cj.wtlauncher.R;
-import com.wt.health.IExtStepService;
-import com.wt.health.IExtStepServiceCB;
 
 public class WtClockRoot extends FrameLayout {
 	private static final String TAG = "hcj.WtClockRoot";

@@ -18,7 +18,7 @@
     clock:value_max="11"
     clock:pointer_drawable="@drawable/wt_clock_1_other"
     clock:pointer_center_x="43"
-    clock:pointer_center_y="47">
+    clock:pointer_center_y="42">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock
@@ -30,10 +30,10 @@
     android:layout_marginTop="120px" 
     clock:clkstyle="pointer"
     clock:value_min="0"
-    clock:value_max="11"
+    clock:value_max="59"
     clock:pointer_drawable="@drawable/wt_clock_1_other"
-    clock:pointer_center_x="52"
-    clock:pointer_center_y="43">
+    clock:pointer_center_x="50"
+    clock:pointer_center_y="42">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock
@@ -45,7 +45,7 @@
     clock:value_max="11"
     clock:pointer_drawable="@drawable/wt_clock_1_hour"
     clock:pointer_center_x="160"
-    clock:pointer_center_y="160">
+    clock:pointer_center_y="161">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock
@@ -69,7 +69,7 @@
     clock:value_max="59"
     clock:pointer_drawable="@drawable/wt_clock_1_sec"
     clock:pointer_center_x="160"
-    clock:pointer_center_y="160">
+    clock:pointer_center_y="161">
 </com.cj.clock.WtClock>
 
 </com.cj.clock.WtClockRoot>

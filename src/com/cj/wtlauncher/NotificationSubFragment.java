@@ -73,11 +73,29 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 	}
 
 	private void loadAndSetActions(Notification notification){
-		///////
+		loadAndSetContentIntent(this.mOpen, notification);
 	}
 
-	private void loadAndSetActions(Button button, final NotificationCompat.Action action){
-		///////
+	private void loadAndSetActions(Button paramButton, final NotificationCompat.Action paramAction){
+		if (paramButton == null){
+			return;
+		}
+
+		paramButton.setText(paramAction.title);
+		paramButton.setTag("VISIBLE");
+		paramButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View paramAnonymousView){
+				try{
+					Log.d(NotificationSubFragment.TAG, "Send actionIntent");
+					if (paramAction.actionIntent != null) {
+						paramAction.actionIntent.send();
+					}
+					return;
+				}catch (PendingIntent.CanceledException e){
+					Log.w(TAG, "loadAndSetActions e="+e);
+				}
+			}
+		});
 	}
 
 	private void loadAndSetBackground(Notification notification, View view, int imgIdx){
@@ -178,6 +196,7 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 		if(mSbn != null){
 			postTime = mSbn.getPostTime();
 		}
+		Log.i(TAG,"loadAndSetTime mSbn="+mSbn+",postTime="+postTime);
 		if(postTime != 0L){
 			if (NotificationHelper.getShowChronometer(NotificationCompat.getExtras(notification))) {
 				if (this.mChronometer != null){
@@ -187,6 +206,8 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 				}
 				mTime.setVisibility(0);
 				mTime.setTime(postTime);
+			}else{
+				Log.i(TAG,"loadAndSetTime getShowChronometer false");
 			}
 		}else{
 			mChronometer.setVisibility(8);
@@ -312,7 +333,9 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 	public void refreshContent(){
 		loadAndSetKey();
 
+		Log.i(TAG,"refreshContent");
 		if ((this.mRootView == null) || (this.mSbn == null)){
+			Log.i(TAG,"refreshContent null");
 			return;
 		}
 		Notification localNotification = this.mSbn.getNotification();

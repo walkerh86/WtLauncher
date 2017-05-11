@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.text.DateFormat;
 
 public class DateTimeView
   extends TextView
@@ -121,5 +122,10 @@ public class DateTimeView
   
   void update()
   	{
+  		if(mTime == null){
+			return;
+  		}
+  		DateFormat timeFormat = getTimeFormat();
+		setText(timeFormat.format(mTime));
   	}
 }

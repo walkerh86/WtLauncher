@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -78,6 +79,7 @@ public class NotificationScrollView extends ScrollView implements SwipeHelper.Ca
     super.onFinishInflate();
     setScrollbarFadingEnabled(true);
     this.mLayout = ((FrameLayout)findViewById(R.id.card_background));
+	Log.i("hcj.NotificationScrollView","onFinishInflate mLayout="+mLayout);
   }
   
   public boolean onInterceptTouchEvent(MotionEvent paramMotionEvent)
@@ -88,6 +90,10 @@ public class NotificationScrollView extends ScrollView implements SwipeHelper.Ca
   protected void onSizeChanged(int paramInt1, int paramInt2, int paramInt3, int paramInt4)
   {
     super.onSizeChanged(paramInt1, paramInt2, paramInt3, paramInt4);
+	Log.i("hcj.NotificationScrollView","onSizeChanged mLayout="+mLayout);
+	if(mLayout == null){
+		return;
+	}
     LayoutTransition localLayoutTransition = this.mLayout.getLayoutTransition();
     if ((localLayoutTransition != null) && (localLayoutTransition.isRunning())) {
       return;

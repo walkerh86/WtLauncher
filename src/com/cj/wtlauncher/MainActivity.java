@@ -44,6 +44,8 @@ public class MainActivity extends FragmentActivity{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.SCREEN_OFF");
 		registerReceiver(mScreenUpdateReceiver, filter);
+
+		startService(new Intent(this, NotificationService.class));
 	}
 
 	@Override

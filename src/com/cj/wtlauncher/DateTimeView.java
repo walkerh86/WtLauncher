@@ -76,24 +76,23 @@ public class DateTimeView
     return android.text.format.DateFormat.getTimeFormat(getContext());
   }
   
-  private void registerReceivers()
-  {
-    Context localContext = getContext();
-    Object localObject = new IntentFilter();
-    ((IntentFilter)localObject).addAction("android.intent.action.TIME_TICK");
-    ((IntentFilter)localObject).addAction("android.intent.action.TIME_SET");
-    ((IntentFilter)localObject).addAction("android.intent.action.CONFIGURATION_CHANGED");
-    ((IntentFilter)localObject).addAction("android.intent.action.TIMEZONE_CHANGED");
-    localContext.registerReceiver(this.mBroadcastReceiver, (IntentFilter)localObject);
-    localObject = Settings.System.getUriFor("date_format");
-    localContext.getContentResolver().registerContentObserver((Uri)localObject, true, this.mContentObserver);
+  private void registerReceivers(){  
+    IntentFilter filter = new IntentFilter();
+    filter.addAction("android.intent.action.TIME_TICK");
+    filter.addAction("android.intent.action.TIME_SET");
+    filter.addAction("android.intent.action.CONFIGURATION_CHANGED");
+    filter.addAction("android.intent.action.TIMEZONE_CHANGED");
+    Context context = getContext();
+    context.registerReceiver(this.mBroadcastReceiver, filter);
+    //localObject = Settings.System.getUriFor("date_format");
+    context.getContentResolver().registerContentObserver(Settings.System.getUriFor("date_format"), true, this.mContentObserver);
   }
   
   private void unregisterReceivers()
   {
-    Context localContext = getContext();
-    localContext.unregisterReceiver(this.mBroadcastReceiver);
-    localContext.getContentResolver().unregisterContentObserver(this.mContentObserver);
+    Context context = getContext();
+    context.unregisterReceiver(this.mBroadcastReceiver);
+    context.getContentResolver().unregisterContentObserver(this.mContentObserver);
   }
   
   protected void onAttachedToWindow()

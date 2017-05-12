@@ -73,6 +73,9 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 	}
 
 	private void loadAndSetActions(Notification notification){
+		if (!NotificationHelper.filterNotification(notification)){
+			mCanDismiss = true;
+		}
 		loadAndSetContentIntent(this.mOpen, notification);
 	}
 
@@ -132,14 +135,19 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 				try{
 					Log.i(TAG,"loadAndSetContentIntent contentIntent.send");
 					notification.contentIntent.send();
-					if ((notification.flags & 0x10) != 16) {
+					if ((notification.flags & Notification.FLAG_AUTO_CANCEL) != Notification.FLAG_AUTO_CANCEL) {
+						Log.i(TAG,"open click, no FLAG_AUTO_CANCEL return");
 						return;
 					}
-					if ((notification.flags & 0x40) == 0){
+					if ((notification.flags & Notification.FLAG_FOREGROUND_SERVICE) == 0){
 						NotificationHelper.filterNotification(notification);
 						if (NotificationSubFragment.this.mCanDismiss){
 							NotificationSubFragment.this.requestDismiss();
+						}else{
+							
 						}
+					}else{
+						Log.i(TAG,"open click, FLAG_FOREGROUND_SERVICE return");
 					}
 				}catch (PendingIntent.CanceledException e){
 					Log.i(TAG,"loadAndSetContentIntent e="+e);
@@ -204,11 +212,9 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 					mChronometer.setBase(SystemClock.elapsedRealtime() - System.currentTimeMillis() + postTime);
 					mChronometer.start();
 				}
-				mTime.setVisibility(0);
-				mTime.setTime(postTime);
-			}else{
-				Log.i(TAG,"loadAndSetTime getShowChronometer false");
 			}
+			mTime.setVisibility(0);
+			mTime.setTime(postTime);
 		}else{
 			mChronometer.setVisibility(8);
 			mTime.setVisibility(4);
@@ -273,7 +279,7 @@ public class NotificationSubFragment extends Fragment implements NotificationScr
 			 if (this.mSbn.getNotification().deleteIntent != null) {
 				this.mSbn.getNotification().deleteIntent.send();
 			}
-			this.mRootView.setVisibility(8);
+			this.mRootView.setVisibility(View.GONE);
 		}catch(PendingIntent.CanceledException e){
 			Log.i(TAG,"handleSwipe e="+e);
 		}

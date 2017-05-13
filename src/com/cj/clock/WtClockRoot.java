@@ -22,6 +22,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import com.cj.qs.QSBluetoothTile;
+import com.cj.qs.QSWifiTile;
 
 import com.cj.wtlauncher.R;
 
@@ -41,6 +43,10 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockHour2;
 	private WtClock mClockMin2;
 	private View mClockDial;
+	private WtClock mClockBt;
+	private WtClock mClockWifi;
+	private QSBluetoothTile mQSBluetoothTile;
+	private QSWifiTile mQSWifiTile;
 	
 	public WtClockRoot(Context context) {
         this(context, null);
@@ -103,6 +109,14 @@ public class WtClockRoot extends FrameLayout {
 				}
 			});
     	}
+    	clockItem = findViewById(R.id.clk_bt);
+    	if(clockItem != null){
+    		mClockBt = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_wifi);
+    	if(clockItem != null){
+    		mClockWifi = (WtClock)clockItem;
+    	}
     }
     
     @Override
@@ -116,7 +130,29 @@ public class WtClockRoot extends FrameLayout {
             filter.addAction(Intent.ACTION_TIME_TICK);
             filter.addAction(Intent.ACTION_TIME_CHANGED);
             filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-            filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+		if(mClockBatt != null){
+            		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+		}
+		if(mClockBt != null){
+			mQSBluetoothTile = new QSBluetoothTile(getContext(),null,null);
+			mQSBluetoothTile.setOnStateChangedListener(new QSBluetoothTile.OnStateChangedListener(){
+				@Override
+				public void onStateChanged(boolean enabled){
+					mClockBt.setValue(enabled ? 1 : 0);
+				}
+			});
+			mClockBt.setValue(mQSBluetoothTile.isEnabled() ? 1 : 0);
+		}
+		if(mClockWifi != null){
+			mQSWifiTile = new QSWifiTile(getContext(),null,null);
+			mQSWifiTile.setOnStateChangedListener(new QSWifiTile.OnStateChangedListener(){
+				@Override
+				public void onStateChanged(boolean enabled){
+					mClockWifi.setValue(enabled ? 1 : 0);
+				}
+			});
+			mClockWifi.setValue(mQSWifiTile.isEnabled() ? 1 : 0);
+		}
 
             getContext().registerReceiverAsUser(mIntentReceiver,
                     android.os.Process.myUserHandle(), filter, null, mHandler);

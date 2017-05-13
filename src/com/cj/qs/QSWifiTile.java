@@ -36,8 +36,10 @@ public class QSWifiTile extends QSTile{
 		mStatusView = statusView;
 		
 		mTileView = tileView;
-		tileView.setOnClickListener(mClickListener);
-		tileView.setOnLongClickListener(mLongClickListener);
+		if(tileView != null){
+			tileView.setOnClickListener(mClickListener);
+			tileView.setOnLongClickListener(mLongClickListener);
+		}
 		updateView();
 
 		
@@ -53,12 +55,16 @@ public class QSWifiTile extends QSTile{
 	}
 
 	private void updateView(){
-		mTileView.setImageResource(mSignalState.enabled ? R.drawable.smart_watch_wifi_on : R.drawable.smart_watch_wifi_off);
-		if(mSignalState.connected){
-			mStatusView.setImageResource(WIFI_SIGNAL_STRENGTH_FULL[mSignalState.level]);
-			mStatusView.setVisibility(View.VISIBLE);
-		}else{
-			mStatusView.setVisibility(View.GONE);
+		if(mTileView != null){
+			mTileView.setImageResource(mSignalState.enabled ? R.drawable.smart_watch_wifi_on : R.drawable.smart_watch_wifi_off);
+		}
+		if(mStatusView != null){
+			if(mSignalState.connected){
+				mStatusView.setImageResource(WIFI_SIGNAL_STRENGTH_FULL[mSignalState.level]);
+				mStatusView.setVisibility(View.VISIBLE);
+			}else{
+				mStatusView.setVisibility(View.GONE);
+			}
 		}
 	}
 	
@@ -77,6 +83,9 @@ public class QSWifiTile extends QSTile{
 				mSignalState.level = WifiManager.calculateSignalLevel(mSignalState.rssi, WIFI_SIGNAL_STRENGTH_FULL.length);
 			}
 			updateView();
+			if(mOnStateChangedListener != null){
+				mOnStateChangedListener.onStateChanged(mSignalState.enabled);
+			}
 		}
 	};
 	
@@ -111,4 +120,13 @@ public class QSWifiTile extends QSTile{
 		 intent.setComponent(new ComponentName("com.android.settings","com.android.settings.wifi.WifiSettings"));
 		 mContext.startActivity(intent);
 	 }
+
+	public interface OnStateChangedListener{
+		void onStateChanged(boolean enabled);
+	}
+
+	private OnStateChangedListener mOnStateChangedListener;
+	public void setOnStateChangedListener(OnStateChangedListener listener){
+		mOnStateChangedListener = listener;
+	}
 }

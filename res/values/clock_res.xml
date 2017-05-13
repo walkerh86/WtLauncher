@@ -84,10 +84,28 @@
        <item>@drawable/wt_clock_9_batt_4</item>
        <item>@drawable/wt_clock_9_batt_5</item>
     </array> 
+
+    <array name="wt_clock_9_bt_drawables">
+       <item>@drawable/wt_clock_9_bt</item>
+       <item>@drawable/wt_clock_9_bt_on</item>
+    </array> 
+
+    <array name="wt_clock_9_wifi_drawables">
+       <item>@drawable/wt_clock_9_wifi</item>
+       <item>@drawable/wt_clock_9_wifi_on</item>
+    </array> 
     
     <array name="wt_clock_10_batt_drawables">
        <item>@drawable/wt_clock_10_batt_1</item>
        <item>@drawable/wt_clock_10_batt_2</item>
        <item>@drawable/wt_clock_10_batt_3</item>
+       <item>@drawable/wt_clock_10_batt_4</item>
+       <item>@drawable/wt_clock_10_batt_5</item>
     </array> 
+
+    <array name="wt_clock_10_bt_drawables">
+       <item>@drawable/wt_clock_10_bt</item>
+       <item>@drawable/wt_clock_10_bt_on</item>
+    </array> 
+    
 </resources>

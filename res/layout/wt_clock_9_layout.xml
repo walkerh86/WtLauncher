@@ -48,21 +48,31 @@
     android:textSize="26sp"
     android:textColor="#ffffffff"/>
 
-<ImageView 
+<com.cj.clock.WtClock
     android:id="@+id/clk_bt"
     android:layout_width="37px"
     android:layout_height="37px"
     android:layout_marginTop="255px"
     android:layout_marginLeft="50px"
-    android:src="@drawable/wt_clock_9_bt"/>
+    clock:clkstyle="images"
+    clock:value_min="0"
+    clock:value_max="1"
+    clock:digitext_drawables="@array/wt_clock_9_bt_drawables"
+    clock:digitext_x="0"
+    clock:digitext_y="0"/>
 
-<ImageView 
+<com.cj.clock.WtClock
     android:id="@+id/clk_wifi"
     android:layout_width="37px"
     android:layout_height="37px"
     android:layout_marginTop="255px"
     android:layout_marginLeft="142px"
-    android:src="@drawable/wt_clock_9_wifi"/>
+    clock:clkstyle="images"
+    clock:value_min="0"
+    clock:value_max="1"
+    clock:digitext_drawables="@array/wt_clock_9_wifi_drawables"
+    clock:digitext_x="0"
+    clock:digitext_y="0"/>
 
 <com.cj.clock.WtClock
     android:id="@+id/clk_batt"

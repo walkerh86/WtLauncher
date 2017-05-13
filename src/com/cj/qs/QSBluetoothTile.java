@@ -31,8 +31,10 @@ public class QSBluetoothTile extends QSTile{
 		mStatusView= statusView;
 		
 		mTileView = tileView;
-		tileView.setOnClickListener(mClickListener);
-		tileView.setOnLongClickListener(mLongClickListener);
+		if(tileView != null){
+			tileView.setOnClickListener(mClickListener);
+			tileView.setOnLongClickListener(mLongClickListener);
+		}
 		updateView();		
 		
 		final IntentFilter filter = new IntentFilter();
@@ -49,12 +51,16 @@ public class QSBluetoothTile extends QSTile{
 	private void updateView(){
 		mSignalState.connected = isConnected();
 		android.util.Log.i("hcj","Bt, updateView mSignalState.connected="+mSignalState.connected);
-		mTileView.setImageResource(mSignalState.enabled ? R.drawable.smart_watch_bt_on : R.drawable.smart_watch_bt_off);
-		if(mSignalState.enabled){
-			//mStatusView.setImageResource(R.drawable.stat_sys_bluetooth);
-			mStatusView.setVisibility(View.VISIBLE);
-		}else{
-			mStatusView.setVisibility(View.GONE);
+		if(mTileView != null){
+			mTileView.setImageResource(mSignalState.enabled ? R.drawable.smart_watch_bt_on : R.drawable.smart_watch_bt_off);
+		}
+		if(mStatusView != null){
+			if(mSignalState.enabled){
+				//mStatusView.setImageResource(R.drawable.stat_sys_bluetooth);
+				mStatusView.setVisibility(View.VISIBLE);
+			}else{
+				mStatusView.setVisibility(View.GONE);
+			}
 		}
 	}
 	
@@ -74,6 +80,9 @@ public class QSBluetoothTile extends QSTile{
 				
 			}
 			updateView();
+			if(mOnStateChangedListener != null){
+				mOnStateChangedListener.onStateChanged(mSignalState.enabled);
+			}
 		}
 	};
 	
@@ -121,4 +130,13 @@ public class QSBluetoothTile extends QSTile{
         return mAdapter != null
                 && mAdapter.getConnectionState() == BluetoothAdapter.STATE_CONNECTING;
     }	 
+
+	public interface OnStateChangedListener{
+		void onStateChanged(boolean enabled);
+	}
+
+	private OnStateChangedListener mOnStateChangedListener;
+	public void setOnStateChangedListener(OnStateChangedListener listener){
+		mOnStateChangedListener = listener;
+	}
 }

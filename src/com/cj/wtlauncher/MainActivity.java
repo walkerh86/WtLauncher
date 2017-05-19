@@ -103,8 +103,12 @@ public class MainActivity extends FragmentActivity{
 				final int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,BatteryManager.BATTERY_STATUS_UNKNOWN);
 				boolean charging = status == BatteryManager.BATTERY_STATUS_FULL || status == BatteryManager.BATTERY_STATUS_CHARGING;
 				if(charging){
-					mBatteryLevel = (int)(100f* intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)/ intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100));
-					showBatteryDialog();
+					if(!mBattDialogShowed){
+						mBatteryLevel = (int)(100f* intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)/ intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100));
+						showBatteryDialog();
+					}
+				}else{
+					mBattDialogShowed = false;
 				}
 			}
 		}
@@ -121,6 +125,7 @@ public class MainActivity extends FragmentActivity{
 		R.drawable.battery_anim_4,
 		R.drawable.battery_anim_5,
 	};
+	private boolean mBattDialogShowed;
 	private AlertDialog mBatteryDialog;
 	private int mBatteryLevel;
 	private ImageView mIvBattery;
@@ -149,6 +154,8 @@ public class MainActivity extends FragmentActivity{
 		mIvBattery.setImageResource(battDrawable);
 		mBatteryDialog.show();
 		mHandler.postDelayed(hideBatteryDialogRunnable, 2000L);
+		
+		mBattDialogShowed = true;
 	}
 
 	private Runnable hideBatteryDialogRunnable = new Runnable(){

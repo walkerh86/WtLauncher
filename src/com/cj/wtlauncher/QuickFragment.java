@@ -116,7 +116,8 @@ public class QuickFragment extends Fragment{
 	private void startWeatherActivity(){
 		try{
 			Intent intent = new Intent();
-			intent.setComponent(new ComponentName("com.android.watchweather","com.android.watchweather.WeatherActivity"));
+			//intent.setComponent(new ComponentName("com.android.watchweather","com.android.watchweather.WeatherActivity"));
+			intent.setComponent(new ComponentName("com.cwwpy.dxixu.kodgu","com.sinozo.scweather.main.WelcomeActivity"));
 			this.startActivity(intent);
 		}catch(Exception e){
 		}

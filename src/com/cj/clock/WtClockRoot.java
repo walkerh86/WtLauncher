@@ -10,11 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.ContentObserver;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.format.Time;
 import android.util.AttributeSet;
@@ -30,8 +33,7 @@ import com.cj.wtlauncher.R;
 public class WtClockRoot extends FrameLayout {
 	private static final String TAG = "hcj.WtClockRoot";
 	private Time mCalendar;
-	private Date mDate;
-	private final Handler mHandler = new Handler();
+	private Date mDate;	
 	private boolean mAttached;
 	private WtClock mClockHour;
 	private WtClock mClockMin;
@@ -47,6 +49,21 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockWifi;
 	private QSBluetoothTile mQSBluetoothTile;
 	private QSWifiTile mQSWifiTile;
+	private final Handler mHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			switch(msg.what){
+				case MSG_UPDATE_STEPS:
+					int steps = Settings.System.getInt(getContext().getContentResolver(), "today_steps",0);
+					//Log.i("hcjhcj", "handleMessage step="+steps);
+					mClockStep.setText(String.valueOf(steps));
+					break;
+				default:
+					break;
+			}
+		}
+	};
+	private static final int MSG_UPDATE_STEPS = 0;
 	
 	public WtClockRoot(Context context) {
         this(context, null);
@@ -130,32 +147,43 @@ public class WtClockRoot extends FrameLayout {
             filter.addAction(Intent.ACTION_TIME_TICK);
             filter.addAction(Intent.ACTION_TIME_CHANGED);
             filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-		if(mClockBatt != null){
-            		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-		}
-		if(mClockBt != null){
-			mQSBluetoothTile = new QSBluetoothTile(getContext(),null,null);
-			mQSBluetoothTile.setOnStateChangedListener(new QSBluetoothTile.OnStateChangedListener(){
-				@Override
-				public void onStateChanged(boolean enabled){
-					mClockBt.setValue(enabled ? 1 : 0);
-				}
-			});
-			mClockBt.setValue(mQSBluetoothTile.isEnabled() ? 1 : 0);
-		}
-		if(mClockWifi != null){
-			mQSWifiTile = new QSWifiTile(getContext(),null,null);
-			mQSWifiTile.setOnStateChangedListener(new QSWifiTile.OnStateChangedListener(){
-				@Override
-				public void onStateChanged(boolean enabled){
-					mClockWifi.setValue(enabled ? 1 : 0);
-				}
-			});
-			mClockWifi.setValue(mQSWifiTile.isEnabled() ? 1 : 0);
-		}
-
-            getContext().registerReceiverAsUser(mIntentReceiver,
-                    android.os.Process.myUserHandle(), filter, null, mHandler);
+            if(mClockBatt != null){
+            	filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            }
+			getContext().registerReceiverAsUser(mIntentReceiver,android.os.Process.myUserHandle(), filter, null, mHandler);                
+		
+			if(mClockBt != null){
+				mQSBluetoothTile = new QSBluetoothTile(getContext(),null,null);
+				mQSBluetoothTile.setOnStateChangedListener(new QSBluetoothTile.OnStateChangedListener(){
+					@Override
+					public void onStateChanged(boolean enabled){
+						mClockBt.setValue(enabled ? 1 : 0);
+					}
+				});
+				mClockBt.setValue(mQSBluetoothTile.isEnabled() ? 1 : 0);
+			}
+			if(mClockWifi != null){
+				mQSWifiTile = new QSWifiTile(getContext(),null,null);
+				mQSWifiTile.setOnStateChangedListener(new QSWifiTile.OnStateChangedListener(){
+					@Override
+					public void onStateChanged(boolean enabled){
+						mClockWifi.setValue(enabled ? 1 : 0);
+					}
+				});
+				mClockWifi.setValue(mQSWifiTile.isEnabled() ? 1 : 0);
+			}
+			
+			if(mClockStep != null){
+				getContext().getContentResolver().registerContentObserver(
+						Settings.System.getUriFor("today_steps"), true, 
+						new ContentObserver(mHandler){
+							@Override
+							public void onChange(boolean selfChange) {
+								mHandler.sendEmptyMessage(MSG_UPDATE_STEPS);
+							}
+						}, 
+						UserHandle.USER_ALL);
+			}
             
             mHandler.postDelayed(mSecRunnable, 1000);
         }

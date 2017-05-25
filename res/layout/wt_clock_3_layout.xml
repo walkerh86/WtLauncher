@@ -53,8 +53,9 @@
     clock:pointer_drawable="@drawable/wt_clock_3_pointer_batt"
     clock:pointer_center_x="160"
     clock:pointer_center_y="30"
-    clock:clk_min_angle="238"
-    clock:clk_max_angle="122">
+    clock:clk_min_angle="122"
+    clock:clk_max_angle="238"
+    clock:clk_reverse="true">
 </com.cj.clock.WtClock>
 
 </com.cj.clock.WtClockRoot>

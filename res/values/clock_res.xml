@@ -16,6 +16,7 @@
         <attr name="pointer_center_y" format="integer"/>
         <attr name="clk_min_angle" format="integer"/>
         <attr name="clk_max_angle" format="integer"/>
+        <attr name="clk_reverse" format="boolean"/>
         
         <attr name="digitext_drawables" format="reference"/> 
         <attr name="digitext_size" format="integer"/>      

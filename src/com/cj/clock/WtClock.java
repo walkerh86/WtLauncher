@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.cj.wtlauncher.R;
@@ -25,6 +26,7 @@ public class WtClock extends View {
     private int mPointerCenterY;
     private int mClockMinAngle;
     private int mClockMaxAngle;
+    private boolean mClockReverse;//non-clockwise
     
     private int mDigitTextSize;
     private int mDigitTextColor;
@@ -54,6 +56,7 @@ public class WtClock extends View {
         mValue = mValueMin;
         mClockMinAngle = a.getInt(R.styleable.WtClock_clk_min_angle, 0);
         mClockMaxAngle = a.getInt(R.styleable.WtClock_clk_max_angle, 360);
+        mClockReverse = a.getBoolean(R.styleable.WtClock_clk_reverse, false);
         
         if(mClockStyle == CLOCK_STYLE_POINTER){
         	mPointerDrawable = a.getDrawable(R.styleable.WtClock_pointer_drawable);        
@@ -125,10 +128,8 @@ public class WtClock extends View {
         if(isPointerStyle()){
         	canvas.save();
         	int fullAngle = (mClockMaxAngle > mClockMinAngle) ? (mClockMaxAngle-mClockMinAngle) : (360-mClockMinAngle+mClockMaxAngle);
-        	float currAngle = mClockMinAngle + (float)mValue/ (mValueMax-mValueMin+1) * fullAngle;
-        	if(mClockMaxAngle < mClockMinAngle){
-        		currAngle = currAngle%360;
-        	}
+        	float deltaAngle = (float)mValue/ (mValueMax-mValueMin+1) * fullAngle;
+        	float currAngle = mClockReverse ? (mClockMaxAngle - deltaAngle) : (mClockMinAngle + deltaAngle);
             canvas.rotate(currAngle, mPointerCenterX, mPointerCenterY);
         	mPointerDrawable.draw(canvas);
         	canvas.restore();

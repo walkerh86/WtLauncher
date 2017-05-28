@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.cj.clock.WtClockRoot 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:clock="http://schemas.android.com/apk/res/com.cj.wtlauncher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wt_clock_11_dial">
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4px"
+    android:layout_marginRight="4px"
+    android:layout_marginTop="8px">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"> 
+<com.cj.clock.WtClock
+    android:id="@+id/clk_mobile_signal"
+    android:layout_width="56px"
+    android:layout_height="18px"
+    clock:clkstyle="images"
+    clock:value_min="0"
+    clock:value_max="5"
+    clock:digitext_drawables="@array/wt_clock_11_mbsignal_drawables"
+    clock:digitext_x="0"
+    clock:digitext_y="0"/>
+<ImageView
+    android:id="@+id/clk_mobile_type"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/wt_clock_11_mb_3g"/>
+<ImageView
+    android:id="@+id/clk_mobile_data"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/wt_clock_11_mb_data_on"/>  
+<ImageView
+    android:id="@+id/clk_wifi_on"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/wt_clock_11_wifi_on"/>       
+</LinearLayout>       
+<com.cj.clock.WtClock
+    android:id="@+id/clk_batt"
+    android:layout_width="56px"
+    android:layout_height="18px"    
+    android:layout_gravity="right"
+    clock:clkstyle="images"
+    clock:value_min="0"
+    clock:value_max="100"
+    clock:digitext_drawables="@array/wt_clock_11_batt_drawables"
+    clock:digitext_x="0"
+    clock:digitext_y="0"/>
+</FrameLayout>
+    
+<com.cj.clock.WtClock
+    android:id="@+id/clk_hour"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="digit"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:digitext_drawables="@array/wt_clock_11_digit_drawables"
+    clock:digitext_x="50"
+    clock:digitext_y="66">
+</com.cj.clock.WtClock>
+
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="140px"
+    android:layout_marginTop="66px"
+    android:src="@drawable/wt_clock_11_digit_sep"/>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_min"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    clock:clkstyle="digit"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:digitext_drawables="@array/wt_clock_11_digit_drawables"
+    clock:digitext_x="186"
+    clock:digitext_y="66">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtDate
+    android:id="@+id/clk_date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:layout_marginLeft="60px"
+    android:layout_marginTop="160px"
+    clock:date_format="yyyy/MM/dd  E"
+    android:textSize="24sp"
+    android:textColor="#ffffffff"/>
+
+<ImageView
+    android:id="@+id/clk_dial"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="0px"
+    android:layout_marginLeft="14px"
+    android:src="@drawable/wt_clock_11_call" />
+
+<ImageView
+    android:id="@+id/clk_message"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|right"
+    android:layout_marginBottom="0px"
+    android:layout_marginRight="14px"
+    android:src="@drawable/wt_clock_11_message" />
+        
+</com.cj.clock.WtClockRoot>

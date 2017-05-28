@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.cj.qs.QSBluetoothTile;
 import com.cj.qs.QSWifiTile;
@@ -45,8 +46,10 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockHour2;
 	private WtClock mClockMin2;
 	private View mClockDial;
+	private View mClockMessage;
 	private WtClock mClockBt;
 	private WtClock mClockWifi;
+	private ImageView mClockWifiOn;
 	private QSBluetoothTile mQSBluetoothTile;
 	private QSWifiTile mQSWifiTile;
 	private final Handler mHandler = new Handler(){
@@ -126,6 +129,16 @@ public class WtClockRoot extends FrameLayout {
 				}
 			});
     	}
+    	clockItem = findViewById(R.id.clk_message);
+    	if(clockItem != null){
+    		mClockMessage = clockItem;
+    		mClockMessage.setOnClickListener(new View.OnClickListener() {				
+				@Override
+				public void onClick(View arg0) {
+					startMessageActivity();
+				}
+			});
+    	}
     	clockItem = findViewById(R.id.clk_bt);
     	if(clockItem != null){
     		mClockBt = (WtClock)clockItem;
@@ -133,6 +146,10 @@ public class WtClockRoot extends FrameLayout {
     	clockItem = findViewById(R.id.clk_wifi);
     	if(clockItem != null){
     		mClockWifi = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_wifi_on);
+    	if(clockItem != null){
+    		mClockWifiOn = (ImageView)clockItem;
     	}
     }
     
@@ -162,15 +179,25 @@ public class WtClockRoot extends FrameLayout {
 				});
 				mClockBt.setValue(mQSBluetoothTile.isEnabled() ? 1 : 0);
 			}
-			if(mClockWifi != null){
+			if(mClockWifi != null || mClockWifiOn != null){
 				mQSWifiTile = new QSWifiTile(getContext(),null,null);
 				mQSWifiTile.setOnStateChangedListener(new QSWifiTile.OnStateChangedListener(){
 					@Override
 					public void onStateChanged(boolean enabled){
-						mClockWifi.setValue(enabled ? 1 : 0);
+						if(mClockWifi != null){
+							mClockWifi.setValue(enabled ? 1 : 0);
+						}
+						if(mClockWifiOn != null){
+							mClockWifiOn.setVisibility(enabled ? View.VISIBLE : View.GONE);
+						}
 					}
 				});
-				mClockWifi.setValue(mQSWifiTile.isEnabled() ? 1 : 0);
+				if(mClockWifi != null){
+					mClockWifi.setValue(mQSWifiTile.isEnabled() ? 1 : 0);
+				}
+				if(mClockWifiOn != null){
+					mClockWifiOn.setVisibility(mQSWifiTile.isEnabled() ? View.VISIBLE : View.GONE);
+				}
 			}
 			
 			if(mClockStep != null){
@@ -276,6 +303,13 @@ public class WtClockRoot extends FrameLayout {
     private void startDialActivity(){
     	Intent intent = new Intent();
     	intent.setComponent(new ComponentName("com.android.dialer","com.wt.WtDialtactsActivity"));
+    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    	getContext().startActivity(intent);
+    }
+    
+    private void startMessageActivity(){
+    	Intent intent = new Intent();
+    	intent.setComponent(new ComponentName("com.android.mms","com.android.mms.ui.BootActivity"));
     	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
     	getContext().startActivity(intent);
     }

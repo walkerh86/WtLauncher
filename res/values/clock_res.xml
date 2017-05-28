@@ -109,4 +109,34 @@
        <item>@drawable/wt_clock_10_bt_on</item>
     </array> 
     
+    <array name="wt_clock_11_digit_drawables">
+       <item>@drawable/wt_clock_11_digit_0</item>
+       <item>@drawable/wt_clock_11_digit_1</item>
+       <item>@drawable/wt_clock_11_digit_2</item>
+       <item>@drawable/wt_clock_11_digit_3</item>
+       <item>@drawable/wt_clock_11_digit_4</item>
+       <item>@drawable/wt_clock_11_digit_5</item>
+       <item>@drawable/wt_clock_11_digit_6</item>
+       <item>@drawable/wt_clock_11_digit_7</item>
+       <item>@drawable/wt_clock_11_digit_8</item>
+       <item>@drawable/wt_clock_11_digit_9</item>
+    </array>
+    
+    <array name="wt_clock_11_batt_drawables">
+       <item>@drawable/wt_clock_11_batt_1</item>
+       <item>@drawable/wt_clock_11_batt_2</item>
+       <item>@drawable/wt_clock_11_batt_3</item>
+       <item>@drawable/wt_clock_11_batt_4</item>
+       <item>@drawable/wt_clock_11_batt_5</item>
+    </array>
+    
+    <array name="wt_clock_11_mbsignal_drawables">
+       <item>@drawable/wt_clock_11_mbsignal_1</item>
+       <item>@drawable/wt_clock_11_mbsignal_2</item>
+       <item>@drawable/wt_clock_11_mbsignal_3</item>
+       <item>@drawable/wt_clock_11_mbsignal_4</item>
+       <item>@drawable/wt_clock_11_mbsignal_5</item>
+       <item>@drawable/wt_clock_11_mbsignal_6</item>
+    </array>
+    
 </resources>

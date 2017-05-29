@@ -16,26 +16,16 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"> 
-<com.cj.clock.WtClock
-    android:id="@+id/clk_mobile_signal"
-    android:layout_width="56px"
-    android:layout_height="18px"
-    clock:clkstyle="images"
-    clock:value_min="0"
-    clock:value_max="5"
-    clock:digitext_drawables="@array/wt_clock_11_mbsignal_drawables"
-    clock:digitext_x="0"
-    clock:digitext_y="0"/>
 <ImageView
-    android:id="@+id/clk_mobile_type"
+    android:id="@+id/clk_mobile_signal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:src="@drawable/wt_clock_11_mb_3g"/>
+    android:src="@drawable/mobile_signal_level_drawable"/>
 <ImageView
     android:id="@+id/clk_mobile_data"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:src="@drawable/wt_clock_11_mb_data_on"/>  
+    android:src="@drawable/mobile_data_level_drawable"/>
 <ImageView
     android:id="@+id/clk_wifi_on"
     android:layout_width="wrap_content"

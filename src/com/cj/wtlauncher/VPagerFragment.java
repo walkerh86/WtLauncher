@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.other.widget.*;
+import android.util.Log;
 
 public class VPagerFragment extends Fragment{
 	private ArrayList<View> mViews = new ArrayList<View>();
@@ -79,6 +80,12 @@ public class VPagerFragment extends Fragment{
 		return rootView;
 	}
 
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		Log.i("hcj.VPagerFragment","onDestory");
+	}
+
 	public class MyFragmentPagerAdapter extends VerticalFragmentPagerAdapter{
 		ArrayList<Fragment> list;
 		public MyFragmentPagerAdapter(android.support.v4.app.FragmentManager fm,ArrayList<Fragment> list) {
@@ -107,6 +114,7 @@ public class VPagerFragment extends Fragment{
 	}
 
 	public void showClockPage(){
+		if(mViewPager == null) return;
 		mViewPager.setCurrentItem(PAGE_CLOCK_INDEX);
 	}
 }

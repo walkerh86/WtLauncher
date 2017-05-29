@@ -28,8 +28,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.cj.qs.QSBluetoothTile;
 import com.cj.qs.QSWifiTile;
-
+import com.cj.wtlauncher.MobileController;
 import com.cj.wtlauncher.R;
+import com.systemui.ext.DataType;
 
 public class WtClockRoot extends FrameLayout {
 	private static final String TAG = "hcj.WtClockRoot";
@@ -52,6 +53,11 @@ public class WtClockRoot extends FrameLayout {
 	private ImageView mClockWifiOn;
 	private QSBluetoothTile mQSBluetoothTile;
 	private QSWifiTile mQSWifiTile;
+	//
+	private MobileController mMobileController;
+	private ImageView mMobileSignalView;
+	private ImageView mMobileDataView;
+	
 	private final Handler mHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
@@ -151,6 +157,15 @@ public class WtClockRoot extends FrameLayout {
     	if(clockItem != null){
     		mClockWifiOn = (ImageView)clockItem;
     	}
+    	
+    	clockItem = findViewById(R.id.clk_mobile_signal);
+    	if(clockItem != null){
+    		mMobileSignalView = (ImageView)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_mobile_data);
+    	if(clockItem != null){
+    		mMobileDataView = (ImageView)clockItem;
+    	}
     }
     
     @Override
@@ -211,6 +226,21 @@ public class WtClockRoot extends FrameLayout {
 						}, 
 						UserHandle.USER_ALL);
 			}
+			
+			if(mMobileSignalView != null || mMobileDataView != null){
+				mMobileController = new MobileController(getContext());
+				mMobileController.setOnMobileListener(new MobileController.OnMobileListener() {					
+					@Override
+					public void onSignalStrengthChange(int level) {
+						mMobileSignalView.setImageLevel(level);
+					}
+					
+					@Override
+					public void onDataTypeChange(DataType dataType){
+						mMobileDataView.setImageLevel(dataType == null ? 0 : 1);
+					}
+				});
+			}
             
             mHandler.postDelayed(mSecRunnable, 1000);
         }
@@ -225,6 +255,9 @@ public class WtClockRoot extends FrameLayout {
         super.onDetachedFromWindow();
         if (mAttached) {
             getContext().unregisterReceiver(mIntentReceiver);
+            if(mMobileSignalView != null || mMobileDataView != null){
+				mMobileController.destroy();
+			}
             mHandler.removeCallbacks(mSecRunnable);
             mAttached = false;
         }

@@ -18,6 +18,6 @@
         android:singleLine="true"
         android:ellipsize="marquee"
         android:textSize="28sp"
-        android:textColor="#ff414141"/>
+        android:textColor="#ffffffff"/>
 
 </LinearLayout>

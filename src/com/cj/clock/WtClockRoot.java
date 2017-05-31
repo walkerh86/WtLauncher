@@ -74,6 +74,13 @@ public class WtClockRoot extends FrameLayout {
 	};
 	private static final int MSG_UPDATE_STEPS = 0;
 	
+	private ContentObserver mStepsObserver = new ContentObserver(mHandler){
+		@Override
+		public void onChange(boolean selfChange) {
+			mHandler.sendEmptyMessage(MSG_UPDATE_STEPS);
+		}
+	};
+	
 	public WtClockRoot(Context context) {
         this(context, null);
     }
@@ -218,12 +225,7 @@ public class WtClockRoot extends FrameLayout {
 			if(mClockStep != null){
 				getContext().getContentResolver().registerContentObserver(
 						Settings.System.getUriFor("today_steps"), true, 
-						new ContentObserver(mHandler){
-							@Override
-							public void onChange(boolean selfChange) {
-								mHandler.sendEmptyMessage(MSG_UPDATE_STEPS);
-							}
-						}, 
+						mStepsObserver, 
 						UserHandle.USER_ALL);
 			}
 			
@@ -255,6 +257,15 @@ public class WtClockRoot extends FrameLayout {
         super.onDetachedFromWindow();
         if (mAttached) {
             getContext().unregisterReceiver(mIntentReceiver);
+        	if(mClockBt != null && mQSBluetoothTile != null){
+				mQSBluetoothTile.onDestroy(getContext());				
+			}
+			if(mClockWifi != null && mQSWifiTile != null){
+				mQSWifiTile.onDestroy(getContext());
+			}
+        	if(mClockStep != null){
+        		getContext().getContentResolver().unregisterContentObserver(mStepsObserver);
+			}            
             if(mMobileSignalView != null || mMobileDataView != null){
 				mMobileController.destroy();
 			}

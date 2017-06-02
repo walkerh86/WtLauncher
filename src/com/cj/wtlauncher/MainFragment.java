@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-public class ClockFragment  extends Fragment{
-	private static final String TAG = "hcj.ClockFragment";
+public class MainFragment  extends Fragment{
+	private static final String TAG = "hcj.MainFragment";
 	private FrameLayout mClockHost;
 	private int mClockIdx = -1;
 		
@@ -24,27 +24,24 @@ public class ClockFragment  extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_clock, container, false);
 		mClockHost = (FrameLayout)rootView.findViewById(R.id.idle_clock);
-		mClockHost.setOnLongClickListener(new View.OnLongClickListener(){
-			@Override
-			public boolean onLongClick(View view){
-				startChooseClock();
-				return true;
-			}
-		});
+		/*
 		mClockHost.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View view){
-				MainActivity activity = (MainActivity)ClockFragment.this.getActivity();
+				MainActivity activity = (MainActivity)MainFragment.this.getActivity();
 				activity.setClockFragmentVisible(false);
 			}
-		});
+		});*/
+		View clockView = inflater.inflate(R.layout.wt_clock_11_layout, null);
+		FrameLayout.LayoutParams localLayoutParams = new FrameLayout.LayoutParams(-1, -1);
+		mClockHost.addView(clockView, localLayoutParams);
 		return rootView;
 	}
 	
 	@Override
 	public void onResume(){
 		super.onResume();		
-		setClockStyle(getActivity().getSharedPreferences("clockview_settings", 0).getInt("clockview_index", 0));
+		//setClockStyle(getActivity().getSharedPreferences("clockview_settings", 0).getInt("clockview_index", 0));
 	}
 	
 	@Override

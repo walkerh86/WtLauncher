@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ public class MainActivity extends FragmentActivity{
 	private static final int DEFAULT_PAGE = 1;
 	private VPagerFragment mVPagerFragment;
 	private Handler mHandler = new Handler();
+	private Fragment mClockFragment;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,9 @@ public class MainActivity extends FragmentActivity{
 		mViewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), fragmentList));
 		mViewPager.setCurrentItem(DEFAULT_PAGE);
 
+		mClockFragment = getSupportFragmentManager().findFragmentById(R.id.wt_clock_fragment);
+		setClockFragmentVisible(false);
+                    
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.SCREEN_OFF");
 		filter.addAction("android.intent.action.BATTERY_CHANGED");
@@ -98,7 +103,8 @@ public class MainActivity extends FragmentActivity{
 			String action = intent.getAction();
 			if("android.intent.action.SCREEN_OFF".equals(action)){
 				mViewPager.setCurrentItem(DEFAULT_PAGE);
-				mVPagerFragment.showClockPage();
+				//mVPagerFragment.showClockPage();
+				setClockFragmentVisible(true);
 			}else if("android.intent.action.BATTERY_CHANGED".equals(action)){
 				final int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,BatteryManager.BATTERY_STATUS_UNKNOWN);
 				boolean charging = status == BatteryManager.BATTERY_STATUS_FULL || status == BatteryManager.BATTERY_STATUS_CHARGING;
@@ -166,4 +172,20 @@ public class MainActivity extends FragmentActivity{
 			}
 		}
 	};
+
+	public void setClockFragmentVisible(boolean visible){
+		if(mClockFragment == null){
+			return;
+		}
+		Log.i("hcj", "setClockFragmentVisible visible="+visible+",isVisible="+mClockFragment.isVisible());
+		if(visible){
+			if(!mClockFragment.isVisible()){
+				this.getSupportFragmentManager().beginTransaction().show(mClockFragment).commit();
+			}
+		}else{
+			if(mClockFragment.isVisible()){
+				this.getSupportFragmentManager().beginTransaction().hide(mClockFragment).commit();
+			}
+		}
+	}
 }

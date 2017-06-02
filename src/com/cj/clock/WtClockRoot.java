@@ -238,8 +238,14 @@ public class WtClockRoot extends FrameLayout {
 					}
 					
 					@Override
-					public void onDataTypeChange(DataType dataType){
-						mMobileDataView.setImageLevel(dataType == null ? 0 : 1);
+					public void onDataTypeChange(int dataType){
+						int level = 0;
+						if(dataType == MobileController.WT_NETWORK_TYPE_2G){
+							level = 1;
+						}else{
+							level = 2;
+						}
+						mMobileDataView.setImageLevel(level);
 					}
 				});
 			}

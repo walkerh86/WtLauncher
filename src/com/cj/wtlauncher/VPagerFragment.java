@@ -57,7 +57,7 @@ public class VPagerFragment extends Fragment{
 		*/
 		ArrayList<Fragment> fragmentList = new ArrayList<Fragment>();
 		fragmentList.add(new StepFragment());
-		fragmentList.add(new ClockFragment());
+		fragmentList.add(new MainFragment());
 		fragmentList.add(new NotificationFragment());
 		mViewPager.setAdapter(new MyFragmentPagerAdapter(getActivity().getSupportFragmentManager(), fragmentList));
 		mViewPager.setCurrentItem(PAGE_CLOCK_INDEX);

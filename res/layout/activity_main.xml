@@ -10,4 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <fragment android:name="com.cj.wtlauncher.ClockFragment"
+              android:id="@+id/wt_clock_fragment"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:visibility="gone" />
+
 </RelativeLayout>

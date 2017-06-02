@@ -10,6 +10,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.os.Handler;
+import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
@@ -22,6 +25,7 @@ import android.util.Log;
 public class MobileController{
 	private static final String TAG = "hcj.MobileController";
 	private Context mContext;
+	private TelephonyManager mTelephonyManager;
 	private SubscriptionManager mSubscriptionManager;
 	private SignalStrength mSignalStrength;
 	private ServiceState mServiceState;
@@ -29,21 +33,27 @@ public class MobileController{
 	private boolean mNoSims;
 	private int mDataNetType = TelephonyManager.NETWORK_TYPE_UNKNOWN;
 	private int mDataState = TelephonyManager.DATA_DISCONNECTED;
-	private NetworkType mNetworkType = null;
-	private DataType mDataType = null;
+	
 	private static final boolean NETWORK_TYPE_MIN_3G = false;
+	public static final int WT_NETWORK_TYPE_NULL = 0;
+	public static final int WT_NETWORK_TYPE_2G = 1;
+	public static final int WT_NETWORK_TYPE_3G = 2;
+	public static final int WT_NETWORK_TYPE_4G = 3;
+	
+	private int mNetworkType = WT_NETWORK_TYPE_NULL;
+	private int mDataType = WT_NETWORK_TYPE_NULL;
 
 	PhoneStateListener mPhoneStateListener = new PhoneStateListener(){
 		@Override
 		public void onSignalStrengthsChanged(SignalStrength signalStrength) { 
-			Log.i("hcj","onSignalStrengthsChanged signalStrength="+signalStrength);
+			Log.i(TAG,"onSignalStrengthsChanged signalStrength="+signalStrength);
 			mSignalStrength = signalStrength;
 			updateTelephony();
 		}
 
 		@Override
         public void onServiceStateChanged(ServiceState state) {
-             	Log.i("hcj","onServiceStateChanged state="+state);
+             	Log.i(TAG,"onServiceStateChanged state="+state);
              	mServiceState = state;             	
              	updateNetworkType();
                 updateTelephony();
@@ -51,6 +61,7 @@ public class MobileController{
 		
 		@Override
         public void onDataConnectionStateChanged(int state, int networkType) {
+			Log.i(TAG,"onDataConnectionStateChanged state="+state+",networkType="+networkType);
 			mDataState = state;
 			mDataNetType = networkType;
 			updateNetworkType();
@@ -62,14 +73,23 @@ public class MobileController{
 		@Override
 		public void onReceive(Context context, Intent intent){
 			String action = intent.getAction();
-			//Log.i(TAG,"onReceive action="+action);
+			Log.i(TAG,"onReceive action="+action);
 			if(TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)){
 				updateSimState();
 			}else if(TelephonyIntents.ACTION_SUBINFO_RECORD_UPDATED.equals(action)){
 				updateSimState();
+			}else if(TelephonyIntents.ACTION_ANY_DATA_CONNECTION_STATE_CHANGED.equals(action)){
+				getDataConnectionState();
 			}
 		}
 	};
+	
+	private ContentObserver mMobileStateForSingleCardChangeObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+               getDataConnectionState();
+        }
+    };
 	
 	private final OnSubscriptionsChangedListener mSubscriptionListener = new OnSubscriptionsChangedListener() {            
         @Override
@@ -82,8 +102,8 @@ public class MobileController{
 	public MobileController(Context context){
 		mContext = context;
 		
-		TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(mPhoneStateListener,
+		mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		mTelephonyManager.listen(mPhoneStateListener,
 				PhoneStateListener.LISTEN_SERVICE_STATE
 				|PhoneStateListener.LISTEN_SIGNAL_STRENGTHS
 				|PhoneStateListener.LISTEN_DATA_CONNECTION_STATE); 
@@ -92,10 +112,15 @@ public class MobileController{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TelephonyIntents.ACTION_SIM_STATE_CHANGED);
 		filter.addAction(TelephonyIntents.ACTION_SUBINFO_RECORD_UPDATED);
+		filter.addAction(TelephonyIntents.ACTION_ANY_DATA_CONNECTION_STATE_CHANGED);
 		context.registerReceiver(mReceiver, filter);
 
 		mSubscriptionManager = SubscriptionManager.from(context);
 		mSubscriptionManager.addOnSubscriptionsChangedListener(mSubscriptionListener);
+		
+		//mContext.getContentResolver().registerContentObserver(
+        //        Settings.Secure.getUriFor(Settings.Global.MOBILE_DATA)
+        //        , true, mMobileStateForSingleCardChangeObserver);
 
 		DataType.mapDataTypeSets(NETWORK_TYPE_MIN_3G, false,false);                
 	}
@@ -150,59 +175,87 @@ public class MobileController{
             tempNetworkType = mDataNetType;
         }
         
-        NetworkType networkType = null;
+        int networkType = WT_NETWORK_TYPE_NULL;
         switch (tempNetworkType) {
             case TelephonyManager.NETWORK_TYPE_UNKNOWN:
                 if (!NETWORK_TYPE_MIN_3G) {
-                	networkType = NetworkType.Type_G;
+                	networkType = WT_NETWORK_TYPE_2G;
                     break;
                 }
             case TelephonyManager.NETWORK_TYPE_EDGE:
                 if (!NETWORK_TYPE_MIN_3G) {
-                	networkType = NetworkType.Type_E;
+                	networkType = WT_NETWORK_TYPE_2G;
                     break;
                 }
             case TelephonyManager.NETWORK_TYPE_UMTS:
-            	networkType = NetworkType.Type_3G;
+            	networkType = WT_NETWORK_TYPE_3G;
                 break;
             case TelephonyManager.NETWORK_TYPE_HSDPA:
             case TelephonyManager.NETWORK_TYPE_HSUPA:
             case TelephonyManager.NETWORK_TYPE_HSPA:
             case TelephonyManager.NETWORK_TYPE_HSPAP:
-            	networkType = NetworkType.Type_3G;
+            	networkType = WT_NETWORK_TYPE_3G;
                 break;
             case TelephonyManager.NETWORK_TYPE_CDMA:
             case TelephonyManager.NETWORK_TYPE_1xRTT:
-            	networkType = NetworkType.Type_1X;
+            	networkType = WT_NETWORK_TYPE_2G;
                 break;
             case TelephonyManager.NETWORK_TYPE_EVDO_0: //fall through
             case TelephonyManager.NETWORK_TYPE_EVDO_A:
             case TelephonyManager.NETWORK_TYPE_EVDO_B:
             case TelephonyManager.NETWORK_TYPE_EHRPD:
-            	networkType = NetworkType.Type_1X3G;
+            	networkType = WT_NETWORK_TYPE_2G;
                 break;
             case TelephonyManager.NETWORK_TYPE_LTE:
-            	networkType = NetworkType.Type_4G;
+            	networkType = WT_NETWORK_TYPE_4G;
                 break;
             default:
                 if (!NETWORK_TYPE_MIN_3G) {
-                	networkType = NetworkType.Type_G;
+                	networkType = WT_NETWORK_TYPE_2G;
                 } else {
-                	networkType = NetworkType.Type_3G;
+                	networkType = WT_NETWORK_TYPE_3G;
                 }
                 break;
         }
         if (!hasService()) {
-        	networkType = null;
+        	networkType = WT_NETWORK_TYPE_NULL;
         }
         
         if(mNetworkType != networkType){
         	mNetworkType = networkType;        	
         }
         
-        DataType tmpType = null;
-        if(hasService() && mSignalStrength != null){
-        	tmpType = DataType.get(mDataNetType);
+        int tmpType = WT_NETWORK_TYPE_NULL;
+        switch(mDataNetType){
+        	case TelephonyManager.NETWORK_TYPE_EDGE:
+        	case TelephonyManager.NETWORK_TYPE_CDMA:
+        	case TelephonyManager.NETWORK_TYPE_1xRTT:
+        		tmpType = WT_NETWORK_TYPE_2G;
+        		break;
+        	case TelephonyManager.NETWORK_TYPE_EVDO_0:
+        	case TelephonyManager.NETWORK_TYPE_EVDO_A:
+        	case TelephonyManager.NETWORK_TYPE_EVDO_B:
+        	case TelephonyManager.NETWORK_TYPE_EHRPD:
+        	case TelephonyManager.NETWORK_TYPE_UMTS:
+        	case TelephonyManager.NETWORK_TYPE_HSDPA:
+        	case TelephonyManager.NETWORK_TYPE_HSUPA:
+        	case TelephonyManager.NETWORK_TYPE_HSPA:
+        	case TelephonyManager.NETWORK_TYPE_HSPAP:
+        		tmpType = WT_NETWORK_TYPE_3G;
+        		break;
+        	case TelephonyManager.NETWORK_TYPE_LTE:
+        		tmpType = WT_NETWORK_TYPE_4G;
+        		break;
+        	default:
+        		if (!NETWORK_TYPE_MIN_3G) {
+        			tmpType = WT_NETWORK_TYPE_2G;
+                } else {
+                	tmpType = WT_NETWORK_TYPE_3G;
+                }
+        		break;
+        }
+        if(!hasService() || mSignalStrength == null || mDataState != TelephonyManager.DATA_CONNECTED){
+        	tmpType = WT_NETWORK_TYPE_NULL;
         }
         if(tmpType != mDataType){
         	mDataType = tmpType;
@@ -213,6 +266,15 @@ public class MobileController{
 
         Log.d(TAG, "updateNetworkType: mNetworkType=" + mNetworkType+",mDataType="+mDataType);
     }
+	
+	private void getDataConnectionState() {
+		boolean dataEnable = mTelephonyManager.getDataEnabled();
+		Log.d(TAG, "getDataConnectionState: dataEnable=" + dataEnable);
+		//todo , add airplane mode
+		if(mOnMobileListener != null){
+    		mOnMobileListener.onDataTypeChange(dataEnable ? 2 : 0);
+    	}
+	}
 		
 	 /// M: Support "Service Network Type on Statusbar". @{
     private final int getNWTypeByPriority(int cs, int ps) {
@@ -267,6 +329,6 @@ public class MobileController{
 	public interface OnMobileListener{
 		void onSignalStrengthChange(int strength);
 		//void onNetworkTypeChange(NetworkType networkType);
-		void onDataTypeChange(DataType dataType);
+		void onDataTypeChange(int dataType);
 	}
 }

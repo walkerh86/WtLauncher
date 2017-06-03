@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity{
+	private static final String TAG = "hcj.MainActivity";
 	private HorizontalViewPager mViewPager;
 	private static final int DEFAULT_PAGE = 1;
 	private VPagerFragment mVPagerFragment;
@@ -34,6 +35,7 @@ public class MainActivity extends FragmentActivity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.i(TAG,"onCreate");
 		setContentView(R.layout.activity_main);
 		
 		mViewPager = (HorizontalViewPager)findViewById(R.id.view_pager);
@@ -70,8 +72,31 @@ public class MainActivity extends FragmentActivity{
 	
 	@Override
 	public void onWindowFocusChanged(boolean focused){
+		Log.i(TAG,"onWindowFocusChanged focused="+focused);
 		super.onWindowFocusChanged(focused);
 		WatchApp.setTopActivityStatus(focused);
+	}
+	
+	@Override
+    protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		String action = intent.getAction();
+		Log.i(TAG,"onNewIntent action="+action);
+		if (Intent.ACTION_MAIN.equals(action)) {			
+			showCenterPage();
+		}
+	}
+	
+	@Override
+	public void onResume(){
+		Log.i(TAG,"onResume");
+		super.onResume();
+	}
+	
+	@Override
+	public void onStart(){
+		Log.i(TAG,"onStart");
+		super.onStart();
 	}
 	
 	public class MyFragmentPagerAdapter extends FragmentPagerAdapter{
@@ -102,8 +127,9 @@ public class MainActivity extends FragmentActivity{
 		public void onReceive(Context context, Intent intent){
 			String action = intent.getAction();
 			if("android.intent.action.SCREEN_OFF".equals(action)){
-				mViewPager.setCurrentItem(DEFAULT_PAGE);
+				//mViewPager.setCurrentItem(DEFAULT_PAGE);
 				//mVPagerFragment.showClockPage();
+				showCenterPage();
 				setClockFragmentVisible(true);
 			}else if("android.intent.action.BATTERY_CHANGED".equals(action)){
 				final int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,BatteryManager.BATTERY_STATUS_UNKNOWN);
@@ -177,7 +203,7 @@ public class MainActivity extends FragmentActivity{
 		if(mClockFragment == null){
 			return;
 		}
-		Log.i("hcj", "setClockFragmentVisible visible="+visible+",isVisible="+mClockFragment.isVisible());
+		Log.i(TAG, "setClockFragmentVisible visible="+visible+",isVisible="+mClockFragment.isVisible());
 		if(visible){
 			if(!mClockFragment.isVisible()){
 				this.getSupportFragmentManager().beginTransaction().show(mClockFragment).commit();
@@ -186,6 +212,16 @@ public class MainActivity extends FragmentActivity{
 			if(mClockFragment.isVisible()){
 				this.getSupportFragmentManager().beginTransaction().hide(mClockFragment).commit();
 			}
+		}
+	}
+	
+	private void showCenterPage(){
+		if(mViewPager != null){
+			mViewPager.setCurrentItem(DEFAULT_PAGE,false);
+		}
+		Log.i(TAG, "showCenterPage mVPagerFragment="+mVPagerFragment);
+		if(mVPagerFragment != null){
+			mVPagerFragment.showCenterPage();
 		}
 	}
 }

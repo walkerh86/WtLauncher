@@ -30,6 +30,11 @@
         
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true" 
+            android:excludeFromRecents="true" 
+            android:hardwareAccelerated="true"
+            android:stateNotNeeded="true"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

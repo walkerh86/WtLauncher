@@ -14,6 +14,7 @@ import com.other.widget.*;
 import android.util.Log;
 
 public class VPagerFragment extends Fragment{
+	private static final String TAG = "hcj.VPagerFragment";
 	private ArrayList<View> mViews = new ArrayList<View>();
 	private VerticalViewPager mViewPager;
 	private static final int PAGE_CLOCK_INDEX = 1;
@@ -116,5 +117,11 @@ public class VPagerFragment extends Fragment{
 	public void showClockPage(){
 		if(mViewPager == null) return;
 		mViewPager.setCurrentItem(PAGE_CLOCK_INDEX);
+	}
+	
+	public void showCenterPage(){
+		Log.i(TAG, "showCenterPage mViewPager="+mViewPager);
+		if(mViewPager == null) return;
+		mViewPager.setCurrentItem(PAGE_CLOCK_INDEX,false);
 	}
 }

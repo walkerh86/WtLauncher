@@ -176,7 +176,7 @@ public class WtClock extends View {
     	invalidate();
     }
     
-    private boolean isPointerStyle(){
+    public boolean isPointerStyle(){
     	return (mClockStyle == CLOCK_STYLE_POINTER && mPointerDrawable != null && mPointerCenterX > -1 && mPointerCenterY > -1);
     }
     

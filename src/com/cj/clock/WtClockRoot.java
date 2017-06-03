@@ -290,7 +290,8 @@ public class WtClockRoot extends FrameLayout {
         int m = (int)(minute + second / 60.0f);
         int h = (int)(hour + m / 60.0f);
         if(mClockHour != null){
-        	mClockHour.setValue(h);
+        	int value = mClockHour.isPointerStyle() ? (h*30+(int)(m*30/60f)) : h;        	
+        	mClockHour.setValue(value);
         }
         if(mClockMin != null){
         	mClockMin.setValue(m);
@@ -304,7 +305,8 @@ public class WtClockRoot extends FrameLayout {
         }
         
         if(mClockHour2 != null){
-        	mClockHour2.setValue(h);
+        	int value = mClockHour.isPointerStyle() ? (h*30+(int)(m*30/60f)) : h;
+        	mClockHour2.setValue(value);
         }
         if(mClockMin2 != null){
         	mClockMin2.setValue(m);

@@ -31,6 +31,7 @@ public class MainActivity extends FragmentActivity{
 	private VPagerFragment mVPagerFragment;
 	private Handler mHandler = new Handler();
 	private Fragment mClockFragment;
+	private boolean mPendingShowClock;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MainActivity extends FragmentActivity{
                     
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.SCREEN_OFF");
+		filter.addAction("android.intent.action.SCREEN_ON");
 		filter.addAction("android.intent.action.BATTERY_CHANGED");
 		registerReceiver(mScreenUpdateReceiver, filter);
 
@@ -91,6 +93,22 @@ public class MainActivity extends FragmentActivity{
 	public void onResume(){
 		Log.i(TAG,"onResume");
 		super.onResume();
+		if(mPendingShowClock){
+			mPendingShowClock = false;
+			setClockFragmentVisible(true);
+		}
+	}
+	
+	@Override
+	public void onPause(){
+		Log.i(TAG,"onPause");
+		super.onPause();
+	}
+	
+	@Override
+	public void onStop(){
+		Log.i(TAG,"onStop");
+		super.onStop();
 	}
 	
 	@Override
@@ -127,10 +145,15 @@ public class MainActivity extends FragmentActivity{
 		public void onReceive(Context context, Intent intent){
 			String action = intent.getAction();
 			if("android.intent.action.SCREEN_OFF".equals(action)){
+				Log.i(TAG, "action.SCREEN_OFF");
 				//mViewPager.setCurrentItem(DEFAULT_PAGE);
 				//mVPagerFragment.showClockPage();
 				showCenterPage();
-				setClockFragmentVisible(true);
+				if(MainActivity.this.isResumed()){
+					setClockFragmentVisible(true);
+				}else{
+					mPendingShowClock = true;
+				}
 			}else if("android.intent.action.BATTERY_CHANGED".equals(action)){
 				final int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,BatteryManager.BATTERY_STATUS_UNKNOWN);
 				boolean charging = status == BatteryManager.BATTERY_STATUS_FULL || status == BatteryManager.BATTERY_STATUS_CHARGING;
@@ -142,6 +165,9 @@ public class MainActivity extends FragmentActivity{
 				}else{
 					mBattDialogShowed = false;
 				}
+			}else if("android.intent.action.SCREEN_ON".equals(action)){
+				Log.i(TAG, "action.SCREEN_ON");
+				//setClockFragmentVisible(true);
 			}
 		}
 	};
@@ -200,7 +226,7 @@ public class MainActivity extends FragmentActivity{
 	};
 
 	public void setClockFragmentVisible(boolean visible){
-		if(mClockFragment == null){
+		if(mClockFragment == null/* || !mWindowFocused*/){
 			return;
 		}
 		Log.i(TAG, "setClockFragmentVisible visible="+visible+",isVisible="+mClockFragment.isVisible());

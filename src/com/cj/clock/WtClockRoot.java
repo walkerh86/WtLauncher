@@ -242,10 +242,15 @@ public class WtClockRoot extends FrameLayout {
 						int level = 0;
 						if(dataType == MobileController.WT_NETWORK_TYPE_2G){
 							level = 1;
-						}else{
+						}else if(dataType == MobileController.WT_NETWORK_TYPE_3G){
 							level = 2;
 						}
 						mMobileDataView.setImageLevel(level);
+					}
+					
+					@Override
+					public void onDataEnable(boolean enable){
+						
 					}
 				});
 			}

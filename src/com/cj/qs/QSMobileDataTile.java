@@ -1,6 +1,7 @@
 package com.cj.qs;
 
 import com.cj.util.ReflectUtil;
+import com.cj.wtlauncher.MobileController;
 import com.cj.wtlauncher.R;
 
 import android.telephony.TelephonyManager;
@@ -18,22 +19,45 @@ public class QSMobileDataTile extends QSTile{
 	private static final String TAG = "hcj.QSMobileDataTile";
 	private QSTileView mTileView;
 	private final TelephonyManager mTelephonyManager;
+	private MobileController mMobileController;
+	private Context mContext;
 	
 	public QSMobileDataTile(Context context, QSTileView tileView){
+		mContext = context;
 		mTelephonyManager = TelephonyManager.from(context);
 		
 		mTileView = tileView;
 		tileView.setOnClickListener(mClickListener);
+		//tileView.setOnLongClickListener(mLongClickListener);
 		updateView(isEnabled());
 		
-		final IntentFilter filter = new IntentFilter();
-		//filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-		//filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-		context.registerReceiver(mReceiver, filter);		
+		mMobileController = new MobileController(context);
+		mMobileController.setOnMobileListener(new MobileController.OnMobileListener() {					
+			@Override
+			public void onSignalStrengthChange(int level) {
+				//mMobileSignalView.setImageLevel(level);
+			}
+			
+			@Override
+			public void onDataTypeChange(int dataType){
+				int level = 0;
+				if(dataType == MobileController.WT_NETWORK_TYPE_2G){
+					level = 1;
+				}else{
+					level = 2;
+				}
+				//mMobileDataView.setImageLevel(level);
+			}
+			
+			@Override
+			public void onDataEnable(boolean enable){
+				updateView(enable);
+			}
+		});
 	}
 	
 	public void onDestroy(Context context){
-		context.unregisterReceiver(mReceiver);
+		mMobileController.destroy();
 	}
 
 	private void updateView(boolean isOn){
@@ -53,6 +77,20 @@ public class QSMobileDataTile extends QSTile{
 			setEnabled(!isEnabled());
 		}
 	};
+	
+	private View.OnLongClickListener mLongClickListener = new View.OnLongClickListener(){
+		@Override
+		public boolean onLongClick(View arg0) {
+			handleLongClick();
+			return true;
+		}		
+	};
+	
+	private void handleLongClick(){
+		 Intent intent = new Intent();
+		 intent.setComponent(new ComponentName("com.android.settings","com.android.settings.Settings$DataUsageSummaryActivity"));
+		 mContext.startActivity(intent);
+	 }
 	
 	public boolean isEnabled() {
 		//reflection way must put apk in /system/priv-app/

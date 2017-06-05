@@ -5,7 +5,7 @@ import java.util.List;
 import com.android.internal.telephony.TelephonyIntents;
 import com.systemui.ext.DataType;
 import com.systemui.ext.NetworkType;
-
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +42,7 @@ public class MobileController{
 	
 	private int mNetworkType = WT_NETWORK_TYPE_NULL;
 	private int mDataType = WT_NETWORK_TYPE_NULL;
+	private boolean mDataEnable;
 
 	PhoneStateListener mPhoneStateListener = new PhoneStateListener(){
 		@Override
@@ -122,7 +123,9 @@ public class MobileController{
         //        Settings.Secure.getUriFor(Settings.Global.MOBILE_DATA)
         //        , true, mMobileStateForSingleCardChangeObserver);
 
-		DataType.mapDataTypeSets(NETWORK_TYPE_MIN_3G, false,false);                
+		DataType.mapDataTypeSets(NETWORK_TYPE_MIN_3G, false,false);
+		
+		mDataEnable = mTelephonyManager.getDataEnabled();
 	}
 	
 	public void destroy(){
@@ -130,6 +133,7 @@ public class MobileController{
 		mContext.unregisterReceiver(mReceiver);
 	}
 	
+	@SuppressLint("NewApi")
 	private void updateTelephony(){
 		mStateConnected = hasService() && mSignalStrength != null;
 		Log.i(TAG,"updateTelephony mStateConnected="+mStateConnected);
@@ -159,6 +163,7 @@ public class MobileController{
 	}
 	
 	private final void updateNetworkType() {
+		/*
         int tempNetworkType; //Big - switch
 
         if (mServiceState != null) {
@@ -224,6 +229,15 @@ public class MobileController{
         if(mNetworkType != networkType){
         	mNetworkType = networkType;        	
         }
+        */
+        
+        boolean dataEnable = mTelephonyManager.getDataEnabled();
+        if(dataEnable != mDataEnable){
+        	mDataEnable = dataEnable;
+        	if(mOnMobileListener != null){
+        		mOnMobileListener.onDataEnable(mDataEnable);
+        	}
+        }
         
         int tmpType = WT_NETWORK_TYPE_NULL;
         switch(mDataNetType){
@@ -254,7 +268,7 @@ public class MobileController{
                 }
         		break;
         }
-        if(!hasService() || mSignalStrength == null || mDataState != TelephonyManager.DATA_CONNECTED){
+        if(!hasService() || mSignalStrength == null || mDataState != TelephonyManager.DATA_CONNECTED || !mDataEnable){
         	tmpType = WT_NETWORK_TYPE_NULL;
         }
         if(tmpType != mDataType){
@@ -262,7 +276,7 @@ public class MobileController{
         	if(mOnMobileListener != null){
         		mOnMobileListener.onDataTypeChange(mDataType);
         	}
-        }
+        }            
 
         Log.d(TAG, "updateNetworkType: mNetworkType=" + mNetworkType+",mDataType="+mDataType);
     }
@@ -330,5 +344,6 @@ public class MobileController{
 		void onSignalStrengthChange(int strength);
 		//void onNetworkTypeChange(NetworkType networkType);
 		void onDataTypeChange(int dataType);
+		void onDataEnable(boolean enable);
 	}
 }

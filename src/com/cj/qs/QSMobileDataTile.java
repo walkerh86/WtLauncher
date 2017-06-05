@@ -2,6 +2,7 @@ package com.cj.qs;
 
 import com.cj.util.ReflectUtil;
 import com.cj.wtlauncher.MobileController;
+import com.cj.wtlauncher.NetworkController;
 import com.cj.wtlauncher.R;
 
 import android.telephony.TelephonyManager;
@@ -19,20 +20,16 @@ public class QSMobileDataTile extends QSTile{
 	private static final String TAG = "hcj.QSMobileDataTile";
 	private QSTileView mTileView;
 	private final TelephonyManager mTelephonyManager;
-	private MobileController mMobileController;
+	private NetworkController mNetworkController;
 	private Context mContext;
+	private boolean mAirplaneOn;
 	
 	public QSMobileDataTile(Context context, QSTileView tileView){
 		mContext = context;
 		mTelephonyManager = TelephonyManager.from(context);
-		
-		mTileView = tileView;
-		tileView.setOnClickListener(mClickListener);
-		//tileView.setOnLongClickListener(mLongClickListener);
-		updateView(isEnabled());
-		
-		mMobileController = new MobileController(context);
-		mMobileController.setOnMobileListener(new MobileController.OnMobileListener() {					
+				
+		mNetworkController = NetworkController.getInstance(context);
+		mNetworkController.addOnNetworkListener(new NetworkController.OnNetworkListener() {					
 			@Override
 			public void onSignalStrengthChange(int level) {
 				//mMobileSignalView.setImageLevel(level);
@@ -51,16 +48,34 @@ public class QSMobileDataTile extends QSTile{
 			
 			@Override
 			public void onDataEnable(boolean enable){
-				updateView(enable);
+				updateView(isEnabled());
+			}
+			
+			@Override
+			public void onWifiEnable(boolean enable){
+				
+			}
+			
+			@Override
+			public void onAirplaneEnable(boolean enable){
+				mAirplaneOn = enable;
+				updateView(isEnabled());
 			}
 		});
+		mAirplaneOn = mNetworkController.isAirplaneOn();
+		
+		mTileView = tileView;
+		tileView.setOnClickListener(mClickListener);
+		//tileView.setOnLongClickListener(mLongClickListener);
+		updateView(isEnabled());
 	}
 	
 	public void onDestroy(Context context){
-		mMobileController.destroy();
+		//mNetworkController.destroy();
 	}
 
 	private void updateView(boolean isOn){
+		Log.i(TAG, "updateView isOn="+isOn);
 		mTileView.setImageResource(isOn ? R.drawable.smart_watch_mobile_data_on : R.drawable.smart_watch_mobile_data_off);
 	}
 	
@@ -93,31 +108,18 @@ public class QSMobileDataTile extends QSTile{
 	 }
 	
 	public boolean isEnabled() {
-		//reflection way must put apk in /system/priv-app/
 		boolean enabled = false;
 		try{
-			/*
-			if(mTelephonyManager == null){
-				return false;
-			}
-			Boolean ret = (Boolean)ReflectUtil.reflectCallMethod(mTelephonyManager, "getDataEnabled", null, null);
-			enabled = (ret != null && ret.booleanValue());*/
 			enabled = mTelephonyManager.getDataEnabled(0);
+			Log.i(TAG, "mAirplaneOn="+mNetworkController.isAirplaneOn());
+			if(mAirplaneOn){
+				enabled = false;
+			}
 		}catch(Exception e){
 			Log.i(TAG,"isEnabled e="+e);
 		}
 		Log.i(TAG, "isEnabled enabled="+enabled);
 		return enabled;
-		/*
-		boolean enabled = false;
-		try{
-			if(mSettingsService != null){
-				enabled = mSettingsService.getDataEnabled();
-			}
-		}catch(Exception e){
-			Log.i(TAG,"isEnabled e="+e);
-		}
-		return enabled;*/
 	}
 	
 	public void setEnabled(boolean enabled) {

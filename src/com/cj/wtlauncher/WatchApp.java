@@ -3,7 +3,8 @@ package com.cj.wtlauncher;
 import android.app.Application;
 import android.util.Log;
 
-public class WatchApp extends Application {  
+public class WatchApp extends Application { 
+	private static final String TAG = "hcj.WatchApp";
   private static boolean can_slide_in_viewpager = false;
   public static boolean mBatterySaver = false;
   public static boolean mBatterySaverEnable = true;
@@ -11,6 +12,7 @@ public class WatchApp extends Application {
   private static boolean mIsMainMenu = false;
   private static boolean mIsTopActivity;
   private static WatchApp sWatchApp;
+  private NetworkController mNetworkController;
   
   static{  
     mIsClockView = false;
@@ -46,8 +48,18 @@ public class WatchApp extends Application {
   }
   
   public void onCreate(){  
+	  Log.d(TAG, "onCreate");
     sWatchApp = this;
     super.onCreate();
-    Log.d("[WatchApp]", "onCreate, WatchApp init ");
+
+
+    mNetworkController = NetworkController.getInstance(this);
+  }
+  
+  @Override
+  public void onTerminate() {
+      Log.d(TAG, "onTerminate");
+      super.onTerminate();
+      mNetworkController.onDestroy(this);
   }
 }

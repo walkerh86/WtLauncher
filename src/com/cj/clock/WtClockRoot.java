@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.cj.qs.QSBluetoothTile;
 import com.cj.qs.QSWifiTile;
 import com.cj.wtlauncher.MobileController;
+import com.cj.wtlauncher.NetworkController;
 import com.cj.wtlauncher.R;
 import com.systemui.ext.DataType;
 
@@ -54,7 +55,7 @@ public class WtClockRoot extends FrameLayout {
 	private QSBluetoothTile mQSBluetoothTile;
 	private QSWifiTile mQSWifiTile;
 	//
-	private MobileController mMobileController;
+	private NetworkController mNetworkController;
 	private ImageView mMobileSignalView;
 	private ImageView mMobileDataView;
 	
@@ -230,8 +231,8 @@ public class WtClockRoot extends FrameLayout {
 			}
 			
 			if(mMobileSignalView != null || mMobileDataView != null){
-				mMobileController = new MobileController(getContext());
-				mMobileController.setOnMobileListener(new MobileController.OnMobileListener() {					
+				mNetworkController = NetworkController.getInstance(getContext());
+				mNetworkController.addOnNetworkListener(new NetworkController.OnNetworkListener() {					
 					@Override
 					public void onSignalStrengthChange(int level) {
 						mMobileSignalView.setImageLevel(level);
@@ -250,6 +251,16 @@ public class WtClockRoot extends FrameLayout {
 					
 					@Override
 					public void onDataEnable(boolean enable){
+						
+					}
+					
+					@Override
+					public void onWifiEnable(boolean enable){
+						
+					}
+					
+					@Override
+					public void onAirplaneEnable(boolean enable){
 						
 					}
 				});
@@ -278,7 +289,7 @@ public class WtClockRoot extends FrameLayout {
         		getContext().getContentResolver().unregisterContentObserver(mStepsObserver);
 			}            
             if(mMobileSignalView != null || mMobileDataView != null){
-				mMobileController.destroy();
+				//mNetworkController.destroy();
 			}
             mHandler.removeCallbacks(mSecRunnable);
             mAttached = false;

@@ -24,7 +24,7 @@ import android.util.Log;
 
 public class MobileController{
 	private static final String TAG = "hcj.MobileController";
-	private Context mContext;
+	//private Context mContext;
 	private TelephonyManager mTelephonyManager;
 	private SubscriptionManager mSubscriptionManager;
 	private SignalStrength mSignalStrength;
@@ -33,6 +33,9 @@ public class MobileController{
 	private boolean mNoSims;
 	private int mDataNetType = TelephonyManager.NETWORK_TYPE_UNKNOWN;
 	private int mDataState = TelephonyManager.DATA_DISCONNECTED;
+	private WifiController mWifiController;
+	private boolean mWifiConnected;
+	private boolean mAirplaneOn;
 	
 	private static final boolean NETWORK_TYPE_MIN_3G = false;
 	public static final int WT_NETWORK_TYPE_NULL = 0;
@@ -101,7 +104,7 @@ public class MobileController{
     };
 	
 	public MobileController(Context context){
-		mContext = context;
+		//mContext = context;
 		
 		mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 		mTelephonyManager.listen(mPhoneStateListener,
@@ -128,9 +131,11 @@ public class MobileController{
 		mDataEnable = mTelephonyManager.getDataEnabled();
 	}
 	
-	public void destroy(){
+	public void onDestroy(Context context){
 		mSubscriptionManager.removeOnSubscriptionsChangedListener(mSubscriptionListener);
-		mContext.unregisterReceiver(mReceiver);
+		context.unregisterReceiver(mReceiver);
+		
+		mWifiController.onDestroy(context);
 	}
 	
 	@SuppressLint("NewApi")
@@ -268,7 +273,8 @@ public class MobileController{
                 }
         		break;
         }
-        if(!hasService() || mSignalStrength == null || mDataState != TelephonyManager.DATA_CONNECTED || !mDataEnable){
+        if(!hasService() || mSignalStrength == null 
+        	|| mDataState != TelephonyManager.DATA_CONNECTED || !mDataEnable){
         	tmpType = WT_NETWORK_TYPE_NULL;
         }
         if(tmpType != mDataType){
@@ -333,6 +339,14 @@ public class MobileController{
 		} else {
 			return false;
 		}
+	}
+	
+	public int getDateNetType(){
+		return mDataType;
+	}
+	
+	public boolean isDataEnable(){
+		return mTelephonyManager.getDataEnabled();
 	}
 	
 	private OnMobileListener mOnMobileListener;

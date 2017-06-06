@@ -42,11 +42,15 @@ public class AirplaneController {
 		context.unregisterReceiver(mReceiver);
 	}
 	
+	public void toggle(){
+		setEnable(!isEnabled());
+	}
+	
 	public boolean isEnabled() {
 		return (Settings.Global.getInt(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_ON, 0) == 1);
 	}
 	
-	 public void setEnabled(boolean enabled) {
+	 public void setEnable(boolean enabled) {
 	 	//Log.i(TAG,"setEnabled enabled="+enabled);
 	 	try{
 			//Settings.Global.putInt(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_ON, enabled ? 1: 0);

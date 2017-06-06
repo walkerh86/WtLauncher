@@ -27,7 +27,7 @@
     android:layout_height="wrap_content"
     android:src="@drawable/mobile_data_level_drawable"/>
 <ImageView
-    android:id="@+id/clk_wifi_on"
+    android:id="@+id/clk_wifi_connect"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:src="@drawable/wt_clock_11_wifi_on"/>       

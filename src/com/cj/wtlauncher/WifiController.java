@@ -34,12 +34,15 @@ public class WifiController {
 				if(connected != mConnected){
 					mConnected = connected;
 					if(mOnWifiChangeListener != null){
-						mOnWifiChangeListener.onWifiConnect(mConnected);
+						mOnWifiChangeListener.onWifiConnect(mConnected,mLevel);
 					}
 				}
 			}else if(action.equals(WifiManager.RSSI_CHANGED_ACTION)){
 				mRssi = intent.getIntExtra(WifiManager.EXTRA_NEW_RSSI, -200);
 				mLevel = WifiManager.calculateSignalLevel(mRssi, 5);
+				if(mOnWifiChangeListener != null){
+					mOnWifiChangeListener.onWifiConnect(mConnected,mLevel);
+				}
 			}			
 		}
 	};
@@ -59,15 +62,23 @@ public class WifiController {
 		context.unregisterReceiver(mReceiver);
 	}
 	
+	public void toggle(){
+		setEnable(!isEnabled());
+	}
+	
 	public boolean isEnabled() {
 		return mWifiManager != null && mWifiManager.isWifiEnabled();
 	}
 	
-	public void setEnabled(boolean enabled) {
+	public void setEnable(boolean enabled) {
 	 	if(mWifiManager == null){
 			return;
 	 	}
 	 	mWifiManager.setWifiEnabled(enabled);
+	}
+	
+	public boolean isConnected(){
+		return mConnected;
 	}
 	
 	private OnWifiChangeListener mOnWifiChangeListener;
@@ -77,6 +88,6 @@ public class WifiController {
 	
 	public interface OnWifiChangeListener{
 		void onWifiEnable(boolean enable);
-		void onWifiConnect(boolean connected);
+		void onWifiConnect(boolean connected, int level);
 	}
 }

@@ -51,9 +51,8 @@ public class WtClockRoot extends FrameLayout {
 	private View mClockMessage;
 	private WtClock mClockBt;
 	private WtClock mClockWifi;
-	private ImageView mClockWifiOn;
+	private ImageView mClockWifiConnect;
 	private QSBluetoothTile mQSBluetoothTile;
-	private QSWifiTile mQSWifiTile;
 	//
 	private NetworkController mNetworkController;
 	private ImageView mMobileSignalView;
@@ -161,9 +160,9 @@ public class WtClockRoot extends FrameLayout {
     	if(clockItem != null){
     		mClockWifi = (WtClock)clockItem;
     	}
-    	clockItem = findViewById(R.id.clk_wifi_on);
+    	clockItem = findViewById(R.id.clk_wifi_connect);
     	if(clockItem != null){
-    		mClockWifiOn = (ImageView)clockItem;
+    		mClockWifiConnect = (ImageView)clockItem;
     	}
     	
     	clockItem = findViewById(R.id.clk_mobile_signal);
@@ -202,26 +201,6 @@ public class WtClockRoot extends FrameLayout {
 				});
 				mClockBt.setValue(mQSBluetoothTile.isEnabled() ? 1 : 0);
 			}
-			if(mClockWifi != null || mClockWifiOn != null){
-				mQSWifiTile = new QSWifiTile(getContext(),null,null);
-				mQSWifiTile.setOnStateChangedListener(new QSWifiTile.OnStateChangedListener(){
-					@Override
-					public void onStateChanged(boolean enabled){
-						if(mClockWifi != null){
-							mClockWifi.setValue(enabled ? 1 : 0);
-						}
-						if(mClockWifiOn != null){
-							mClockWifiOn.setVisibility(enabled ? View.VISIBLE : View.GONE);
-						}
-					}
-				});
-				if(mClockWifi != null){
-					mClockWifi.setValue(mQSWifiTile.isEnabled() ? 1 : 0);
-				}
-				if(mClockWifiOn != null){
-					mClockWifiOn.setVisibility(mQSWifiTile.isEnabled() ? View.VISIBLE : View.GONE);
-				}
-			}
 			
 			if(mClockStep != null){
 				getContext().getContentResolver().registerContentObserver(
@@ -230,11 +209,14 @@ public class WtClockRoot extends FrameLayout {
 						UserHandle.USER_ALL);
 			}
 			
-			if(mMobileSignalView != null || mMobileDataView != null){
+			if(mMobileSignalView != null || mMobileDataView != null || mClockWifiConnect != null || mClockWifi != null){
 				mNetworkController = NetworkController.getInstance(getContext());
 				mNetworkController.addOnNetworkListener(new NetworkController.OnNetworkListener() {					
 					@Override
 					public void onSignalStrengthChange(int level) {
+						if(level < 0){
+							level = 0;
+						}
 						mMobileSignalView.setImageLevel(level);
 					}
 					
@@ -256,14 +238,30 @@ public class WtClockRoot extends FrameLayout {
 					
 					@Override
 					public void onWifiEnable(boolean enable){
-						
+						if(mClockWifi != null){
+							mClockWifi.setValue(enable ? 1 : 0);
+						}
+					}
+					
+					@Override
+					public void onWifiConnect(boolean connected, int level){
+						if(mClockWifiConnect != null){
+							mClockWifiConnect.setVisibility(connected ? View.VISIBLE : View.GONE);
+						}
 					}
 					
 					@Override
 					public void onAirplaneEnable(boolean enable){
 						
 					}
-				});
+				});		
+				
+				if(mClockWifi != null){
+					mClockWifi.setValue(mNetworkController.isWifiEnabled() ? 1 : 0);
+				}
+				if(mClockWifiConnect != null){
+					mClockWifiConnect.setVisibility(mNetworkController.isWifiConnected() ? View.VISIBLE : View.GONE);
+				}
 			}
             
             mHandler.postDelayed(mSecRunnable, 1000);
@@ -281,9 +279,6 @@ public class WtClockRoot extends FrameLayout {
             getContext().unregisterReceiver(mIntentReceiver);
         	if(mClockBt != null && mQSBluetoothTile != null){
 				mQSBluetoothTile.onDestroy(getContext());				
-			}
-			if(mClockWifi != null && mQSWifiTile != null){
-				mQSWifiTile.onDestroy(getContext());
 			}
         	if(mClockStep != null){
         		getContext().getContentResolver().unregisterContentObserver(mStepsObserver);

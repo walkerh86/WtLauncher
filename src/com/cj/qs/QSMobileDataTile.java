@@ -57,6 +57,11 @@ public class QSMobileDataTile extends QSTile{
 			}
 			
 			@Override
+			public void onWifiConnect(boolean connected, int level){
+				
+			}
+			
+			@Override
 			public void onAirplaneEnable(boolean enable){
 				mAirplaneOn = enable;
 				updateView(isEnabled());

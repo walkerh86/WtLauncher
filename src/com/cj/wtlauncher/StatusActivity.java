@@ -56,10 +56,15 @@ public class StatusActivity extends Activity{
 	//private int mMaximumBacklight;
 
 	private QSBluetoothTile mBluetoothTile;
-	private QSWifiTile mWifiTile;
-	private QSMobileDataTile mMobileDataTile;
-	private QSAirplaneTile mAirplaneTile;
+	//private QSWifiTile mWifiTile;
+	//private QSMobileDataTile mMobileDataTile;
+	//private QSAirplaneTile mAirplaneTile;
 	private QSRaiseWakeTile mQSRaiseWakeTile;
+	
+	ImageView mWifiEnableView;
+	ImageView mWifiConnectView;
+	ImageView mMobileDataEnableView;
+	ImageView mAirplaneEnableView;
 
 	//signal
 	private ImageView mSignalView;
@@ -70,6 +75,15 @@ public class StatusActivity extends Activity{
 	//notification mode
 	private ImageView mNotfiyModeNormalBtn;
 	private ImageView mNotfiyModeVibrateBtn;
+	
+	private NetworkController mNetworkController;
+	static final int[] WIFI_SIGNAL_STRENGTH_FULL = {
+			R.drawable.stat_sys_wifi_strength_0,
+			R.drawable.stat_sys_wifi_strength_1,
+			R.drawable.stat_sys_wifi_strength_2,
+			R.drawable.stat_sys_wifi_strength_3,
+			R.drawable.stat_sys_wifi_strength_4,
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,16 +109,34 @@ public class StatusActivity extends Activity{
 		ImageView btStatusView = (ImageView)findViewById(R.id.img_bt);
 		mBluetoothTile = new QSBluetoothTile(this,bluetoothTileView,btStatusView);
 		
-		QSTileView wifiTileView = (QSTileView)findViewById(R.id.wifi_settings);
-		ImageView wifiStatusView = (ImageView)findViewById(R.id.img_wifi);
-		mWifiTile = new QSWifiTile(this,wifiTileView,wifiStatusView);
+		mWifiEnableView = (ImageView)findViewById(R.id.wifi_settings);
+		mWifiConnectView = (ImageView)findViewById(R.id.img_wifi);
+		mWifiEnableView.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View arg0) {
+				mNetworkController.toggleWifi();
+			}
+		});
+		//mWifiTile = new QSWifiTile(this,wifiTileView,wifiStatusView);
 		
-		QSTileView mobileDataView = (QSTileView)findViewById(R.id.mobile_data_settings);
-		mMobileDataTile = new QSMobileDataTile(this,mobileDataView);
+		mMobileDataEnableView = (ImageView)findViewById(R.id.mobile_data_settings);
+		mMobileDataEnableView.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View arg0) {
+				mNetworkController.toggleMobileData();
+			}
+		});
+		//mMobileDataTile = new QSMobileDataTile(this,mobileDataView);
 
-		QSTileView airplaneView = (QSTileView)findViewById(R.id.system_airplane_mode);
-		mAirplaneTile = new QSAirplaneTile(this,airplaneView);
-
+		mAirplaneEnableView = (ImageView)findViewById(R.id.system_airplane_mode);
+		mAirplaneEnableView.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View arg0) {
+				mNetworkController.toggleAirplane();
+			}
+		});
+		//mAirplaneTile = new QSAirplaneTile(this,airplaneView);
+		
 		QSTileView raiseWakeView = (QSTileView)findViewById(R.id.system_screenon_guesture);
 		mQSRaiseWakeTile = new QSRaiseWakeTile(this,raiseWakeView);
 
@@ -113,8 +145,8 @@ public class StatusActivity extends Activity{
 		mOperatorView = (TextView)findViewById(R.id.tv_operator);
 		
 		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(mPhoneStateListener,PhoneStateListener.LISTEN_SERVICE_STATE|PhoneStateListener.LISTEN_SIGNAL_STRENGTHS); 
-		updateTelephony();
+		//telephonyManager.listen(mPhoneStateListener,PhoneStateListener.LISTEN_SERVICE_STATE|PhoneStateListener.LISTEN_SIGNAL_STRENGTHS); 
+		//updateTelephony();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
@@ -131,6 +163,58 @@ public class StatusActivity extends Activity{
 		mNotfiyModeVibrateBtn = (ImageView)findViewById(R.id.notify_send_style_2);
 		mNotfiyModeVibrateBtn.setOnClickListener(mOnClickListener);
 		updateNotificationModeView(getNotificationMode());
+		
+		mNetworkController = NetworkController.getInstance(this);
+		mNetworkController.addOnNetworkListener(new NetworkController.OnNetworkListener() {					
+			@Override
+			public void onSignalStrengthChange(int level) {
+				if(level < 0){
+					mSignalView.setImageResource(R.drawable.stat_sys_mobile_strength_null);
+				}else{
+					mSignalView.setImageResource(SIGNAL_STRENGTH_ICONS[level]);
+				}
+			}
+			
+			@Override
+			public void onDataTypeChange(int dataType){
+				int level = 0;
+				if(dataType == MobileController.WT_NETWORK_TYPE_2G){
+					level = 1;
+				}else{
+					level = 2;
+				}
+				//mMobileDataView.setImageLevel(level);
+			}
+			
+			@Override
+			public void onDataEnable(boolean enable){
+				updateMobileDataView(enable);
+			}
+			
+			@Override
+			public void onWifiEnable(boolean enable){
+				updateWifiView(enable);
+			}
+			
+			@Override
+			public void onWifiConnect(boolean connected, int level){
+				if(connected){
+					mWifiConnectView.setImageResource(WIFI_SIGNAL_STRENGTH_FULL[level]);
+					mWifiConnectView.setVisibility(View.VISIBLE);
+				}else{
+					mWifiConnectView.setVisibility(View.GONE);
+				}
+			}
+			
+			@Override
+			public void onAirplaneEnable(boolean enable){
+				updateAirplaneView(enable);
+			}
+		});
+		
+		updateAirplaneView(mNetworkController.isAirplaneOn());
+		updateWifiView(mNetworkController.isWifiEnabled());
+		updateMobileDataView(mNetworkController.isMobileDataEnable());
 	}
 
 	@Override
@@ -139,9 +223,21 @@ public class StatusActivity extends Activity{
 		mSubscriptionManager.removeOnSubscriptionsChangedListener(mSubscriptionListener);
 		unregisterReceiver(mReceiver);
 		mBluetoothTile.onDestroy(this);
-		mWifiTile.onDestroy(this);
-		mAirplaneTile.onDestroy(this);
-		mMobileDataTile.onDestroy(this);
+		//mWifiTile.onDestroy(this);
+		//mAirplaneTile.onDestroy(this);
+		//mMobileDataTile.onDestroy(this);
+	}
+	
+	private void updateAirplaneView(boolean airplaneOn){
+		mAirplaneEnableView.setImageResource(airplaneOn ? R.drawable.smart_watch_airmode_on : R.drawable.smart_watch_airmode_off);
+	}
+	
+	private void updateWifiView(boolean enable){
+		mWifiEnableView.setImageResource(enable ? R.drawable.smart_watch_wifi_on : R.drawable.smart_watch_wifi_off);
+	}
+	
+	private void updateMobileDataView(boolean enable){
+		mMobileDataEnableView.setImageResource(enable ? R.drawable.smart_watch_mobile_data_on : R.drawable.smart_watch_mobile_data_off);
 	}
 
 	private void updateBrightnessViews(){
@@ -175,7 +271,7 @@ public class StatusActivity extends Activity{
 	}
 
 	private void setBrightnessValue(int value){
-		Log.i(TAG, "setBrightnessValue value="+value);
+		Log.i(TAG, "setBrightnessValue 0="+value);
 		try{
 			Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS,value);
 			updateBrightnessViews();

@@ -143,7 +143,7 @@ public class MobileController{
 		mStateConnected = hasService() && mSignalStrength != null;
 		Log.i(TAG,"updateTelephony mStateConnected="+mStateConnected);
 		
-		int signalLevel = 0;
+		int signalLevel = -1;
 		if(mStateConnected){
 			signalLevel = mSignalStrength.getLevel();
 		}
@@ -345,8 +345,22 @@ public class MobileController{
 		return mDataType;
 	}
 	
+	public void toggle(){
+		setEnable(!isDataEnable());
+	}
+	
 	public boolean isDataEnable(){
 		return mTelephonyManager.getDataEnabled();
+	}
+	
+	public void setEnable(boolean enable){
+		try{
+			if (mTelephonyManager != null) {
+				mTelephonyManager.setDataEnabled(enable);
+			}
+		}catch(Exception e){
+			Log.i(TAG,"setEnabled e="+e);
+		}
 	}
 	
 	private OnMobileListener mOnMobileListener;

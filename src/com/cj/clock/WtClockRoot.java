@@ -209,52 +209,9 @@ public class WtClockRoot extends FrameLayout {
 						UserHandle.USER_ALL);
 			}
 			
-			if(mMobileSignalView != null || mMobileDataView != null || mClockWifiConnect != null || mClockWifi != null){
+			if(isNetworkControllerNeeded()){
 				mNetworkController = NetworkController.getInstance(getContext());
-				mNetworkController.addOnNetworkListener(new NetworkController.OnNetworkListener() {					
-					@Override
-					public void onSignalStrengthChange(int level) {
-						if(level < 0){
-							level = 0;
-						}
-						mMobileSignalView.setImageLevel(level);
-					}
-					
-					@Override
-					public void onDataTypeChange(int dataType){
-						int level = 0;
-						if(dataType == MobileController.WT_NETWORK_TYPE_2G){
-							level = 1;
-						}else if(dataType == MobileController.WT_NETWORK_TYPE_3G){
-							level = 2;
-						}
-						mMobileDataView.setImageLevel(level);
-					}
-					
-					@Override
-					public void onDataEnable(boolean enable){
-						
-					}
-					
-					@Override
-					public void onWifiEnable(boolean enable){
-						if(mClockWifi != null){
-							mClockWifi.setValue(enable ? 1 : 0);
-						}
-					}
-					
-					@Override
-					public void onWifiConnect(boolean connected, int level){
-						if(mClockWifiConnect != null){
-							mClockWifiConnect.setVisibility(connected ? View.VISIBLE : View.GONE);
-						}
-					}
-					
-					@Override
-					public void onAirplaneEnable(boolean enable){
-						
-					}
-				});		
+				mNetworkController.addOnNetworkListener(mOnNetworkListener);		
 				
 				if(mClockWifi != null){
 					mClockWifi.setValue(mNetworkController.isWifiEnabled() ? 1 : 0);
@@ -283,13 +240,62 @@ public class WtClockRoot extends FrameLayout {
         	if(mClockStep != null){
         		getContext().getContentResolver().unregisterContentObserver(mStepsObserver);
 			}            
-            if(mMobileSignalView != null || mMobileDataView != null){
-				//mNetworkController.destroy();
+            if(mNetworkController != null){
+            	mNetworkController.removeOnNetworkListener(mOnNetworkListener);
 			}
             mHandler.removeCallbacks(mSecRunnable);
             mAttached = false;
         }
     }
+    
+    private boolean isNetworkControllerNeeded(){
+    	return mMobileSignalView != null || mMobileDataView != null || mClockWifiConnect != null || mClockWifi != null;
+    }
+    
+    private NetworkController.OnNetworkListener mOnNetworkListener = new NetworkController.OnNetworkListener() {					
+		@Override
+		public void onSignalStrengthChange(int level) {
+			if(level < 0){
+				level = 0;
+			}
+			mMobileSignalView.setImageLevel(level);
+		}
+		
+		@Override
+		public void onDataTypeChange(int dataType){
+			int level = 0;
+			if(dataType == MobileController.WT_NETWORK_TYPE_2G){
+				level = 1;
+			}else if(dataType == MobileController.WT_NETWORK_TYPE_3G){
+				level = 2;
+			}
+			mMobileDataView.setImageLevel(level);
+		}
+		
+		@Override
+		public void onDataEnable(boolean enable){
+			
+		}
+		
+		@Override
+		public void onWifiEnable(boolean enable){
+			if(mClockWifi != null){
+				mClockWifi.setValue(enable ? 1 : 0);
+			}
+		}
+		
+		@Override
+		public void onWifiConnect(boolean connected, int level){
+			if(mClockWifiConnect != null){
+				mClockWifiConnect.setVisibility(connected ? View.VISIBLE : View.GONE);
+			}
+		}
+		
+		@Override
+		public void onAirplaneEnable(boolean enable){
+			
+		}
+	};
     
     private void onTimeChanged() {
         mCalendar.setToNow();

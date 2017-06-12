@@ -65,9 +65,12 @@ public class StatusActivity extends Activity{
 	ImageView mWifiConnectView;
 	ImageView mMobileDataEnableView;
 	ImageView mAirplaneEnableView;
+	private boolean mAirplaneOn;
+	private boolean mWifiConnected;
 
 	//signal
 	private ImageView mSignalView;
+	private ImageView mMobileDataTypeView;
 	private TextView mOperatorView;
 
 	private SubscriptionManager mSubscriptionManager;
@@ -149,6 +152,7 @@ public class StatusActivity extends Activity{
 
 		//status bar
 		mSignalView = (ImageView)findViewById(R.id.img_signal);
+		mMobileDataTypeView = (ImageView)findViewById(R.id.img_type);
 		mOperatorView = (TextView)findViewById(R.id.tv_operator);
 		
 		IntentFilter filter = new IntentFilter();
@@ -190,6 +194,9 @@ public class StatusActivity extends Activity{
 	private NetworkController.OnNetworkListener mOnNetworkListener = new NetworkController.OnNetworkListener() {					
 		@Override
 		public void onSignalStrengthChange(int level) {
+			if(mAirplaneOn){
+				return;
+			}
 			if(level < 0){
 				mSignalView.setImageResource(R.drawable.stat_sys_mobile_strength_null);
 			}else{
@@ -199,13 +206,7 @@ public class StatusActivity extends Activity{
 		
 		@Override
 		public void onDataTypeChange(int dataType){
-			int level = 0;
-			if(dataType == MobileController.WT_NETWORK_TYPE_2G){
-				level = 1;
-			}else{
-				level = 2;
-			}
-			//mMobileDataView.setImageLevel(level);
+			updateMobileDataTypeView(dataType);
 		}
 		
 		@Override
@@ -220,22 +221,48 @@ public class StatusActivity extends Activity{
 		
 		@Override
 		public void onWifiConnect(boolean connected, int level){
+			mWifiConnected = connected;
 			if(connected){
 				mWifiConnectView.setImageResource(WIFI_SIGNAL_STRENGTH_FULL[level]);
 				mWifiConnectView.setVisibility(View.VISIBLE);
+				updateMobileDataTypeView(MobileController.WT_NETWORK_TYPE_NULL);
 			}else{
-				mWifiConnectView.setVisibility(View.GONE);
+				mWifiConnectView.setVisibility(View.GONE);				
 			}
 		}
 		
 		@Override
 		public void onAirplaneEnable(boolean enable){
+			mAirplaneOn = enable;
 			updateAirplaneView(enable);
 		}
 	};
 	
+	private void updateMobileDataTypeView(int dataType){
+		int level = 0;
+		if(dataType == MobileController.WT_NETWORK_TYPE_2G){
+			level = R.drawable.stat_sys_mobile_2g;
+		}else if(dataType == MobileController.WT_NETWORK_TYPE_3G){
+			level = R.drawable.stat_sys_mobile_3g;
+		}else if(dataType == MobileController.WT_NETWORK_TYPE_4G){
+			level = R.drawable.stat_sys_mobile_4g;
+		}
+		
+		if(level == 0){
+			mMobileDataTypeView.setImageDrawable(null);
+		}else{
+			mMobileDataTypeView.setImageResource(level);
+		}
+	}
+	
 	private void updateAirplaneView(boolean airplaneOn){
 		mAirplaneEnableView.setImageResource(airplaneOn ? R.drawable.smart_watch_airmode_on : R.drawable.smart_watch_airmode_off);
+		if(airplaneOn){
+			mSignalView.setImageResource(R.drawable.stat_sys_mobile_airplane);
+			mOperatorView.setVisibility(View.GONE);
+		}else{
+			mOperatorView.setVisibility(View.VISIBLE);
+		}
 	}
 	
 	private void updateWifiView(boolean enable){
@@ -384,7 +411,7 @@ public class StatusActivity extends Activity{
 		mStateConnected = hasService() && mSignalStrength != null;
 		Log.i("hcj","updateTelephony mStateConnected="+mStateConnected);
 		int signalIconId = getSimStateIconId();
-		mSignalView.setImageResource(signalIconId);
+		//mSignalView.setImageResource(signalIconId);
 		if(mNoSims){
 			mOperatorView.setText(R.string.no_sim_card);
 		}else{

@@ -28,6 +28,7 @@ public class MobileController{
 	private TelephonyManager mTelephonyManager;
 	private SubscriptionManager mSubscriptionManager;
 	private SignalStrength mSignalStrength;
+	private int mSignalLevel = -1;
 	private ServiceState mServiceState;
 	private boolean mStateConnected;
 	private boolean mNoSims;
@@ -43,7 +44,7 @@ public class MobileController{
 	public static final int WT_NETWORK_TYPE_3G = 2;
 	public static final int WT_NETWORK_TYPE_4G = 3;
 	
-	private int mNetworkType = WT_NETWORK_TYPE_NULL;
+	//private int mNetworkType = WT_NETWORK_TYPE_NULL;
 	private int mDataType = WT_NETWORK_TYPE_NULL;
 	private boolean mDataEnable;
 
@@ -143,13 +144,68 @@ public class MobileController{
 		mStateConnected = hasService() && mSignalStrength != null;
 		Log.i(TAG,"updateTelephony mStateConnected="+mStateConnected);
 		
-		int signalLevel = -1;
+		//int signalLevel = -1;
 		if(mStateConnected){
-			signalLevel = mSignalStrength.getLevel();
+			mSignalLevel = mSignalStrength.getLevel();
 		}
 		if(mOnMobileListener != null){
-			mOnMobileListener.onSignalStrengthChange(signalLevel);
+			mOnMobileListener.onSignalStrengthChange(mSignalLevel);
 		}
+		
+		boolean dataConnected = mStateConnected && mDataState == TelephonyManager.DATA_CONNECTED;
+		int networkType = WT_NETWORK_TYPE_NULL;
+		if(dataConnected){			
+			networkType = convertDataNetType(mDataNetType);
+		}		
+    	if(mOnMobileListener != null){
+    		mOnMobileListener.onDataTypeChange(networkType);
+    	}
+	}
+	
+	private int convertDataNetType(int originType){
+		int networkType = WT_NETWORK_TYPE_NULL;
+		switch (originType) {
+        case TelephonyManager.NETWORK_TYPE_UNKNOWN:
+            if (!NETWORK_TYPE_MIN_3G) {
+            	networkType = WT_NETWORK_TYPE_2G;
+                break;
+            }
+        case TelephonyManager.NETWORK_TYPE_EDGE:
+            if (!NETWORK_TYPE_MIN_3G) {
+            	networkType = WT_NETWORK_TYPE_2G;
+                break;
+            }
+        case TelephonyManager.NETWORK_TYPE_UMTS:
+        	networkType = WT_NETWORK_TYPE_3G;
+            break;
+        case TelephonyManager.NETWORK_TYPE_HSDPA:
+        case TelephonyManager.NETWORK_TYPE_HSUPA:
+        case TelephonyManager.NETWORK_TYPE_HSPA:
+        case TelephonyManager.NETWORK_TYPE_HSPAP:
+        	networkType = WT_NETWORK_TYPE_3G;
+            break;
+        case TelephonyManager.NETWORK_TYPE_CDMA:
+        case TelephonyManager.NETWORK_TYPE_1xRTT:
+        	networkType = WT_NETWORK_TYPE_2G;
+            break;
+        case TelephonyManager.NETWORK_TYPE_EVDO_0: //fall through
+        case TelephonyManager.NETWORK_TYPE_EVDO_A:
+        case TelephonyManager.NETWORK_TYPE_EVDO_B:
+        case TelephonyManager.NETWORK_TYPE_EHRPD:
+        	networkType = WT_NETWORK_TYPE_2G;
+            break;
+        case TelephonyManager.NETWORK_TYPE_LTE:
+        	networkType = WT_NETWORK_TYPE_4G;
+            break;
+        default:
+            if (!NETWORK_TYPE_MIN_3G) {
+            	networkType = WT_NETWORK_TYPE_2G;
+            } else {
+            	networkType = WT_NETWORK_TYPE_3G;
+            }
+            break;
+		}
+		return networkType;
 	}
 	
 	private void updateSimState(){
@@ -235,7 +291,7 @@ public class MobileController{
         	mNetworkType = networkType;        	
         }
         */
-        
+        /*
         boolean dataEnable = mTelephonyManager.getDataEnabled();
         if(dataEnable != mDataEnable){
         	mDataEnable = dataEnable;
@@ -245,7 +301,20 @@ public class MobileController{
         }
         
         int tmpType = WT_NETWORK_TYPE_NULL;
-        switch(mDataNetType){
+        if (mServiceState != null) {
+        	int networkTypeData = mDataNetType;
+        	if ((mDataState == TelephonyManager.DATA_UNKNOWN ||
+                    mDataState == TelephonyManager.DATA_DISCONNECTED)) {
+                   Log.d(TAG, "updateNetworkType: DataState= " + mDataState
+                          + ", getDataNetworkType= " + mServiceState.getDataNetworkType());
+                   networkTypeData = mServiceState.getDataNetworkType();
+            }
+        	tmpType = getNWTypeByPriority(mServiceState.getVoiceNetworkType(),networkTypeData);            		   
+        }else{
+        	tmpType = mDataNetType;
+        }
+        
+        switch(tmpType){
         	case TelephonyManager.NETWORK_TYPE_EDGE:
         	case TelephonyManager.NETWORK_TYPE_CDMA:
         	case TelephonyManager.NETWORK_TYPE_1xRTT:
@@ -273,18 +342,20 @@ public class MobileController{
                 }
         		break;
         }
+*/
+        /*
         if(!hasService() || mSignalStrength == null 
         	|| mDataState != TelephonyManager.DATA_CONNECTED || !mDataEnable){
         	tmpType = WT_NETWORK_TYPE_NULL;
-        }
-        if(tmpType != mDataType){
-        	mDataType = tmpType;
-        	if(mOnMobileListener != null){
-        		mOnMobileListener.onDataTypeChange(mDataType);
-        	}
-        }            
+        }*/
+        //if(tmpType != mDataType){
+        	//mDataType = tmpType;
+        	//if(mOnMobileListener != null){
+        		//mOnMobileListener.onDataTypeChange(tmpType);
+        	//}
+        //}            
 
-        Log.d(TAG, "updateNetworkType: mNetworkType=" + mNetworkType+",mDataType="+mDataType);
+        //Log.d(TAG, "updateNetworkType: mNetworkType=" + mNetworkType+",mDataType="+mDataType);
     }
 	
 	private void getDataConnectionState() {
@@ -339,6 +410,10 @@ public class MobileController{
 		} else {
 			return false;
 		}
+	}
+	
+	public int getSignalStrengthLevel(){
+		return mStateConnected ? mSignalLevel : -1;
 	}
 	
 	public int getDateNetType(){

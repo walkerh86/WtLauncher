@@ -119,6 +119,10 @@ public class NetworkController {
 		mMobileController.toggle();
 	}
 	
+	public int getMobileSignalStrengthLevel(){
+		return mMobileController.getSignalStrengthLevel();
+	}
+	
 	private void notifySignalStrengthChange(int strength){
 		for(int i=0;i<mOnNetworkListeners.size();i++){
 			mOnNetworkListeners.get(i).onSignalStrengthChange(strength);

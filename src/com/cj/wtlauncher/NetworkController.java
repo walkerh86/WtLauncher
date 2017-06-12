@@ -123,6 +123,10 @@ public class NetworkController {
 		return mMobileController.getSignalStrengthLevel();
 	}
 	
+	public int getMobileDataNetType(){
+		return mMobileController.getDateNetType();
+	}
+	
 	private void notifySignalStrengthChange(int strength){
 		for(int i=0;i<mOnNetworkListeners.size();i++){
 			mOnNetworkListeners.get(i).onSignalStrengthChange(strength);

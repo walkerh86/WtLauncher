@@ -141,13 +141,14 @@ public class MobileController{
 	
 	@SuppressLint("NewApi")
 	private void updateTelephony(){
-		mStateConnected = hasService() && mSignalStrength != null;
-		Log.i(TAG,"updateTelephony mStateConnected="+mStateConnected);
-		
+		mStateConnected = hasService() && mSignalStrength != null;		
 		//int signalLevel = -1;
 		if(mStateConnected){
 			mSignalLevel = mSignalStrength.getLevel();
+		}else{
+			mSignalLevel = -1;
 		}
+		Log.i(TAG,"updateTelephony mStateConnected="+mStateConnected+",mSignalLevel="+mSignalLevel);
 		if(mOnMobileListener != null){
 			mOnMobileListener.onSignalStrengthChange(mSignalLevel);
 		}
@@ -156,7 +157,8 @@ public class MobileController{
 		int networkType = WT_NETWORK_TYPE_NULL;
 		if(dataConnected){			
 			networkType = convertDataNetType(mDataNetType);
-		}		
+		}	
+		mDataType = networkType;
     	if(mOnMobileListener != null){
     		mOnMobileListener.onDataTypeChange(networkType);
     	}
@@ -362,9 +364,9 @@ public class MobileController{
 		boolean dataEnable = mTelephonyManager.getDataEnabled();
 		Log.d(TAG, "getDataConnectionState: dataEnable=" + dataEnable);
 		//todo , add airplane mode
-		if(mOnMobileListener != null){
-    		mOnMobileListener.onDataTypeChange(dataEnable ? 2 : 0);
-    	}
+		//if(mOnMobileListener != null){
+    		//mOnMobileListener.onDataTypeChange(dataEnable ? 2 : 0);
+    	//}
 	}
 		
 	 /// M: Support "Service Network Type on Statusbar". @{
@@ -433,6 +435,9 @@ public class MobileController{
 			if (mTelephonyManager != null) {
 				mTelephonyManager.setDataEnabled(enable);
 			}
+			if(mOnMobileListener != null){
+        		mOnMobileListener.onDataEnable(enable);
+        	}
 		}catch(Exception e){
 			Log.i(TAG,"setEnabled e="+e);
 		}

@@ -4,11 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.net.ConnectivityManager;
+import android.os.Handler;
 import android.provider.Settings;
+import android.provider.Settings.Global;
 import android.util.Log;
 
 public class AirplaneController {
+	public static final String TAG = "hcj.AirplaneController";
 	private Context mContext;
 	private boolean mEnabled;
 	
@@ -17,14 +21,15 @@ public class AirplaneController {
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
 			if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
-				boolean enable = isEnabled();
-				if(enable != mEnabled){
-					mEnabled = enable;
-					if(mOnAirplaneChangeListener != null){
-						mOnAirplaneChangeListener.onAirplaneChange(enable);
-					}
-				}
+				updateState();
 			}
+		}
+	};
+	
+	private ContentObserver mContentObserver = new ContentObserver(new Handler()){
+		@Override
+		public void onChange(boolean selfChange) {
+			updateState();
 		}
 	};
 	
@@ -36,10 +41,13 @@ public class AirplaneController {
 		final IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
 		context.registerReceiver(mReceiver, filter);
+		
+		context.getContentResolver().registerContentObserver(Global.getUriFor(Global.AIRPLANE_MODE_ON),false,mContentObserver);
 	}
 	
 	public void onDestroy(Context context){
 		context.unregisterReceiver(mReceiver);
+		context.getContentResolver().unregisterContentObserver(mContentObserver);
 	}
 	
 	public void toggle(){
@@ -50,6 +58,17 @@ public class AirplaneController {
 		return (Settings.Global.getInt(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_ON, 0) == 1);
 	}
 	
+	private void updateState(){
+		boolean enable = isEnabled();
+		Log.i(TAG, "updateState enable="+enable+",mEnabled="+mEnabled);
+		if(enable != mEnabled){
+			mEnabled = enable;
+			if(mOnAirplaneChangeListener != null){
+				mOnAirplaneChangeListener.onAirplaneChange(enable);
+			}
+		}
+	}
+	
 	 public void setEnable(boolean enabled) {
 	 	//Log.i(TAG,"setEnabled enabled="+enabled);
 	 	try{
@@ -57,7 +76,7 @@ public class AirplaneController {
 			final ConnectivityManager mgr = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 			mgr.setAirplaneMode(enabled);
 		}catch(Exception e){
-			//Log.i(TAG,"setEnabled e="+e);
+			Log.i(TAG,"setEnabled e="+e);
 		}
 	 }
 	 

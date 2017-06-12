@@ -174,9 +174,12 @@ public class StatusActivity extends Activity{
 		mNetworkController = NetworkController.getInstance(this);
 		mNetworkController.addOnNetworkListener(mOnNetworkListener);
 		
-		updateAirplaneView(mNetworkController.isAirplaneOn());
+		mAirplaneOn = mNetworkController.isAirplaneOn();
+		updateAirplaneView(mAirplaneOn);
 		updateWifiView(mNetworkController.isWifiEnabled());
 		updateMobileDataView(mNetworkController.isMobileDataEnable());
+		updateMobileSignalStrengthView(mNetworkController.getMobileSignalStrengthLevel());
+		updateMobileDataTypeView(mNetworkController.getMobileDataNetType());
 	}
 
 	@Override
@@ -193,15 +196,8 @@ public class StatusActivity extends Activity{
 	
 	private NetworkController.OnNetworkListener mOnNetworkListener = new NetworkController.OnNetworkListener() {					
 		@Override
-		public void onSignalStrengthChange(int level) {
-			if(mAirplaneOn){
-				return;
-			}
-			if(level < 0){
-				mSignalView.setImageResource(R.drawable.stat_sys_mobile_strength_null);
-			}else{
-				mSignalView.setImageResource(SIGNAL_STRENGTH_ICONS[level]);
-			}
+		public void onSignalStrengthChange(int level) {			
+			updateMobileSignalStrengthView(level);
 		}
 		
 		@Override
@@ -233,6 +229,7 @@ public class StatusActivity extends Activity{
 		
 		@Override
 		public void onAirplaneEnable(boolean enable){
+			Log.i(AirplaneController.TAG,"onAirplaneEnable enable="+enable);
 			mAirplaneOn = enable;
 			updateAirplaneView(enable);
 		}
@@ -255,12 +252,24 @@ public class StatusActivity extends Activity{
 		}
 	}
 	
+	private void updateMobileSignalStrengthView(int level){
+		if(mAirplaneOn){
+			return;
+		}
+		if(level < 0){
+			mSignalView.setImageResource(R.drawable.stat_sys_mobile_strength_null);
+		}else{
+			mSignalView.setImageResource(SIGNAL_STRENGTH_ICONS[level]);
+		}
+	}
+	
 	private void updateAirplaneView(boolean airplaneOn){
 		mAirplaneEnableView.setImageResource(airplaneOn ? R.drawable.smart_watch_airmode_on : R.drawable.smart_watch_airmode_off);
 		if(airplaneOn){
 			mSignalView.setImageResource(R.drawable.stat_sys_mobile_airplane);
 			mOperatorView.setVisibility(View.GONE);
 		}else{
+			mSignalView.setImageResource(R.drawable.stat_sys_mobile_strength_null);
 			mOperatorView.setVisibility(View.VISIBLE);
 		}
 	}

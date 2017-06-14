@@ -173,6 +173,9 @@ public class WtClock extends View {
     
     public void setValue(int value){
     	mValue = value;
+    	if(mValue > mValueMax){
+    		mValue = mValueMax;
+    	}
     	invalidate();
     }
     

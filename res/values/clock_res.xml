@@ -30,33 +30,46 @@
     <declare-styleable name="WtDate">
         <attr name="date_format" format="string"/>        
     </declare-styleable>
-
-    <array name="wt_clock_5_digit_drawables">
-       <item>@drawable/wt_clock_5_digit_0</item>
-       <item>@drawable/wt_clock_5_digit_1</item>
-       <item>@drawable/wt_clock_5_digit_2</item>
-       <item>@drawable/wt_clock_5_digit_3</item>
-       <item>@drawable/wt_clock_5_digit_4</item>
-       <item>@drawable/wt_clock_5_digit_5</item>
-       <item>@drawable/wt_clock_5_digit_6</item>
-       <item>@drawable/wt_clock_5_digit_7</item>
-       <item>@drawable/wt_clock_5_digit_8</item>
-       <item>@drawable/wt_clock_5_digit_9</item>
+    
+    <array name="wt_clock_3_hour_digit_drawables">
+       <item>@drawable/my_z8_clock_2_hour_0</item>
+       <item>@drawable/my_z8_clock_2_hour_1</item>
+       <item>@drawable/my_z8_clock_2_hour_2</item>
+       <item>@drawable/my_z8_clock_2_hour_3</item>
+       <item>@drawable/my_z8_clock_2_hour_4</item>
+       <item>@drawable/my_z8_clock_2_hour_5</item>
+       <item>@drawable/my_z8_clock_2_hour_6</item>
+       <item>@drawable/my_z8_clock_2_hour_7</item>
+       <item>@drawable/my_z8_clock_2_hour_8</item>
+       <item>@drawable/my_z8_clock_2_hour_9</item>
     </array>
     
-    <array name="wt_clock_9_digit_drawables">
-       <item>@drawable/wt_clock_9_digit_0</item>
-       <item>@drawable/wt_clock_9_digit_1</item>
-       <item>@drawable/wt_clock_9_digit_2</item>
-       <item>@drawable/wt_clock_9_digit_3</item>
-       <item>@drawable/wt_clock_9_digit_4</item>
-       <item>@drawable/wt_clock_9_digit_5</item>
-       <item>@drawable/wt_clock_9_digit_6</item>
-       <item>@drawable/wt_clock_9_digit_7</item>
-       <item>@drawable/wt_clock_9_digit_8</item>
-       <item>@drawable/wt_clock_9_digit_9</item>
-    </array> 
+    <array name="wt_clock_3_min_digit_drawables">
+       <item>@drawable/my_z8_clock_2_min_0</item>
+       <item>@drawable/my_z8_clock_2_min_1</item>
+       <item>@drawable/my_z8_clock_2_min_2</item>
+       <item>@drawable/my_z8_clock_2_min_3</item>
+       <item>@drawable/my_z8_clock_2_min_4</item>
+       <item>@drawable/my_z8_clock_2_min_5</item>
+       <item>@drawable/my_z8_clock_2_min_6</item>
+       <item>@drawable/my_z8_clock_2_min_7</item>
+       <item>@drawable/my_z8_clock_2_min_8</item>
+       <item>@drawable/my_z8_clock_2_min_9</item>
+    </array>
     
+    <array name="wt_clock_3_sec_digit_drawables">
+       <item>@drawable/my_z8_clock_2_sec_0</item>
+       <item>@drawable/my_z8_clock_2_sec_1</item>
+       <item>@drawable/my_z8_clock_2_sec_2</item>
+       <item>@drawable/my_z8_clock_2_sec_3</item>
+       <item>@drawable/my_z8_clock_2_sec_4</item>
+       <item>@drawable/my_z8_clock_2_sec_5</item>
+       <item>@drawable/my_z8_clock_2_sec_6</item>
+       <item>@drawable/my_z8_clock_2_sec_7</item>
+       <item>@drawable/my_z8_clock_2_sec_8</item>
+       <item>@drawable/my_z8_clock_2_sec_9</item>
+    </array>
+        
     <array name="wt_clock_10_digit_drawables">
        <item>@drawable/wt_clock_10_digit_0</item>
        <item>@drawable/wt_clock_10_digit_1</item>
@@ -69,33 +82,7 @@
        <item>@drawable/wt_clock_10_digit_8</item>
        <item>@drawable/wt_clock_10_digit_9</item>
     </array> 
-    
-    <array name="wt_clock_8_batt_drawables">
-       <item>@drawable/wt_clock_8_batt_0</item>
-       <item>@drawable/wt_clock_8_batt_1</item>
-       <item>@drawable/wt_clock_8_batt_2</item>
-       <item>@drawable/wt_clock_8_batt_3</item>
-       <item>@drawable/wt_clock_8_batt_4</item>
-    </array> 
-    
-    <array name="wt_clock_9_batt_drawables">
-       <item>@drawable/wt_clock_9_batt_1</item>
-       <item>@drawable/wt_clock_9_batt_2</item>
-       <item>@drawable/wt_clock_9_batt_3</item>
-       <item>@drawable/wt_clock_9_batt_4</item>
-       <item>@drawable/wt_clock_9_batt_5</item>
-    </array> 
-
-    <array name="wt_clock_9_bt_drawables">
-       <item>@drawable/wt_clock_9_bt</item>
-       <item>@drawable/wt_clock_9_bt_on</item>
-    </array> 
-
-    <array name="wt_clock_9_wifi_drawables">
-       <item>@drawable/wt_clock_9_wifi</item>
-       <item>@drawable/wt_clock_9_wifi_on</item>
-    </array> 
-    
+        
     <array name="wt_clock_10_batt_drawables">
        <item>@drawable/wt_clock_10_batt_1</item>
        <item>@drawable/wt_clock_10_batt_2</item>

@@ -8,53 +8,27 @@
     android:background="@drawable/wt_clock_6_dial">
 
 <com.cj.clock.WtClock
-    android:id="@+id/clk_batt"
+    android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
     clock:clkstyle="pointer"
     clock:value_min="0"
-    clock:value_max="100"
-    clock:pointer_drawable="@drawable/wt_clock_6_pointer_batt"
-    clock:pointer_center_x="53"
-    clock:pointer_center_y="56"
-    clock:clk_min_angle="312"
-    clock:clk_max_angle="58">
+    clock:value_max="359"
+    clock:pointer_drawable="@drawable/wt_clock_6_hour"
+    clock:pointer_center_x="160"
+    clock:pointer_center_y="160">
 </com.cj.clock.WtClock>
 
-<ImageView
-    android:id="@+id/clk_dial"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="right"
-    android:layout_marginTop="12px"
-    android:layout_marginRight="12px"
-    android:src="@drawable/wt_clock_6_call" />
-
-<com.cj.clock.WtClock
-    android:id="@+id/clk_hour"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"       
-    clock:clkstyle="digit"
-    clock:digitext_size="30"
-    clock:digitext_color="#ffffffff"
-    clock:digitext_strokesize="2"
-    clock:value_min="0"
-    clock:value_max="11"    
-    clock:digitext_x="146"
-    clock:digitext_y="260">
-</com.cj.clock.WtClock>
 <com.cj.clock.WtClock
     android:id="@+id/clk_min"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"  
-    clock:clkstyle="digit"
-    clock:digitext_size="60"
-    clock:digitext_color="#ffffffff"
-    clock:digitext_strokesize="4"
+    android:layout_height="match_parent"    
+    clock:clkstyle="pointer"
     clock:value_min="0"
-    clock:value_max="59"    
-    clock:digitext_x="128"
-    clock:digitext_y="220">
+    clock:value_max="59"
+    clock:pointer_drawable="@drawable/wt_clock_6_min"
+    clock:pointer_center_x="160"
+    clock:pointer_center_y="160">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock
@@ -64,22 +38,9 @@
     clock:clkstyle="pointer"
     clock:value_min="0"
     clock:value_max="59"
-    clock:pointer_drawable="@drawable/wt_clock_6_pointer_sec"
-    clock:pointer_center_x="161"
-    clock:pointer_center_y="227"
-    clock:clk_min_angle="240"
-    clock:clk_max_angle="120">
+    clock:pointer_drawable="@drawable/wt_clock_6_sec"
+    clock:pointer_center_x="160"
+    clock:pointer_center_y="160">
 </com.cj.clock.WtClock>
-
-<com.cj.clock.WtDate
-    android:id="@+id/clk_date"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layout_marginLeft="90px"
-    android:layout_marginBottom="10dp"
-    clock:date_format="yyyy/MM/dd"
-    android:textSize="26sp"
-    android:textColor="#ffffffff"/>
 
 </com.cj.clock.WtClockRoot>

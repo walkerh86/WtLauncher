@@ -41,6 +41,8 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockHour;
 	private WtClock mClockMin;
 	private WtClock mClockSec;
+	private WtClock mClockMonth;
+	private WtClock mClockDay;
 	private WtDate mClockDate;
 	private WtClock mClockBatt;
 	private SimpleDateFormat mDateFormat;
@@ -107,6 +109,14 @@ public class WtClockRoot extends FrameLayout {
     	clockItem = findViewById(R.id.clk_sec);
     	if(clockItem != null){
     		mClockSec = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_month);
+    	if(clockItem != null){
+    		mClockMonth = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.clk_day);
+    	if(clockItem != null){
+    		mClockDay = (WtClock)clockItem;
     	}
     	clockItem = findViewById(R.id.clk_date);
     	if(clockItem != null){
@@ -258,7 +268,9 @@ public class WtClockRoot extends FrameLayout {
 			if(level < 0){
 				level = 0;
 			}
-			mMobileSignalView.setImageLevel(level);
+			if(mMobileSignalView != null){
+				mMobileSignalView.setImageLevel(level);
+			}
 		}
 		
 		@Override
@@ -269,7 +281,9 @@ public class WtClockRoot extends FrameLayout {
 			}else if(dataType == MobileController.WT_NETWORK_TYPE_3G){
 				level = 2;
 			}
-			mMobileDataView.setImageLevel(level);
+			if(mMobileDataView != null){
+				mMobileDataView.setImageLevel(level);
+			}
 		}
 		
 		@Override
@@ -299,6 +313,15 @@ public class WtClockRoot extends FrameLayout {
     
     private void onTimeChanged() {
         mCalendar.setToNow();
+        
+        int month = mCalendar.month;
+        int day = mCalendar.monthDay;
+        if(mClockMonth != null){
+        	mClockMonth.setValue(month);
+        }
+        if(mClockDay != null){
+        	mClockDay.setValue(day);
+        }
 
         int hour = mCalendar.hour;
         int minute = mCalendar.minute;

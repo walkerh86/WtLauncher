@@ -8,35 +8,6 @@
     android:background="@drawable/wt_clock_1_dial">
 
 <com.cj.clock.WtClock
-    android:id="@+id/clk_hour2"
-    android:layout_width="90px"
-    android:layout_height="90px"   
-    android:layout_marginLeft="60px"
-    android:layout_marginTop="120px" 
-    clock:clkstyle="pointer"
-    clock:value_min="0"
-    clock:value_max="359"
-    clock:pointer_drawable="@drawable/wt_clock_1_other"
-    clock:pointer_center_x="43"
-    clock:pointer_center_y="42">
-</com.cj.clock.WtClock>
-
-<com.cj.clock.WtClock
-    android:id="@+id/clk_min2"
-    android:layout_width="90px"
-    android:layout_height="90px"  
-    android:layout_gravity="right"
-    android:layout_marginRight="60px"
-    android:layout_marginTop="120px" 
-    clock:clkstyle="pointer"
-    clock:value_min="0"
-    clock:value_max="59"
-    clock:pointer_drawable="@drawable/wt_clock_1_other"
-    clock:pointer_center_x="50"
-    clock:pointer_center_y="42">
-</com.cj.clock.WtClock>
-
-<com.cj.clock.WtClock
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    

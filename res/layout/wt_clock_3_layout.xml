@@ -11,51 +11,36 @@
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
-    clock:clkstyle="pointer"
+    clock:clkstyle="digit"
     clock:value_min="0"
-    clock:value_max="359"
-    clock:pointer_drawable="@drawable/wt_clock_3_hour"
-    clock:pointer_center_x="160"
-    clock:pointer_center_y="160">
+    clock:value_max="11"
+    clock:digitext_drawables="@array/wt_clock_3_hour_digit_drawables"
+    clock:digitext_x="68"
+    clock:digitext_y="132">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock
     android:id="@+id/clk_min"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
-    clock:clkstyle="pointer"
+    clock:clkstyle="digit"
     clock:value_min="0"
     clock:value_max="59"
-    clock:pointer_drawable="@drawable/wt_clock_3_min"
-    clock:pointer_center_x="160"
-    clock:pointer_center_y="160">
+    clock:digitext_drawables="@array/wt_clock_3_min_digit_drawables"
+    clock:digitext_x="192"
+    clock:digitext_y="78">
 </com.cj.clock.WtClock>
 
 <com.cj.clock.WtClock
     android:id="@+id/clk_sec"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
-    clock:clkstyle="pointer"
+    clock:clkstyle="digit"
     clock:value_min="0"
     clock:value_max="59"
-    clock:pointer_drawable="@drawable/wt_clock_3_sec"
-    clock:pointer_center_x="160"
-    clock:pointer_center_y="160">
-</com.cj.clock.WtClock>
-
-<com.cj.clock.WtClock
-    android:id="@+id/clk_batt"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"    
-    clock:clkstyle="pointer"
-    clock:value_min="0"
-    clock:value_max="100"
-    clock:pointer_drawable="@drawable/wt_clock_3_pointer_batt"
-    clock:pointer_center_x="160"
-    clock:pointer_center_y="30"
-    clock:clk_min_angle="122"
-    clock:clk_max_angle="238"
-    clock:clk_reverse="true">
+    clock:digitext_drawables="@array/wt_clock_3_sec_digit_drawables"
+    clock:digitext_x="190"
+    clock:digitext_y="194">
 </com.cj.clock.WtClock>
 
 </com.cj.clock.WtClockRoot>

@@ -43,4 +43,33 @@
     clock:pointer_center_y="160">
 </com.cj.clock.WtClock>
 
+<com.cj.clock.WtClock
+    android:id="@+id/clk_month"
+    android:layout_width="86px"
+    android:layout_height="86px"    
+    android:layout_marginLeft="55px"
+    android:layout_marginTop="119px"
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="11"
+    clock:pointer_drawable="@drawable/wt_clock_4_month"
+    clock:pointer_center_x="43"
+    clock:pointer_center_y="43">
+</com.cj.clock.WtClock>
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_day"
+    android:layout_width="86px"
+    android:layout_height="86px"    
+    android:layout_gravity="right"
+    android:layout_marginRight="54px"
+    android:layout_marginTop="119px"
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="29"
+    clock:pointer_drawable="@drawable/wt_clock_4_date"
+    clock:pointer_center_x="43"
+    clock:pointer_center_y="43">
+</com.cj.clock.WtClock>
+
 </com.cj.clock.WtClockRoot>

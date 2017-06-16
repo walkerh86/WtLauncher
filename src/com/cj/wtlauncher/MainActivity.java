@@ -220,7 +220,11 @@ public class MainActivity extends FragmentActivity{
 		@Override
 		public void run(){
 			if(mBatteryDialog != null && mBatteryDialog.isShowing()){
+				try{
 				mBatteryDialog.dismiss();
+				}catch(Exception e){
+					Log.i(TAG, "dismiss battery dialog e="+e);
+				}
 			}
 		}
 	};

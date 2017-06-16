@@ -34,7 +34,6 @@ public class WtRecyclerView extends RecyclerView{
 		   	return super.getChildDrawingOrder(childCount, i);
 	       }
 		int count = getChildCount();
-		/*
 		int centerX = getWidth()/2;
 		View firstChild = getChildAt(0);
 		int childWidth = firstChild.getWidth();
@@ -51,7 +50,7 @@ public class WtRecyclerView extends RecyclerView{
 				centerIdx = j;
 			}
 		}
-		*/
+		/*
 		int centerX = getHeight()/2;
 		View firstChild = getChildAt(0);
 		int childWidth = firstChild.getHeight();
@@ -68,6 +67,7 @@ public class WtRecyclerView extends RecyclerView{
 				centerIdx = j;
 			}
 		}
+		*/
 		//Log.i("hcj", "getChildDrawingOrder centerIdx ="+centerIdx);
 		int drawIndex = i;
 		if(i == centerIdx){

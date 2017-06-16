@@ -31,6 +31,7 @@ public class ClockFragment  extends Fragment{
 				return true;
 			}
 		});
+		if(!MainActivity.CLOCKS_IN_MAIN){
 		mClockHost.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View view){
@@ -38,6 +39,7 @@ public class ClockFragment  extends Fragment{
 				activity.setClockFragmentVisible(false);
 			}
 		});
+		}
 		return rootView;
 	}
 	

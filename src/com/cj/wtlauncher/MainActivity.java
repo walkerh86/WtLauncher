@@ -57,7 +57,7 @@ public class MainActivity extends FragmentActivity{
 		mViewPager.setCurrentItem(DEFAULT_PAGE);
 
 		mClockFragment = getSupportFragmentManager().findFragmentById(R.id.wt_clock_fragment);
-		setClockFragmentVisible(false);
+		this.getSupportFragmentManager().beginTransaction().hide(mClockFragment).commit();		
                     
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.SCREEN_OFF");

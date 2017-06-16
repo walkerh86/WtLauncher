@@ -94,7 +94,9 @@ public class NotificationFragment extends Fragment{
 		
 		if (((!NotificationHelper.isDefaultVibrate(statusBarNotification.getNotification())) 
 			&& (NotificationHelper.getVibrate(statusBarNotification.getNotification()) == null)) /*|| ((j != 0) && (i != 0))*/){
-			mVibrator.vibrate(300L);
+			if(!"com.android.dialer".equals("pkgName")){
+				mVibrator.vibrate(300L);
+			}
 		}
 
 		if(m == -1){

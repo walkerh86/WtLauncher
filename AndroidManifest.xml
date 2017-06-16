@@ -3,8 +3,8 @@
     package="com.cj.wtlauncher"
     android:sharedUserId="android.uid.system" 
     coreApp="true"
-    android:versionCode="7"
-    android:versionName="7.0" >
+    android:versionCode="8"
+    android:versionName="8.0" >
 
     <uses-sdk
         android:minSdkVersion="22"

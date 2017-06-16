@@ -58,6 +58,7 @@ public class MenuFragment extends Fragment {
 	public static final int MENU_STYLE_GRID = 1;
 	public static final int MENU_STYLE_V = 2;
 	private int mMenuStyle = MENU_STYLE_V;
+	public static final int[] MENU_STYLE = new int[]{MENU_STYLE_H,MENU_STYLE_GRID};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

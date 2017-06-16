@@ -25,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity{
+	public static final boolean CLOCKS_IN_MAIN = true;
+	
 	private static final String TAG = "hcj.MainActivity";
 	private HorizontalViewPager mViewPager;
 	private static final int DEFAULT_PAGE = 1;
@@ -226,6 +228,9 @@ public class MainActivity extends FragmentActivity{
 	};
 
 	public void setClockFragmentVisible(boolean visible){
+		if(MainActivity.CLOCKS_IN_MAIN){
+			return;
+		}
 		if(mClockFragment == null/* || !mWindowFocused*/){
 			return;
 		}

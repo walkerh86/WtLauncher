@@ -7,6 +7,41 @@
     android:layout_height="match_parent"
     android:background="@drawable/wt_clock_5_dial">
 
+
+<com.cj.clock.WtClock
+    android:id="@+id/clk_week"
+    android:layout_width="52px"
+    android:layout_height="52px"
+    android:layout_marginLeft="134px"
+    android:layout_marginTop="218px"
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="6"
+    clock:pointer_drawable="@drawable/wt_clock_5_week"
+    clock:pointer_center_x="26"
+    clock:pointer_center_y="26">
+</com.cj.clock.WtClock>
+
+<TextView
+    android:id="@+id/clk_step"
+    android:layout_width="82px"
+    android:layout_height="26px"
+    android:gravity="center"
+    android:layout_marginLeft="36px"
+    android:layout_marginTop="160px"
+    android:textColor="#ffffffff"
+    android:textSize="22sp"/>
+
+<TextView
+    android:id="@+id/digit_batt"
+    android:layout_width="82px"
+    android:layout_height="26px"    
+    android:gravity="center"
+    android:layout_marginLeft="200px"
+    android:layout_marginTop="160px"
+    android:textColor="#ffffffff"
+    android:textSize="20sp"/>
+
 <com.cj.clock.WtClock
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
@@ -41,20 +76,6 @@
     clock:pointer_drawable="@drawable/wt_clock_5_sec"
     clock:pointer_center_x="160"
     clock:pointer_center_y="160">
-</com.cj.clock.WtClock>
-
-<com.cj.clock.WtClock
-    android:id="@+id/clk_week"
-    android:layout_width="52px"
-    android:layout_height="52px"    
-    android:layout_marginLeft="134px"
-    android:layout_marginTop="200px"
-    clock:clkstyle="pointer"
-    clock:value_min="0"
-    clock:value_max="6"
-    clock:pointer_drawable="@drawable/wt_clock_5_week"
-    clock:pointer_center_x="26"
-    clock:pointer_center_y="26">
 </com.cj.clock.WtClock>
 
 </com.cj.clock.WtClockRoot>

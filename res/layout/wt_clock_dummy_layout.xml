@@ -55,4 +55,9 @@
     clock:pointer_center_y="160">
 </com.cj.clock.WtClock>
 
+<TextView 
+    android:id="@+id/digit_month"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    />
+
 </com.cj.clock.WtClockRoot>

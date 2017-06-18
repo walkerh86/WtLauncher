@@ -7,6 +7,25 @@
     android:layout_height="match_parent"
     android:background="@drawable/wt_clock_6_dial">
 
+<TextView
+    android:id="@+id/digit_day"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="40px"
+    android:textColor="#ffffffff"
+    android:textSize="26sp"/>
+
+<com.cj.clock.WtDate
+    android:id="@+id/clk_date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|center_horizontal"
+    android:layout_marginBottom="40dp"
+    clock:date_format="EEE"
+    android:textSize="26sp"
+    android:textColor="#ffffffff"/>
+
 <com.cj.clock.WtClock
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"

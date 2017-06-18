@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     android:background="@drawable/wt_clock_2_dial">
 
+<TextView
+    android:id="@+id/digit_day"
+    android:layout_width="36px"
+    android:layout_height="22px"
+    android:gravity="center"
+    android:layout_marginTop="148px"
+    android:layout_marginLeft="232px"
+    android:textColor="#ffffffff"
+    android:textSize="20sp"/>
+
 <com.cj.clock.WtClock
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"

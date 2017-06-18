@@ -43,4 +43,26 @@
     clock:digitext_y="194">
 </com.cj.clock.WtClock>
 
+<com.cj.clock.WtDate
+    android:id="@+id/clk_date"
+    android:layout_width="wrap_content"
+    android:layout_height="38px"
+    android:layout_marginTop="48px"
+    android:layout_marginRight="170px"
+    android:layout_gravity="right"
+    clock:date_format="EEE"
+    android:textSize="16sp"
+    android:textColor="#ff8b98a5"/>
+
+<com.cj.clock.WtDate
+    android:id="@+id/clk_date2"
+    android:layout_width="wrap_content"
+    android:layout_height="38px"
+    android:gravity="bottom"
+    android:layout_marginTop="48px"
+    android:layout_marginRight="170px"
+    android:layout_gravity="right"
+    clock:date_format="yyyy-MM-dd"
+    android:textSize="16sp"
+    android:textColor="#ff8b98a5"/>
 </com.cj.clock.WtClockRoot>

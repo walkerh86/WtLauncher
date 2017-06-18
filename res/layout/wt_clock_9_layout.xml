@@ -8,6 +8,30 @@
     android:background="@drawable/wt_clock_9_dial">
 
 <com.cj.clock.WtClock
+    android:id="@+id/clk_week"
+    android:layout_width="60px"
+    android:layout_height="60px"
+    android:layout_marginLeft="131px"
+    android:layout_marginTop="195px"
+    clock:clkstyle="pointer"
+    clock:value_min="0"
+    clock:value_max="6"
+    clock:pointer_drawable="@drawable/wt_clock_9_week"
+    clock:pointer_center_x="30"
+    clock:pointer_center_y="30">
+</com.cj.clock.WtClock>
+
+<TextView
+    android:id="@+id/digit_day"
+    android:layout_width="36px"
+    android:layout_height="22px"
+    android:gravity="center"
+    android:layout_marginTop="147px"
+    android:layout_marginLeft="242px"
+    android:textColor="#ffffffff"
+    android:textSize="20sp"/>
+    
+<com.cj.clock.WtClock
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    

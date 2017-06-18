@@ -44,8 +44,10 @@ public class WtClockRoot extends FrameLayout {
 	private WtClock mClockMonth;
 	private WtClock mClockDay;
 	private WtDate mClockDate;
+	private WtDate mClockDate2;
 	private WtClock mClockBatt;
 	private SimpleDateFormat mDateFormat;
+	private SimpleDateFormat mDateFormat2;
 	private TextView mClockStep;
 	private WtClock mClockHour2;
 	private WtClock mClockMin2;
@@ -59,6 +61,11 @@ public class WtClockRoot extends FrameLayout {
 	private NetworkController mNetworkController;
 	private ImageView mMobileSignalView;
 	private ImageView mMobileDataView;
+	private TextView mDigitBatt;
+	private TextView mDigitMonth;
+	private TextView mDigitDay;
+	private TextView mTextWeek;
+	private WtClock mClockWeek;
 	
 	private final Handler mHandler = new Handler(){
 		@Override
@@ -114,18 +121,40 @@ public class WtClockRoot extends FrameLayout {
     	if(clockItem != null){
     		mClockMonth = (WtClock)clockItem;
     	}
+    	clockItem = findViewById(R.id.digit_month);
+    	if(clockItem != null){
+    		mDigitMonth = (TextView)clockItem;
+    	}
     	clockItem = findViewById(R.id.clk_day);
     	if(clockItem != null){
     		mClockDay = (WtClock)clockItem;
     	}
+    	clockItem = findViewById(R.id.digit_day);
+    	if(clockItem != null){
+    		mDigitDay = (TextView)clockItem;
+    	}
     	clockItem = findViewById(R.id.clk_date);
     	if(clockItem != null){
     		mClockDate = (WtDate)clockItem;
-    		mDateFormat = new SimpleDateFormat(mClockDate.getDateFormat());
+    		mDateFormat = new SimpleDateFormat(mClockDate.getDateFormat());    		
     	}
+    	clockItem = findViewById(R.id.clk_date2);
+    	if(clockItem != null){
+    		mClockDate2 = (WtDate)clockItem;
+    		mDateFormat2 = new SimpleDateFormat(mClockDate2.getDateFormat());    		
+    	}
+    	clockItem = findViewById(R.id.clk_week);
+    	if(clockItem != null){
+    		mClockWeek = (WtClock)clockItem;
+    	}
+    	
     	clockItem = findViewById(R.id.clk_batt);
     	if(clockItem != null){
     		mClockBatt = (WtClock)clockItem;
+    	}
+    	clockItem = findViewById(R.id.digit_batt);
+    	if(clockItem != null){
+    		mDigitBatt = (TextView)clockItem;
     	}
     	clockItem = findViewById(R.id.clk_step);
     	if(clockItem != null){
@@ -141,6 +170,7 @@ public class WtClockRoot extends FrameLayout {
     	if(clockItem != null){
     		mClockMin2 = (WtClock)clockItem;
     	}
+    	
     	
     	clockItem = findViewById(R.id.clk_dial);
     	if(clockItem != null){
@@ -196,7 +226,7 @@ public class WtClockRoot extends FrameLayout {
             filter.addAction(Intent.ACTION_TIME_TICK);
             filter.addAction(Intent.ACTION_TIME_CHANGED);
             filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-            if(mClockBatt != null){
+            if(mClockBatt != null || mDigitBatt != null){
             	filter.addAction(Intent.ACTION_BATTERY_CHANGED);
             }
 			getContext().registerReceiverAsUser(mIntentReceiver,android.os.Process.myUserHandle(), filter, null, mHandler);                
@@ -319,8 +349,20 @@ public class WtClockRoot extends FrameLayout {
         if(mClockMonth != null){
         	mClockMonth.setValue(month);
         }
+        if(mDigitMonth != null){
+        	mDigitMonth.setText(Integer.toString(month));
+        }
         if(mClockDay != null){
         	mClockDay.setValue(day);
+        }
+        if(mDigitDay != null){
+        	mDigitDay.setText(Integer.toString(day));
+        }
+        
+        int week = mCalendar.weekDay;
+        if(mClockWeek != null){
+        	week = (week == 0) ? 6 : week-1;
+        	mClockWeek.setValue(week);
         }
 
         int hour = mCalendar.hour;
@@ -329,8 +371,10 @@ public class WtClockRoot extends FrameLayout {
 
         int m = (int)(minute + second / 60.0f);
         int h = (int)(hour + m / 60.0f);
+        h %= 12;//hour is 0-23
         if(mClockHour != null){
-        	int value = mClockHour.isPointerStyle() ? (h*30+(int)(m*30/60f)) : h;        	
+        	int value = mClockHour.isPointerStyle() ? (h*30+(int)(m*30/60f)) : h;
+        	//Log.i("hcjC", String.format("h=%d,m=%d,value=%d", h,m,value));
         	mClockHour.setValue(value);
         }
         if(mClockMin != null){
@@ -342,6 +386,10 @@ public class WtClockRoot extends FrameLayout {
         if(mClockDate != null){
         	mDate.setTime(System.currentTimeMillis());
         	mClockDate.setText(mDateFormat.format(mDate));
+        }
+        if(mClockDate2 != null){
+        	mDate.setTime(System.currentTimeMillis());
+        	mClockDate2.setText(mDateFormat2.format(mDate));
         }
         
         if(mClockHour2 != null){
@@ -358,11 +406,14 @@ public class WtClockRoot extends FrameLayout {
         public void onReceive(Context context, Intent intent) {
         	String action = intent.getAction();
         	if(action.equals(Intent.ACTION_BATTERY_CHANGED)){
-        		if(mClockBatt != null){
-        			int level = (int)(100f
-                    		* intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                    		/ intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100));
+        		int level = (int)(100f
+                	* intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+                	/ intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100));
+        		if(mClockBatt != null){        			
         			mClockBatt.setValue(level);
+        		}
+        		if(mDigitBatt != null){
+        			mDigitBatt.setText(level+"%");
         		}
         		return;
         	}

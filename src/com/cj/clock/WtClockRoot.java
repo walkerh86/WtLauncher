@@ -258,7 +258,9 @@ public class WtClockRoot extends FrameLayout {
 			if(level < 0){
 				level = 0;
 			}
-			mMobileSignalView.setImageLevel(level);
+			if(mMobileSignalView != null){
+				mMobileSignalView.setImageLevel(level);
+			}
 		}
 		
 		@Override
@@ -269,7 +271,9 @@ public class WtClockRoot extends FrameLayout {
 			}else if(dataType == MobileController.WT_NETWORK_TYPE_3G){
 				level = 2;
 			}
-			mMobileDataView.setImageLevel(level);
+			if(mMobileDataView != null){
+				mMobileDataView.setImageLevel(level);
+			}
 		}
 		
 		@Override
@@ -306,6 +310,7 @@ public class WtClockRoot extends FrameLayout {
 
         int m = (int)(minute + second / 60.0f);
         int h = (int)(hour + m / 60.0f);
+        h %= 12;//hour is 0-23
         if(mClockHour != null){
         	int value = mClockHour.isPointerStyle() ? (h*30+(int)(m*30/60f)) : h;        	
         	mClockHour.setValue(value);

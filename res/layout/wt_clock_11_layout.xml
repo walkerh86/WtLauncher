@@ -14,7 +14,7 @@
     android:layout_marginRight="4px"
     android:layout_marginTop="8px">
 <LinearLayout
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"> 
 <ImageView
     android:id="@+id/clk_mobile_signal"
@@ -26,23 +26,32 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:src="@drawable/mobile_data_level_drawable"/>
+</LinearLayout>  
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right"> 
+<ImageView
+    android:id="@+id/clk_bt_connect"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/wt_clock_11_stat_bt_on"/>       
 <ImageView
     android:id="@+id/clk_wifi_connect"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:src="@drawable/wt_clock_11_wifi_on"/>       
-</LinearLayout>       
 <com.cj.clock.WtClock
     android:id="@+id/clk_batt"
-    android:layout_width="56px"
-    android:layout_height="18px"    
-    android:layout_gravity="right"
+    android:layout_width="36px"
+    android:layout_height="18px"     
     clock:clkstyle="images"
     clock:value_min="0"
     clock:value_max="100"
     clock:digitext_drawables="@array/wt_clock_11_batt_drawables"
     clock:digitext_x="0"
     clock:digitext_y="0"/>
+</LinearLayout>  
 </FrameLayout>
     
 <com.cj.clock.WtClock

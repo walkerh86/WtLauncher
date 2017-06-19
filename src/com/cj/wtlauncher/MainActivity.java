@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.SCREEN_OFF");
 		filter.addAction("android.intent.action.SCREEN_ON");
-		filter.addAction("android.intent.action.BATTERY_CHANGED");
+		//filter.addAction("android.intent.action.BATTERY_CHANGED");//disable battery dialog
 		registerReceiver(mScreenUpdateReceiver, filter);
 
 		startService(new Intent(this, NotificationService.class));

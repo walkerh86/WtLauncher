@@ -13,10 +13,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,6 +63,7 @@ public class MenuFragment extends Fragment {
 	public static final int MENU_STYLE_GRID = 1;
 	public static final int MENU_STYLE_V = 2;
 	private int mMenuStyle = MENU_STYLE_V;
+	private Canvas mCanvas = new Canvas();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -169,7 +175,10 @@ public class MenuFragment extends Fragment {
 			resolveIntent(actInfo.getComponentName());
 			mIcon = getFixIcon(actInfo.getComponentName().getClassName());
 			if(mIcon == null){
-				mIcon = actInfo.getIcon(mIconDpi);
+				mIcon = actInfo.getIcon(mIconDpi);				
+				if((actInfo.getApplicationFlags() & ApplicationInfo.FLAG_SYSTEM) == 0 && mIcon != null){
+					mIcon = getMergeIcon(mIcon,0);
+		        }
 			}
 		}
 
@@ -188,6 +197,22 @@ public class MenuFragment extends Fragment {
 			int resId = res.getIdentifier(name, "mipmap", "com.cj.wtlauncher");
 			return (resId != 0) ? res.getDrawable(resId) : null;
 		}
+	}
+	
+	private Drawable getMergeIcon(Drawable icon, int bgIdx){
+		Canvas canvas = mCanvas;
+		Bitmap bgBmp = BitmapFactory.decodeResource(this.getActivity().getResources(),R.drawable.app_icon_bg1);
+		Bitmap outBmp = Bitmap.createBitmap(bgBmp.getWidth(),bgBmp.getHeight(),bgBmp.getConfig());
+		canvas.setBitmap(outBmp);
+		canvas.drawBitmap(bgBmp, 0, 0, null);
+		int outW = bgBmp.getWidth()*8/10;
+		int outH = bgBmp.getHeight()*8/10;
+		icon.setBounds(0, 0, outW, outH);
+		canvas.save();
+		canvas.translate(bgBmp.getWidth()/10, bgBmp.getHeight()/10);		
+		icon.draw(canvas);	
+		canvas.restore();
+		return new BitmapDrawable(outBmp);
 	}
 	
     public Drawable getIcon(PackageManager packageManager, ActivityInfo aInfo, int density) {
@@ -210,7 +235,12 @@ public class MenuFragment extends Fragment {
         if (d == null) {
             Resources resources = Resources.getSystem();
             d = resources.getDrawableForDensity(android.R.mipmap.sym_def_app_icon, density);
+        }        
+        
+        if((aInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0 && d != null){
+        	d = getMergeIcon(d,0);
         }
+        
         return d;
     }	
 	

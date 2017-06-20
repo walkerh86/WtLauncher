@@ -19,7 +19,7 @@ public class MenuSettings {
 	public static final MenuStyle STYLE_GRID = new MenuStyle(MENU_STYLE_GRID,R.drawable.menu_style_grid,R.drawable.bg_app);
 	public static final MenuStyle STYLE_V = new MenuStyle(MENU_STYLE_V,R.drawable.menu_style_list,R.drawable.bg_app);
 	public static final MenuStyle STYLE_H = new MenuStyle(MENU_STYLE_H,R.drawable.menu_style_list_h,R.drawable.wallpaper_00);
-	public static final MenuStyle[] MENU_STYLES = new MenuStyle[]{STYLE_H,STYLE_GRID};
+	public static final MenuStyle[] MENU_STYLES = new MenuStyle[]{STYLE_GRID,STYLE_H};
 
 	public static int getMenuWallpaperId(int styleId){
 		int wallpaperId = 0;

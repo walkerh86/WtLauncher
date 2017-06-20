@@ -44,7 +44,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
 public class MenuFragment extends Fragment {
-	private static final String TAG = "hcj";
+	private static final String TAG = "hcj.MenuFragment";
 	private WtRecyclerView mRecyclerView;
 	private TextView mCurrLabelView;
 	private MyLinearLayoutManager mMyLinearLayoutManager;
@@ -101,15 +101,15 @@ public class MenuFragment extends Fragment {
 	
 		mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState){
-				if(mMenuStyle == MenuSettings.MENU_STYLE_H || mMenuStyle == MenuSettings.MENU_STYLE_V){
+				//if(mMenuStyle == MenuSettings.MENU_STYLE_H || mMenuStyle == MenuSettings.MENU_STYLE_V){
 					mMyLinearLayoutManager.onScrollStateChanged(recyclerView,newState);
-				}
+				//}
 			}
 			
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-				if(mMenuStyle == MenuSettings.MENU_STYLE_H || mMenuStyle == MenuSettings.MENU_STYLE_V){
+				//if(mMenuStyle == MenuSettings.MENU_STYLE_H || mMenuStyle == MenuSettings.MENU_STYLE_V){
 					mMyLinearLayoutManager.onScrolled();
-				}
+				//}
 			}
 		});
 		
@@ -319,41 +319,9 @@ public class MenuFragment extends Fragment {
 		}
 		
 		private void updateItemViewsScale(){
-			/*
-			if(mMyOrientation == VERTICAL){
-				int offset = mScrolledX%20;
-				int count = getChildCount();
-				int childH = 0;
-				int prevH = 0;
-				for(int i=0;i<count;i++){
-					if(i == 0){
-						childH = 40-offset*2;
-						prevH += childH;
-					}else if(i == 1){
-						childH = 60-offset*3;
-						prevH += childH;
-					}else if(i == 2){
-						childH = 120-offset*6;	
-						prevH += childH;
-					}else if(i == 3){
-						childH = 60+offset*3;	
-						prevH += childH;
-					}else if(i == 4){
-						childH = 40+offset*2;	
-						prevH += childH;
-					}else if(i == 5){
-						childH = 320-prevH;					
-					}
-					View view = getChildAt(i);
-					View iconView = view.findViewById(R.id.icon_view);
-					LayoutParams lp = (LayoutParams)iconView.getLayoutParams();
-					lp.height = childH;
-					lp.width = childH;
-					iconView.setLayoutParams(lp);
-				}
+			if(mMenuStyle == MenuSettings.MENU_STYLE_GRID){
 				return;
 			}
-			*/
 			int count = getChildCount();
 			int centerX = getCenterXY();
 			View firstChild = getChildAt(0);
@@ -404,7 +372,7 @@ public class MenuFragment extends Fragment {
 					if(childLeft <= centerX){
 						int childCenterX = childLeft+decoratedW/2;
 						scrollX = childCenterX-centerX;
-						Log.i("hcj", "adjustItemsPosition centerX="+centerX+",childCenterX="+childCenterX+",scrollX="+scrollX+",i="+i);
+						Log.i(TAG, "adjustItemsPosition centerX="+centerX+",childCenterX="+childCenterX+",scrollX="+scrollX+",i="+i);
 						break;
 					}
 				}
@@ -694,8 +662,12 @@ public class MenuFragment extends Fragment {
 			mCurrLabelView.setVisibility(View.GONE);
 			mPageIndicator.setVisibility(View.GONE);
 
-			mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2,LinearLayoutManager.HORIZONTAL,false));
-			//mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
+			//mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2,LinearLayoutManager.HORIZONTAL,false));
+			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//
+			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
+			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
+			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);	
+			
 			mRecyclerView.setAdjustDrawingOrder(false);
 		}
 		

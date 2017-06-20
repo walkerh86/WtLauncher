@@ -1,23 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="160px"
-    android:layout_height="160px"
+    android:layout_width="320px"
+    android:layout_height="320px"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="30dp"
     android:gravity="center"
     tools:context="com.cj.wtlauncher.MenuFragment" >
 
     <ImageView
         android:id="@+id/icon_view"
-        android:layout_width="102px"
-        android:layout_height="102px" />
+        android:layout_width="180px"
+        android:layout_height="180px" />
     <TextView
         android:id="@+id/label_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16px"
         android:singleLine="true"
         android:ellipsize="marquee"
-        android:textSize="28sp"
+        android:textSize="36sp"
         android:textColor="#ffffffff"/>
 
 </LinearLayout>

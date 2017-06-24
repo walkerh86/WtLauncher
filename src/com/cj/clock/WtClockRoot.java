@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.cj.qs.QSBluetoothTile;
 import com.cj.qs.QSWifiTile;
+import com.cj.util.TimeUtil;
 import com.cj.wtlauncher.MobileController;
 import com.cj.wtlauncher.NetworkController;
 import com.cj.wtlauncher.R;
@@ -38,7 +39,7 @@ public class WtClockRoot extends FrameLayout {
 	private Time mCalendar;
 	private Date mDate;	
 	private boolean mAttached;
-	private WtClock mClockHour;
+	private WtHour mClockHour;
 	private WtClock mClockMin;
 	private WtClock mClockSec;
 	private WtDate mClockDate;
@@ -82,6 +83,15 @@ public class WtClockRoot extends FrameLayout {
 		}
 	};
 	
+	private ContentObserver mTimeFormatObserver = new ContentObserver(mHandler){
+		@Override
+		public void onChange(boolean selfChange) {
+			if(mClockHour != null){
+				mClockHour.setIsHour24(TimeUtil.is24HourFormat(mContext));
+			}
+		}
+	};
+	
 	public WtClockRoot(Context context) {
         this(context, null);
     }
@@ -99,7 +109,7 @@ public class WtClockRoot extends FrameLayout {
     	
     	View clockItem = findViewById(R.id.clk_hour);
     	if(clockItem != null){
-    		mClockHour = (WtClock)clockItem;
+    		mClockHour = (WtHour)clockItem;
     	}
     	clockItem = findViewById(R.id.clk_min);
     	if(clockItem != null){
@@ -131,6 +141,15 @@ public class WtClockRoot extends FrameLayout {
     	clockItem = findViewById(R.id.clk_min2);
     	if(clockItem != null){
     		mClockMin2 = (WtClock)clockItem;
+    	}
+    	
+    	clockItem = findViewById(R.id.tx_clk_ampm);
+    	if(clockItem != null){
+    		TextView tvAmPm = (TextView)clockItem;
+    		if(mClockHour != null){
+    			mClockHour.setAmPmView(tvAmPm);
+    			mClockHour.setIsHour24(TimeUtil.is24HourFormat(mContext));
+    		}
     	}
     	
     	clockItem = findViewById(R.id.clk_dial);
@@ -193,8 +212,15 @@ public class WtClockRoot extends FrameLayout {
             filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
             if(mClockBatt != null){
             	filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            }            
+			getContext().registerReceiverAsUser(mIntentReceiver,android.os.Process.myUserHandle(), filter, null, mHandler); 
+			
+			if(mClockHour != null){				
+				getContext().getContentResolver().registerContentObserver(
+						Settings.System.getUriFor(Settings.System.TIME_12_24), true, 
+						mTimeFormatObserver, 
+						UserHandle.USER_ALL);
             }
-			getContext().registerReceiverAsUser(mIntentReceiver,android.os.Process.myUserHandle(), filter, null, mHandler);                
 		
 			if(mClockBt != null || mClockBtConnect != null){
 				mQSBluetoothTile = new QSBluetoothTile(getContext(),null,mClockBtConnect);
@@ -243,6 +269,9 @@ public class WtClockRoot extends FrameLayout {
         super.onDetachedFromWindow();
         if (mAttached) {
             getContext().unregisterReceiver(mIntentReceiver);
+            if(mClockHour != null){
+				getContext().getContentResolver().unregisterContentObserver(mTimeFormatObserver);
+            }
         	if(mQSBluetoothTile != null){
 				mQSBluetoothTile.onDestroy(getContext());				
 			}
@@ -332,10 +361,9 @@ public class WtClockRoot extends FrameLayout {
 
         int m = (int)(minute + second / 60.0f);
         int h = (int)(hour + m / 60.0f);
-        h %= 12;//hour is 0-23
-        if(mClockHour != null){
-        	int value = mClockHour.isPointerStyle() ? (h*30+(int)(m*30/60f)) : h;        	
-        	mClockHour.setValue(value);
+        h %= 24;//hour is 0-23
+        if(mClockHour != null){     	
+        	mClockHour.setValue(h,m);
         }
         if(mClockMin != null){
         	mClockMin.setValue(m);

@@ -36,7 +36,7 @@
     clock:pointer_center_y="42">
 </com.cj.clock.WtClock>
 
-<com.cj.clock.WtClock
+<com.cj.clock.WtHour
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
@@ -46,7 +46,7 @@
     clock:pointer_drawable="@drawable/wt_clock_1_hour"
     clock:pointer_center_x="160"
     clock:pointer_center_y="161">
-</com.cj.clock.WtClock>
+</com.cj.clock.WtHour>
 
 <com.cj.clock.WtClock
     android:id="@+id/clk_min"

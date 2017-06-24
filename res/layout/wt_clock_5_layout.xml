@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/wt_clock_5_dial">
 
-<com.cj.clock.WtClock
+<com.cj.clock.WtHour
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
@@ -17,7 +17,7 @@
     clock:digitext_drawables="@array/wt_clock_5_digit_drawables"
     clock:digitext_x="66"
     clock:digitext_y="226">
-</com.cj.clock.WtClock>
+</com.cj.clock.WtHour>
 
 <ImageView
     android:layout_width="wrap_content"
@@ -37,6 +37,15 @@
     clock:digitext_x="180"
     clock:digitext_y="226">
 </com.cj.clock.WtClock>
+
+<TextView 
+    android:id="@+id/tx_clk_ampm"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="224px"
+    android:layout_marginLeft="248px"
+    android:textColor="#ffffffff"
+    android:textSize="24px"/>
 
 <com.cj.clock.WtDate
     android:id="@+id/clk_date"

@@ -395,6 +395,10 @@ public class WtClockRoot extends FrameLayout {
                     		* intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
                     		/ intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100));
         			mClockBatt.setValue(level);
+        			
+        			final int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,BatteryManager.BATTERY_STATUS_UNKNOWN);                    		
+        			boolean charging = status == BatteryManager.BATTERY_STATUS_FULL || status == BatteryManager.BATTERY_STATUS_CHARGING;
+        			mClockBatt.setDigitDrawableIdx(charging ? 1 : 0);
         		}
         		return;
         	}

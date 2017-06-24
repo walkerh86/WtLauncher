@@ -36,6 +36,8 @@ public class WtClock extends View {
     private Paint mDigitTextPaint;
 	private Drawable[] mDigitTextDrawables;
 	private int mDigitTextNum;
+	private Drawable[] mDigitTextDrawables_1;
+	private int mDigitDrawablesIdx;
 	
     public WtClock(Context context) {
         this(context, null);
@@ -116,6 +118,22 @@ public class WtClock extends View {
 	        	mDigitTextNum = len;
 	        	ar.recycle();
 	        }
+	        digitDrawablesId = a.getResourceId(R.styleable.WtClock_digitext_drawables_1, -1);
+	        if(digitDrawablesId > 0){
+	        	Resources res = context.getResources();
+	        	TypedArray ar = res.obtainTypedArray(digitDrawablesId);
+	        	int len = ar.length();
+	        	mDigitTextDrawables_1 = new Drawable[len];
+	        	for(int i=0;i<len;i++){
+	        		int resId = ar.getResourceId(i, 0);
+	        		if(resId > 0){
+	        			mDigitTextDrawables_1[i] = res.getDrawable(resId);
+	        		}
+	        	}
+	        	//mDigitTextNum = len;
+	        	ar.recycle();
+	        }
+	        mDigitDrawablesIdx = 0;
         }
         
         a.recycle();
@@ -161,7 +179,7 @@ public class WtClock extends View {
         	if(index >= mDigitTextNum){
         		index = mDigitTextNum-1;
         	}
-        	Drawable dr = mDigitTextDrawables[index];
+        	Drawable dr = mDigitDrawablesIdx == 1 ? mDigitTextDrawables_1[index] : mDigitTextDrawables[index];
         	if(dr != null){
         		int w = dr.getIntrinsicWidth();
         		int h = dr.getIntrinsicHeight();
@@ -173,6 +191,11 @@ public class WtClock extends View {
     
     public void setValue(int value){
     	mValue = value;
+    	invalidate();
+    }
+    
+    public void setDigitDrawableIdx(int index){
+    	mDigitDrawablesIdx = index;
     	invalidate();
     }
     

@@ -49,6 +49,7 @@
     clock:value_min="0"
     clock:value_max="100"
     clock:digitext_drawables="@array/wt_clock_11_batt_drawables"
+    clock:digitext_drawables_1="@array/wt_clock_11_batt_charge_drawables"
     clock:digitext_x="0"
     clock:digitext_y="0"/>
 </LinearLayout>  

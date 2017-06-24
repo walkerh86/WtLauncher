@@ -24,6 +24,7 @@
         <attr name="digitext_strokesize" format="integer"/> 
         <attr name="digitext_x" format="integer"/> 
         <attr name="digitext_y" format="integer"/>
+        <attr name="digitext_drawables_1" format="reference"/>
         
     </declare-styleable>
     
@@ -128,6 +129,14 @@
        <item>@drawable/wt_clock_11_batt_3</item>
        <item>@drawable/wt_clock_11_batt_4</item>
        <item>@drawable/wt_clock_11_batt_5</item>
+    </array>
+    
+    <array name="wt_clock_11_batt_charge_drawables">
+       <item>@drawable/wt_clock_11_batt_charge_1</item>
+       <item>@drawable/wt_clock_11_batt_charge_2</item>
+       <item>@drawable/wt_clock_11_batt_charge_3</item>
+       <item>@drawable/wt_clock_11_batt_charge_4</item>
+       <item>@drawable/wt_clock_11_batt_charge_5</item>
     </array>
     
     <array name="wt_clock_11_mbsignal_drawables">

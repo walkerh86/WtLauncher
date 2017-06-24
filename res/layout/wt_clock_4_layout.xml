@@ -55,7 +55,7 @@
     android:textColor="#ffffffff"
     android:textSize="24sp"/>
 
-<com.cj.clock.WtClock
+<com.cj.clock.WtHour
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
@@ -65,7 +65,7 @@
     clock:pointer_drawable="@drawable/wt_clock_4_hour"
     clock:pointer_center_x="160"
     clock:pointer_center_y="160">
-</com.cj.clock.WtClock>
+</com.cj.clock.WtHour>
 
 <com.cj.clock.WtClock
     android:id="@+id/clk_min"

@@ -60,4 +60,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"    />
 
+<TextView 
+    android:id="@+id/tx_clk_ampm"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    />
+
 </com.cj.clock.WtClockRoot>

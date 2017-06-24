@@ -45,7 +45,7 @@
     clock:digitext_y="0"/>
 </FrameLayout>
     
-<com.cj.clock.WtClock
+<com.cj.clock.WtHour
     android:id="@+id/clk_hour"
     android:layout_width="match_parent"
     android:layout_height="match_parent"    
@@ -55,7 +55,7 @@
     clock:digitext_drawables="@array/wt_clock_11_digit_drawables"
     clock:digitext_x="50"
     clock:digitext_y="66">
-</com.cj.clock.WtClock>
+</com.cj.clock.WtHour>
 
 <ImageView
     android:layout_width="wrap_content"

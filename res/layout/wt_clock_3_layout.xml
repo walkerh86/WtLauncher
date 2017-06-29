@@ -19,6 +19,15 @@
     clock:digitext_y="132">
 </com.cj.clock.WtHour>
 
+<TextView 
+    android:id="@+id/tx_clk_ampm"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="152px"
+    android:layout_marginLeft="120px"
+    android:textColor="#ff90cde8"
+    android:textSize="16px"/>
+
 <com.cj.clock.WtClock
     android:id="@+id/clk_min"
     android:layout_width="match_parent"

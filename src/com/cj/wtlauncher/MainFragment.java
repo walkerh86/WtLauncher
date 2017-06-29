@@ -32,7 +32,7 @@ public class MainFragment  extends Fragment{
 				activity.setClockFragmentVisible(false);
 			}
 		});*/
-		View clockView = inflater.inflate(R.layout.wt_clock_11_layout, null);
+		View clockView = inflater.inflate(R.layout.wt_clock_8_layout, null);
 		FrameLayout.LayoutParams localLayoutParams = new FrameLayout.LayoutParams(-1, -1);
 		mClockHost.addView(clockView, localLayoutParams);
 		return rootView;

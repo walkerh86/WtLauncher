@@ -1,6 +1,7 @@
 package com.cj.qs;
 
 import com.cj.wtlauncher.R;
+import com.goodocom.gocsdk.IGocsdkExt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -10,6 +11,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -19,6 +23,28 @@ public class QSBluetoothTile extends QSTile{
 	private final BluetoothAdapter mAdapter;
 	private Context mContext;
 	private SignalState mSignalState;
+	
+	private IGocsdkExt mGocsdkService;
+	private MyConnection mMyConnection;
+	
+	private class MyConnection implements ServiceConnection {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mGocsdkService = IGocsdkExt.Stub.asInterface(service);
+			Log.i("hcj.GocsdkExtService", "onServiceConnected mGocsdkService="+mGocsdkService);
+			mSignalState.enabled = isEnabled();
+			mSignalState.connected = isConnected();
+			updateView();
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+			mGocsdkService = null;
+			Log.i("hcj.GocsdkExtService", "onServiceDisconnected mGocsdkService="+mGocsdkService);
+		}
+	}
+	
 	
 	public QSBluetoothTile(Context context, QSTileView tileView, ImageView statusView){
 		mContext = context;
@@ -41,11 +67,20 @@ public class QSBluetoothTile extends QSTile{
 		filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 		filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
 		filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-		context.registerReceiver(mReceiver, filter);		
+		filter.addAction("com.goodocom.gocsdk.connect_state");
+		filter.addAction("com.goodocom.gocsdk.open_state");
+		context.registerReceiver(mReceiver, filter);	
+		
+		Intent intent = new Intent();
+		intent.setComponent(new ComponentName("com.goodocom.gocsdkfinal","com.goodocom.gocsdkfinal.service.GocsdkExtService"));
+		mMyConnection = new MyConnection();
+		context.bindService(intent, mMyConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	public void onDestroy(Context context){
 		context.unregisterReceiver(mReceiver);
+		
+		context.unbindService(mMyConnection);
 	}
 	
 	private void updateView(){
@@ -78,6 +113,12 @@ public class QSBluetoothTile extends QSTile{
 				mSignalState.connecting = state == BluetoothAdapter.STATE_CONNECTING;                        
 			}else if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
 				
+			}else if(action.equals("com.goodocom.gocsdk.connect_state")){
+				mSignalState.connected = intent.getBooleanExtra("connected", false);
+				Log.i("hcj.GocsdkExtService", "mReceiver connected="+mSignalState.connected);
+			}else if(action.equals("com.goodocom.gocsdk.open_state")){
+				mSignalState.enabled = intent.getBooleanExtra("opened", false);
+				Log.i("hcj.GocsdkExtService", "mReceiver enabled="+mSignalState.enabled);
 			}
 			updateView();
 			if(mOnStateChangedListener != null){
@@ -102,10 +143,19 @@ public class QSBluetoothTile extends QSTile{
 	};
 	
 	public boolean isEnabled() {
-        return mAdapter != null && mAdapter.isEnabled();
+        //return mAdapter != null && mAdapter.isEnabled();		
+		boolean enabled = false;
+		if(mGocsdkService != null){
+			try{
+				enabled = mGocsdkService.isBtOpen();
+			}catch(Exception e){				
+			}
+		}
+		return enabled;
     }
 	
 	 public void setEnabled(boolean enabled) {
+		 /*
 	        if (mAdapter != null) {
 	            if (enabled) {
 	                mAdapter.enable();
@@ -113,17 +163,31 @@ public class QSBluetoothTile extends QSTile{
 	                mAdapter.disable();
 	            }
 	        }
-	   	 }
+	        */
+		 if(mGocsdkService != null){
+				try{
+					mGocsdkService.setBtSwitch(enabled);
+				}catch(Exception e){				
+				}
+			}
+	 }
 	
 	 private void handleLongClick(){
+		 
 		 Intent intent = new Intent();
-		 intent.setComponent(new ComponentName("com.android.settings","com.android.settings.bluetooth.BluetoothSettings"));
+		 //intent.setComponent(new ComponentName("com.android.settings","com.android.settings.bluetooth.BluetoothSettings"));
+		 intent.setComponent(new ComponentName("com.goodocom.gocsdkfinal","com.goodocom.gocsdkfinal.activity.SettingsActivity"));
 		 mContext.startActivity(intent);
 	 }
 
     public boolean isConnected() {
-        return mAdapter != null
-                && mAdapter.getConnectionState() == BluetoothAdapter.STATE_CONNECTED;
+    	boolean connected = false;
+    	try{
+    		connected = mGocsdkService.isBtConnected();
+    	}catch(Exception e){
+		}
+    	return connected;
+        //return mAdapter != null && mAdapter.getConnectionState() == BluetoothAdapter.STATE_CONNECTED;                
     }
 
     public boolean isConnecting() {

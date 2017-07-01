@@ -49,8 +49,8 @@ import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
 public class MenuFragment extends Fragment {
-	private static final String TAG = "hcj";
-	private RecyclerView mRecyclerView;
+	private static final String TAG = "hcj.MenuFragment";
+	private WtRecyclerView mRecyclerView;
 	private TextView mCurrLabelView;
 	private MyLinearLayoutManager mMyLinearLayoutManager;
 	private PackageManager mPackageManager;
@@ -59,10 +59,11 @@ public class MenuFragment extends Fragment {
 	private static final int PAGE_INDICATOR_ITEM_NUM = 8;
 	private MyAdapter mMyAdapter;
 	private Context mContext;
-	public static final int MENU_STYLE_H = 0;
-	public static final int MENU_STYLE_GRID = 1;
-	public static final int MENU_STYLE_V = 2;
-	private int mMenuStyle = MENU_STYLE_V;
+	//public static final int MENU_STYLE_H = 0;
+	//public static final int MENU_STYLE_GRID = 1;
+	//public static final int MENU_STYLE_V = 2;
+	private int mMenuStyle = MenuSettings.MENU_STYLE_GRID;
+	private View mRootView;
 	private Canvas mCanvas = new Canvas();
 
 	@Override
@@ -95,51 +96,24 @@ public class MenuFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
     		Log.i(TAG,"MenuFragment onCreateView");
 		View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
-		mRecyclerView = (RecyclerView)rootView.findViewById(R.id.list_view);
+		mRootView = rootView;
+		mRecyclerView = (WtRecyclerView)rootView.findViewById(R.id.list_view);
 		mRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 		
 		mCurrLabelView = (TextView)rootView.findViewById(R.id.curr_label_view);
 		mPageIndicator = (PageIndicator)rootView.findViewById(R.id.page_indicator);
 
-		if(mMenuStyle == MENU_STYLE_H){
-			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//
-			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
-			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
-			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);
-			mRecyclerView.addItemDecoration(new MyItemDecoration());
-			
-			mPageIndicator.setPageNum(PAGE_INDICATOR_ITEM_NUM);
-			mPageIndicator.setPageCurr(0);
-		}else if(mMenuStyle == MENU_STYLE_V){
-			mCurrLabelView.setVisibility(View.GONE);
-			mPageIndicator.setVisibility(View.GONE);
-		
-			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);//
-			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
-			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
-			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);	
-			mRecyclerView.addItemDecoration(new MyItemDecoration());
-			((WtRecyclerView)mRecyclerView).setAdjustDrawingOrder(true);
-		}else{
-			mCurrLabelView.setVisibility(View.GONE);
-			mPageIndicator.setVisibility(View.GONE);
-
-			mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2,LinearLayoutManager.HORIZONTAL,false));
-			//mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
-		}
-		mMyAdapter = new MyAdapter();
-		mMyAdapter.setOnItemClickListener(mOnItemClickListener);
-		mRecyclerView.setAdapter(mMyAdapter);
+		switchMenuStyle();
 	
 		mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState){
-				if(mMenuStyle == MENU_STYLE_H || mMenuStyle == MENU_STYLE_V){
+				if(mMyLinearLayoutManager != null){
 					mMyLinearLayoutManager.onScrollStateChanged(recyclerView,newState);
 				}
 			}
 			
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-				if(mMenuStyle == MENU_STYLE_H || mMenuStyle == MENU_STYLE_V){
+				if(mMyLinearLayoutManager != null){
 					mMyLinearLayoutManager.onScrolled();
 				}
 			}
@@ -263,16 +237,17 @@ public class MenuFragment extends Fragment {
         	mAllApps.add(new AppInfo(resolveInfo,mPackageManager));
         }
 		
+		/*
 	  if(mMenuStyle == MENU_STYLE_H){
 	        mAllApps.add(0,new AppInfo(null,null));
 		  mAllApps.add(mAllApps.size(),new AppInfo(null,null));
-	  }
+	  }*/
         Log.i(TAG, "loadAllApps end time="+SystemClock.uptimeMillis());
 	}
 	
 	public class MyItemDecoration extends RecyclerView.ItemDecoration {
 		public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
-			if(mMenuStyle == MENU_STYLE_H){
+			if(mMenuStyle == MenuSettings.MENU_STYLE_H){
 				outRect.set(0,26,0,0);
 			}else{
 				outRect.set(0,0,0,0);
@@ -374,41 +349,9 @@ public class MenuFragment extends Fragment {
 		}
 		
 		private void updateItemViewsScale(){
-			/*
-			if(mMyOrientation == VERTICAL){
-				int offset = mScrolledX%20;
-				int count = getChildCount();
-				int childH = 0;
-				int prevH = 0;
-				for(int i=0;i<count;i++){
-					if(i == 0){
-						childH = 40-offset*2;
-						prevH += childH;
-					}else if(i == 1){
-						childH = 60-offset*3;
-						prevH += childH;
-					}else if(i == 2){
-						childH = 120-offset*6;	
-						prevH += childH;
-					}else if(i == 3){
-						childH = 60+offset*3;	
-						prevH += childH;
-					}else if(i == 4){
-						childH = 40+offset*2;	
-						prevH += childH;
-					}else if(i == 5){
-						childH = 320-prevH;					
-					}
-					View view = getChildAt(i);
-					View iconView = view.findViewById(R.id.icon_view);
-					LayoutParams lp = (LayoutParams)iconView.getLayoutParams();
-					lp.height = childH;
-					lp.width = childH;
-					iconView.setLayoutParams(lp);
-				}
+			if(mMenuStyle == MenuSettings.MENU_STYLE_GRID){
 				return;
 			}
-			*/
 			int count = getChildCount();
 			int centerX = getCenterXY();
 			View firstChild = getChildAt(0);
@@ -421,15 +364,15 @@ public class MenuFragment extends Fragment {
 				float scaleX = 1.0f;
 				if(mMyOrientation == VERTICAL){
 					scaleX = 1.0f-0.6f*deltaX/centerX;
+					view.findViewById(R.id.icon_view).setScaleX(scaleX);
+					view.findViewById(R.id.icon_view).setScaleY(scaleX);
+					view.findViewById(R.id.label_view).setScaleX(scaleX);
+					view.findViewById(R.id.label_view).setScaleY(scaleX);
 				}else if(mMyOrientation == HORIZONTAL  && deltaX < childWidth){
 					scaleX = 1.0f+0.6f*(childWidth-deltaX)/childWidth;
+					view.setScaleX(scaleX);
+					view.setScaleY(scaleX);
 				}
-				//view.setScaleX(scaleX);
-				//view.setScaleY(scaleX);
-				view.findViewById(R.id.icon_view).setScaleX(scaleX);
-				view.findViewById(R.id.icon_view).setScaleY(scaleX);
-				view.findViewById(R.id.label_view).setScaleX(scaleX);
-				view.findViewById(R.id.label_view).setScaleY(scaleX);
 			}
 			View centerView = getCenterItemView(false);
 			if(centerView == null || mOnLayoutListener == null){
@@ -527,14 +470,28 @@ public class MenuFragment extends Fragment {
 	private class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
 		@Override
 		public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-		android.util.Log.i("hcj","onCreateViewHolder mMenuStyle="+mMenuStyle);
-			int layoutId = (mMenuStyle == MENU_STYLE_V) ? R.layout.list_item_vertical: R.layout.list_item;
+			int layoutId = R.layout.list_item;
+			if(mMenuStyle == MenuSettings.MENU_STYLE_H){
+				layoutId = R.layout.list_item_h;
+			}else if(mMenuStyle == MenuSettings.MENU_STYLE_V){
+				layoutId = R.layout.list_item_vertical;
+			}
 			MyViewHolder holder = new MyViewHolder(LayoutInflater.from(MenuFragment.this.getActivity()).inflate(layoutId, parent,false)); 
-            return holder;
+            		return holder;
 		}
 		
 		@Override
 		public void onBindViewHolder(MyViewHolder holder, int position){
+			if(mMenuStyle == MenuSettings.MENU_STYLE_H){
+				if(position == 0 || position == (getItemCount()-1)){
+					holder.mIconView.setImageDrawable(null);
+					holder.mLabelView.setText("");
+					holder.mRootView.setTag(null);
+					return;
+				}else{
+					position -= 1;
+				}
+			}
 			AppInfo appInfo = mAllApps.get(position);
 			holder.mIconView.setImageDrawable(appInfo.mIcon);
 			holder.mLabelView.setText(appInfo.mLabel);
@@ -543,7 +500,11 @@ public class MenuFragment extends Fragment {
 		
 		@Override
 		public int getItemCount(){
-			return mAllApps.size();
+			int count = mAllApps.size();
+			if(mMenuStyle == MenuSettings.MENU_STYLE_H){
+				count += 2;
+			}
+			return count;
 		}
 		
 		private class MyViewHolder extends ViewHolder{
@@ -554,7 +515,7 @@ public class MenuFragment extends Fragment {
 				super(view);				
 				mIconView = (ImageView) view.findViewById(R.id.icon_view);
 				mLabelView = (TextView) view.findViewById(R.id.label_view);
-				if(mMenuStyle == MENU_STYLE_H){
+				if(mMenuStyle == MenuSettings.MENU_STYLE_H){
 					mLabelView.setVisibility(View.GONE);
 				}
 				mRootView = view;
@@ -579,24 +540,31 @@ public class MenuFragment extends Fragment {
 	private OnItemClickListener mOnItemClickListener = new OnItemClickListener(){
 		@Override
 		public void onItemClick(View view) {
+			if(view.getTag() == null){
+				return;
+			}
 			AppInfo appInfo = (AppInfo)view.getTag();
 			Log.i("hcj", "appInfo.mIntent="+appInfo.mIntent);
 			if(appInfo.mIntent == null){
 				return;
 			}
-			if(mMenuStyle == MENU_STYLE_H){
+			if(mMenuStyle == MenuSettings.MENU_STYLE_H){
 				mMyLinearLayoutManager.adjustItemViewToCenter(mRecyclerView,view);
 				mLaunchCenter = true;
 			}else{
-				if(appInfo.mIntent.getComponent().getClassName().equals("com.cj.wtlauncher.StyleSettingActivity")){
-					Intent intent = new Intent(getActivity(),StyleSettingActivity.class);
-					getActivity().startActivity(intent);
-				}else{
-					getActivity().startActivity(appInfo.mIntent);
-				}
+				startActivity(appInfo);
 			}
 		}			
 	};
+
+	private void startActivity(AppInfo appInfo){
+		if(appInfo.mIntent.getComponent().getClassName().equals("com.cj.wtlauncher.StyleSettingActivity")){
+			Intent intent = new Intent(getActivity(),StyleSettingActivity.class);
+			getActivity().startActivity(intent);
+		}else{
+			getActivity().startActivity(appInfo.mIntent);
+		}
+	}
 
 	private OnLayoutListener mOnLayoutListener = new OnLayoutListener(){
 		@Override
@@ -605,7 +573,8 @@ public class MenuFragment extends Fragment {
 			if(mLaunchCenter){
 				mLaunchCenter = false;
 				AppInfo appInfo = (AppInfo)view.getTag();
-				getActivity().startActivity(appInfo.mIntent);
+				//getActivity().startActivity(appInfo.mIntent);
+				startActivity(appInfo);
 			}
 		}
 		
@@ -688,12 +657,16 @@ public class MenuFragment extends Fragment {
 		
 	public int getMenuStyle(){
 		SharedPreferences settings = getActivity().getSharedPreferences("setting", 0);
-		int style = settings.getInt("menu_style", this.MENU_STYLE_GRID);
-		return style;
+		int styleId = settings.getInt("menu_style", MenuSettings.MENU_STYLE_GRID);
+		return styleId;
 	}
 	
 	private void switchMenuStyle(){
-		if(mMenuStyle == MENU_STYLE_H){
+		int wallpaperId = MenuSettings.getMenuWallpaperId(mMenuStyle);
+		if(wallpaperId > 0){
+			mRootView.setBackgroundResource(wallpaperId);
+		}
+		if(mMenuStyle == MenuSettings.MENU_STYLE_H){
 			mCurrLabelView.setVisibility(View.VISIBLE);
 			mPageIndicator.setVisibility(View.VISIBLE);
 			
@@ -702,23 +675,30 @@ public class MenuFragment extends Fragment {
 			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
 			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);
 			mRecyclerView.addItemDecoration(new MyItemDecoration());
+			mRecyclerView.setAdjustDrawingOrder(true);
 			
 			mPageIndicator.setPageNum(PAGE_INDICATOR_ITEM_NUM);
 			mPageIndicator.setPageCurr(0);
-		}else if(mMenuStyle == MENU_STYLE_V){
+		}else if(mMenuStyle == MenuSettings.MENU_STYLE_V){
 			mCurrLabelView.setVisibility(View.GONE);
 			mPageIndicator.setVisibility(View.GONE);
 		
 			mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);//
 			mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
 			mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
-			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);			
+			mRecyclerView.setLayoutManager(mMyLinearLayoutManager);		
+			mRecyclerView.setAdjustDrawingOrder(false);
 		}else{
 			mCurrLabelView.setVisibility(View.GONE);
 			mPageIndicator.setVisibility(View.GONE);
 
 			mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2,LinearLayoutManager.HORIZONTAL,false));
-			//mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
+			//mMyLinearLayoutManager = new MyLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);//
+			//mMyLinearLayoutManager.setOnLayoutListener(mOnLayoutListener);
+			//mMyLinearLayoutManager.setRecyclerView(mRecyclerView);
+			//mRecyclerView.setLayoutManager(mMyLinearLayoutManager);	
+			
+			mRecyclerView.setAdjustDrawingOrder(false);
 		}
 		
 		mMyAdapter = new MyAdapter();

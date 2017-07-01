@@ -39,23 +39,22 @@ public class StyleSettingActivity extends Activity {
 		});
 	}
 	
-	private void saveStyleSetting(int position){
-		int style = MenuFragment.MENU_STYLE_GRID;
-		if(position == 1){
-			style = MenuFragment.MENU_STYLE_V;
-		}
+	private void saveStyleSetting(int styleId){
 		SharedPreferences settings = getSharedPreferences("setting", 0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putInt("menu_style", style);
+		editor.putInt("menu_style", styleId);
 		editor.commit();
 	}
 	
 	public int getCheckedPostion(){
-		SharedPreferences settings = getSharedPreferences("setting", 0);
-		int style = settings.getInt("menu_style", MenuFragment.MENU_STYLE_GRID);
+		SharedPreferences settings = getSharedPreferences("setting", 0);		
 		int position = 0;
-		if(style == MenuFragment.MENU_STYLE_V){
-			position = 1;
+		int styleId = settings.getInt("menu_style", MenuSettings.MENU_STYLES[0].mStyleId);
+		for(int i=0;i<MenuSettings.MENU_STYLES.length;i++){
+			if(styleId == MenuSettings.MENU_STYLES[i].mStyleId){
+				position = i;
+				break;
+			}
 		}
 		return position;
 	}
@@ -64,36 +63,32 @@ public class StyleSettingActivity extends Activity {
 		setContentView(R.layout.activity_choose_clock);
 		
 		Gallery gallery = (Gallery)findViewById(R.id.myGallery);
+		/*
 		int[] iconIds = new int[GALLERY_ITEMS.length];
 		int[] titleIds = new int[GALLERY_ITEMS.length];
 		for(int i=0;i<GALLERY_ITEMS.length;i++){
 			titleIds[i] = GALLERY_ITEMS[i].mTitleId;
 			iconIds[i] = GALLERY_ITEMS[i].mThumbImageId;
 		}
+		*/
+		int[] iconIds = new int[MenuSettings.MENU_STYLES.length];
+		int[] titleIds = new int[MenuSettings.MENU_STYLES.length];
+		for(int i=0;i<MenuSettings.MENU_STYLES.length;i++){
+			titleIds[i] = 0;
+			iconIds[i] = MenuSettings.MENU_STYLES[i].mPreviewId;
+		}
 		
 		HorizontalListViewAdapter adapter = new HorizontalListViewAdapter(this, titleIds, iconIds);
 		gallery.setAdapter(adapter);
 		gallery.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-				saveStyleSetting(position);
+				MenuSettings.MenuStyle menuStyle= MenuSettings.MENU_STYLES[position];
+				saveStyleSetting(menuStyle.mStyleId);
+				
 				StyleSettingActivity.this.finish();
 				StyleSettingActivity.this.overridePendingTransition(0, R.anim.exit_anim);
 			}
 		});
 		gallery.setSelection(getCheckedPostion());
-	}
-	
-	private static final GalleryItem ITEM_GRID = new GalleryItem(R.drawable.menu_style_grid,R.string.menu_style_grid);
-	private static final GalleryItem ITEM_LIST = new GalleryItem(R.drawable.menu_style_list,R.string.menu_style_list);
-	private static final GalleryItem[] GALLERY_ITEMS = new GalleryItem[]{ITEM_GRID,ITEM_LIST};
-	
-	private static class GalleryItem{
-		public int mThumbImageId;
-		public int mTitleId;
-		
-		public GalleryItem(int thumbImageId, int titleId){
-			mTitleId = titleId;
-			mThumbImageId = thumbImageId;
-		}
 	}
 }

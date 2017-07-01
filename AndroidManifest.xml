@@ -75,6 +75,8 @@
             </intent-filter>
         </service>
         
+        <provider android:authorities="com.cj.wtlauncher" android:exported="true" android:name=".MenuProvider"/>
+        
     </application>
 
 </manifest>

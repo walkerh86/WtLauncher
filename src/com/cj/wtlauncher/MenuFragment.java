@@ -2,6 +2,7 @@ package com.cj.wtlauncher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.cj.widget.PageIndicator;
 
@@ -9,6 +10,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.support.v4.app.Fragment;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +20,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -151,7 +155,7 @@ public class MenuFragment extends Fragment {
 			if(mIcon == null){
 				mIcon = actInfo.getIcon(mIconDpi);				
 				if((actInfo.getApplicationFlags() & ApplicationInfo.FLAG_SYSTEM) == 0 && mIcon != null){
-					mIcon = getMergeIcon(mIcon,0);
+					mIcon = getMergeIcon(mIcon,getIconBgIdx(actInfo.getComponentName().getPackageName(),actInfo.getName()));
 		        }
 			}
 		}
@@ -166,16 +170,55 @@ public class MenuFragment extends Fragment {
 
 		private Drawable getFixIcon(String actName){
 			String name = actName.replaceAll("\\.","_").toLowerCase();
-			android.util.Log.i("hcj","getIcon name="+name);
+			//Log.i(TAG,"getIcon name="+name);
 			Resources res = mContext.getResources();
 			int resId = res.getIdentifier(name, "mipmap", "com.cj.wtlauncher");
 			return (resId != 0) ? res.getDrawable(resId) : null;
 		}
 	}
+
+	private static final int[] ICON_BG_DRAWABLES = new int[]{
+		R.drawable.app_icon_bg_1,
+		R.drawable.app_icon_bg_2,
+		R.drawable.app_icon_bg_3,
+		R.drawable.app_icon_bg_4,
+		R.drawable.app_icon_bg_5,
+	};
+	
+	private int getRandomIconBgIdx(){
+		Random random=new Random();
+		return random.nextInt(ICON_BG_DRAWABLES.length);
+	}
+	
+	private int getIconBgIdx(String pkgName, String clsName){
+		final ContentResolver cr = getActivity().getContentResolver();
+		Cursor cursor = cr.query(MenuProvider.CONTENT_URI, MenuProvider.ALL_PROJECTION, "pkgName=? and clsName=?", new String[] { pkgName, clsName}, null);
+		int iconBgIdx = 0;
+		if(cursor == null || (cursor.getCount() < 1)){
+			iconBgIdx = getRandomIconBgIdx();
+			ContentValues values = new ContentValues();
+			values.put(MenuProvider.ITEM_PKGNAME, pkgName);
+			values.put(MenuProvider.ITEM_CLSNAME, clsName);
+			values.put(MenuProvider.ITEM_ICONBGIDX, iconBgIdx);
+			cr.insert(MenuProvider.CONTENT_URI, values);
+		}else{
+			cursor.moveToNext();
+			iconBgIdx = cursor.getInt(MenuProvider.COLUMN_ICONBGIDX);
+			cursor.close();
+			if(iconBgIdx < 0 || iconBgIdx >= ICON_BG_DRAWABLES.length){
+				iconBgIdx = getRandomIconBgIdx();
+				ContentValues values = new ContentValues();
+				values.put(MenuProvider.ITEM_ICONBGIDX, iconBgIdx);
+				cr.update(MenuProvider.CONTENT_URI, values, "pkgName=? and clsName=?", new String[] { pkgName, clsName});
+			}			
+		}
+		Log.i(TAG, String.format("getIconBgIdx clsName=%s,iconBgIdx=%d",clsName,iconBgIdx));
+		return iconBgIdx;
+	}
 	
 	private Drawable getMergeIcon(Drawable icon, int bgIdx){
 		Canvas canvas = mCanvas;
-		Bitmap bgBmp = BitmapFactory.decodeResource(this.getActivity().getResources(),R.drawable.app_icon_bg1);
+		Bitmap bgBmp = BitmapFactory.decodeResource(this.getActivity().getResources(),ICON_BG_DRAWABLES[bgIdx]);
 		Bitmap outBmp = Bitmap.createBitmap(bgBmp.getWidth(),bgBmp.getHeight(),bgBmp.getConfig());
 		canvas.setBitmap(outBmp);
 		canvas.drawBitmap(bgBmp, 0, 0, null);
@@ -212,7 +255,7 @@ public class MenuFragment extends Fragment {
         }        
         
         if((aInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0 && d != null){
-        	d = getMergeIcon(d,0);
+        	d = getMergeIcon(d,getIconBgIdx(aInfo.packageName,aInfo.name));
         }
         
         return d;
@@ -220,29 +263,26 @@ public class MenuFragment extends Fragment {
 	
 	private ArrayList<AppInfo> mAllApps = new ArrayList<AppInfo>();
 	private void loadAllApps(){
-		final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        
-        List<ResolveInfo> apps = null;
-        apps = mPackageManager.queryIntentActivities(mainIntent, 0);
-        if(apps == null){
-        	Log.i(TAG, "loadAllApps apps == null");
-        	return;
-        }
-        Log.i(TAG, "loadAllApps start time="+SystemClock.uptimeMillis());
-        int count = apps.size();
-        for(int i=0;i<count;i++){
-        	//Drawable icon = getFullResIcon(apps.get(i));
-        	ResolveInfo resolveInfo = apps.get(i);
-        	mAllApps.add(new AppInfo(resolveInfo,mPackageManager));
-        }
-		
-		/*
-	  if(mMenuStyle == MENU_STYLE_H){
-	        mAllApps.add(0,new AppInfo(null,null));
-		  mAllApps.add(mAllApps.size(),new AppInfo(null,null));
-	  }*/
-        Log.i(TAG, "loadAllApps end time="+SystemClock.uptimeMillis());
+		new Thread(){
+			public void run(){
+				final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+				mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+				List<ResolveInfo> apps = null;
+				apps = mPackageManager.queryIntentActivities(mainIntent, 0);
+				if(apps == null){
+					Log.i(TAG, "loadAllApps apps == null");
+					return;
+				}
+				Log.i(TAG, "loadAllApps start time="+SystemClock.uptimeMillis());
+				int count = apps.size();
+				for(int i=0;i<count;i++){
+					ResolveInfo resolveInfo = apps.get(i);
+					mAllApps.add(new AppInfo(resolveInfo,mPackageManager));
+				}
+				Log.i(TAG, "loadAllApps end time="+SystemClock.uptimeMillis());
+			}
+		}.start();
 	}
 	
 	public class MyItemDecoration extends RecyclerView.ItemDecoration {
@@ -639,7 +679,7 @@ public class MenuFragment extends Fragment {
 				return;
 			}
 			for(LauncherActivityInfo actInfo : list){
-				mAllApps.add(mAllApps.size()-1,new AppInfo(actInfo));
+				mAllApps.add(new AppInfo(actInfo));
 			}
 			
 			mMyAdapter.notifyDataSetChanged();

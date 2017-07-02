@@ -281,6 +281,8 @@ public class MenuFragment extends Fragment {
 					mAllApps.add(new AppInfo(resolveInfo,mPackageManager));
 				}
 				Log.i(TAG, "loadAllApps end time="+SystemClock.uptimeMillis());
+				
+				mHandler.post(mNotifyAdapterChangeRunnable);
 			}
 		}.start();
 	}
@@ -745,4 +747,11 @@ public class MenuFragment extends Fragment {
 		mMyAdapter.setOnItemClickListener(mOnItemClickListener);
 		mRecyclerView.setAdapter(mMyAdapter);
 	}
+	
+	private Runnable mNotifyAdapterChangeRunnable = new Runnable(){
+		@Override
+		public void run(){
+			mMyAdapter.notifyDataSetChanged();
+		}
+	};
 }

@@ -59,6 +59,13 @@ public class WtClockRoot extends FrameLayout {
 	private NetworkController mNetworkController;
 	private ImageView mMobileSignalView;
 	private ImageView mMobileDataView;
+	static final int[] WIFI_SIGNAL_STRENGTH_FULL = {
+			R.drawable.wt_clock_11_wifi_0,
+			R.drawable.wt_clock_11_wifi_1,
+			R.drawable.wt_clock_11_wifi_2,
+			R.drawable.wt_clock_11_wifi_3,
+			R.drawable.wt_clock_11_wifi_4,
+	};
 	
 	private final Handler mHandler = new Handler(){
 		@Override
@@ -333,6 +340,9 @@ public class WtClockRoot extends FrameLayout {
 		@Override
 		public void onWifiConnect(boolean connected, int level){
 			if(mClockWifiConnect != null){
+				if(connected){
+					mClockWifiConnect.setImageResource(WIFI_SIGNAL_STRENGTH_FULL[level]);
+				}
 				mClockWifiConnect.setVisibility(connected ? View.VISIBLE : View.GONE);
 				if(connected){
 					mMobileDataView.setImageLevel(0);

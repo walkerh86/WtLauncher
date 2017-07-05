@@ -42,14 +42,8 @@ public class MainActivity extends FragmentActivity{
 		mViewPager = (HorizontalViewPager)findViewById(R.id.view_pager);
 		ArrayList<Fragment> fragmentList = new ArrayList<Fragment>();
 		fragmentList.add(new QuickFragment());
-		mVPagerFragment = new VPagerFragment();
-		mVPagerFragment.setOnClockPageSelectListener(new VPagerFragment.OnClockPageSelectListener(){
-			@Override
-			public void onClockPageSelect(boolean selected){
-				mViewPager.setSwipeEnable(selected);
-			}
-		});
-		fragmentList.add(mVPagerFragment);
+		fragmentList.add(new VPagerFragment());
+		//Log.i(TAG, "showCenter mVPagerFragment="+mVPagerFragment);
 		fragmentList.add(new MenuFragment());
 		mViewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), fragmentList));
 		mViewPager.setCurrentItem(DEFAULT_PAGE);
@@ -70,6 +64,19 @@ public class MainActivity extends FragmentActivity{
 	public void onDestroy(){
 		super.onDestroy();
 		unregisterReceiver(mScreenUpdateReceiver);
+	}
+	
+	@Override
+	public void onAttachFragment(Fragment fragment){
+		if(fragment instanceof VPagerFragment){			
+			mVPagerFragment = (VPagerFragment)fragment;
+			mVPagerFragment.setOnClockPageSelectListener(new VPagerFragment.OnClockPageSelectListener(){
+				@Override
+				public void onClockPageSelect(boolean selected){
+					mViewPager.setSwipeEnable(selected);
+				}
+			});
+		}
 	}
 	
 	@Override

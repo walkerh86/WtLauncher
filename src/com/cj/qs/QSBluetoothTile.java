@@ -164,6 +164,7 @@ public class QSBluetoothTile extends QSTile{
 	            }
 	        }
 	        */
+		 Log.i("hcj.GocsdkExtService", "setEnabled "+enabled);
 		 if(mGocsdkService != null){
 				try{
 					mGocsdkService.setBtSwitch(enabled);

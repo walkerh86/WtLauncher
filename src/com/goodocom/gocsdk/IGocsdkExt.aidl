@@ -5,4 +5,7 @@ interface IGocsdkExt {
 	boolean isBtOpen();
 	boolean isBtConnected();
 	void dial(String number);
+	boolean isInCall();
+	void endCall();
+	void acceptCall();
 }

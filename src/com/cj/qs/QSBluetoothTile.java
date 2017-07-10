@@ -114,7 +114,15 @@ public class QSBluetoothTile extends QSTile{
 			}
 			updateView();
 			if(mOnStateChangedListener != null){
-				mOnStateChangedListener.onStateChanged(mSignalState.enabled);
+				int state;
+				if(mSignalState.connected){
+					state = BT_STATE_CONNECTED;
+				}else if(mSignalState.enabled){
+					state = BT_STATE_ON;
+				}else{
+					state = BT_STATE_OFF;
+				}
+				mOnStateChangedListener.onStateChanged(state);
 			}
 		}
 	};
@@ -171,8 +179,12 @@ public class QSBluetoothTile extends QSTile{
                 && mAdapter.getConnectionState() == BluetoothAdapter.STATE_CONNECTING;
     }	 
 
+    public static final int BT_STATE_UNKOWN = -1;
+    public static final int BT_STATE_OFF = 0;
+    public static final int BT_STATE_ON = 1;
+    public static final int BT_STATE_CONNECTED = 2;
 	public interface OnStateChangedListener{
-		void onStateChanged(boolean enabled);
+		void onStateChanged(int state);
 	}
 
 	private OnStateChangedListener mOnStateChangedListener;

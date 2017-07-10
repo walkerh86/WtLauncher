@@ -230,15 +230,17 @@ public class WtClockRoot extends FrameLayout {
             }
 		
 			if(mClockBt != null || mClockBtConnect != null){
-				mQSBluetoothTile = new QSBluetoothTile(getContext(),null,mClockBtConnect);
+				mQSBluetoothTile = new QSBluetoothTile(getContext(),null,null);
 				mQSBluetoothTile.setOnStateChangedListener(new QSBluetoothTile.OnStateChangedListener(){
 					@Override
-					public void onStateChanged(boolean enabled){
-						if(mClockBt != null){
-							mClockBt.setValue(enabled ? 1 : 0);
+					public void onStateChanged(int state) {
+						if(mClockBtConnect == null){
+							return;
 						}
+						updateBtView(state);
 					}
 				});
+				updateBtView(QSBluetoothTile.BT_STATE_UNKOWN);
 				if(mClockBt != null){
 					mClockBt.setValue(mQSBluetoothTile.isEnabled() ? 1 : 0);
 				}
@@ -291,6 +293,30 @@ public class WtClockRoot extends FrameLayout {
             mHandler.removeCallbacks(mSecRunnable);
             mAttached = false;
         }
+    }
+    
+    private void updateBtView(int state){
+    	if(mClockBtConnect == null){
+    		return;
+    	}
+    	if(state == QSBluetoothTile.BT_STATE_UNKOWN){
+    		if(mQSBluetoothTile.isConnected()){
+    			state = QSBluetoothTile.BT_STATE_CONNECTED;
+    		}else if(mQSBluetoothTile.isEnabled()){
+    			state = QSBluetoothTile.BT_STATE_ON;
+    		}else{
+    			state = QSBluetoothTile.BT_STATE_OFF;
+    		}
+    	}
+    	if(state == QSBluetoothTile.BT_STATE_CONNECTED){
+			mClockBtConnect.setImageResource(R.drawable.wt_clock_11_stat_bt_connect);
+			mClockBtConnect.setVisibility(View.VISIBLE);
+		}else if(state == QSBluetoothTile.BT_STATE_ON){
+			mClockBtConnect.setImageResource(R.drawable.wt_clock_11_stat_bt_on);
+			mClockBtConnect.setVisibility(View.VISIBLE);
+		}else{
+			mClockBtConnect.setVisibility(View.GONE);
+		}
     }
     
     private boolean isNetworkControllerNeeded(){

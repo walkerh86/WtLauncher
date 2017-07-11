@@ -43,6 +43,7 @@ public class QSBluetoothTile extends QSTile{
 				mSignalState.enabled = mGocsdkServiceHelper.isBtOpen();
 				mSignalState.connected = mGocsdkServiceHelper.isBtConnected();
 				updateView();
+				notifyStateChange();
 			}
 		});
 		mGocsdkServiceHelper.bindService(context);
@@ -113,19 +114,23 @@ public class QSBluetoothTile extends QSTile{
 				Log.i("hcj.GocsdkExtService", "mReceiver enabled="+mSignalState.enabled);
 			}
 			updateView();
-			if(mOnStateChangedListener != null){
-				int state;
-				if(mSignalState.connected){
-					state = BT_STATE_CONNECTED;
-				}else if(mSignalState.enabled){
-					state = BT_STATE_ON;
-				}else{
-					state = BT_STATE_OFF;
-				}
-				mOnStateChangedListener.onStateChanged(state);
-			}
+			notifyStateChange();
 		}
 	};
+	
+	private void notifyStateChange(){
+		if(mOnStateChangedListener != null){
+			int state;
+			if(mSignalState.connected){
+				state = BT_STATE_CONNECTED;
+			}else if(mSignalState.enabled){
+				state = BT_STATE_ON;
+			}else{
+				state = BT_STATE_OFF;
+			}
+			mOnStateChangedListener.onStateChanged(state);
+		}
+	}
 	
 	private View.OnClickListener mClickListener = new View.OnClickListener(){
 		@Override

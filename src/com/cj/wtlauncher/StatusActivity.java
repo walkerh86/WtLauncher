@@ -79,6 +79,8 @@ public class StatusActivity extends Activity{
 	private ImageView mNotfiyModeNormalBtn;
 	private ImageView mNotfiyModeVibrateBtn;
 	
+	private ImageView mBtStatusView;
+	
 	private NetworkController mNetworkController;
 	static final int[] WIFI_SIGNAL_STRENGTH_FULL = {
 			R.drawable.stat_sys_wifi_strength_0,
@@ -109,8 +111,15 @@ public class StatusActivity extends Activity{
 
 		//qs bar
 		QSTileView bluetoothTileView = (QSTileView)findViewById(R.id.bt_settings);
-		ImageView btStatusView = (ImageView)findViewById(R.id.img_bt);
-		mBluetoothTile = new QSBluetoothTile(this,bluetoothTileView,btStatusView);
+		mBtStatusView = (ImageView)findViewById(R.id.img_bt);
+		mBluetoothTile = new QSBluetoothTile(this,bluetoothTileView,null);
+		mBluetoothTile.setOnStateChangedListener(new QSBluetoothTile.OnStateChangedListener(){
+			@Override
+			public void onStateChanged(int state) {
+				updateBtView(state);
+			}
+		});
+		updateBtView(QSBluetoothTile.BT_STATE_UNKOWN);
 		
 		mWifiEnableView = (ImageView)findViewById(R.id.wifi_settings);
 		mWifiConnectView = (ImageView)findViewById(R.id.img_wifi);
@@ -193,6 +202,30 @@ public class StatusActivity extends Activity{
 		//mMobileDataTile.onDestroy(this);
 		mNetworkController.removeOnNetworkListener(mOnNetworkListener);
 	}
+	
+	private void updateBtView(int state){
+    	if(mBtStatusView == null){
+    		return;
+    	}
+    	if(state == QSBluetoothTile.BT_STATE_UNKOWN){
+    		if(mBluetoothTile.isConnected()){
+    			state = QSBluetoothTile.BT_STATE_CONNECTED;
+    		}else if(mBluetoothTile.isEnabled()){
+    			state = QSBluetoothTile.BT_STATE_ON;
+    		}else{
+    			state = QSBluetoothTile.BT_STATE_OFF;
+    		}
+    	}
+    	if(state == QSBluetoothTile.BT_STATE_CONNECTED){
+    		mBtStatusView.setImageResource(R.drawable.stat_sys_bt_connected);
+    		mBtStatusView.setVisibility(View.VISIBLE);
+		}else if(state == QSBluetoothTile.BT_STATE_ON){
+			mBtStatusView.setImageResource(R.drawable.stat_sys_bluetooth);
+			mBtStatusView.setVisibility(View.VISIBLE);
+		}else{
+			mBtStatusView.setVisibility(View.GONE);
+		}
+    }
 	
 	private NetworkController.OnNetworkListener mOnNetworkListener = new NetworkController.OnNetworkListener() {					
 		@Override

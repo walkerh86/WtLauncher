@@ -602,9 +602,17 @@ public class MenuFragment extends Fragment {
 	private void startActivity(AppInfo appInfo){
 		if(appInfo.mIntent.getComponent().getClassName().equals("com.cj.wtlauncher.StyleSettingActivity")){
 			Intent intent = new Intent(getActivity(),StyleSettingActivity.class);
-			getActivity().startActivity(intent);
+			startActivitySafe(intent);
 		}else{
-			getActivity().startActivity(appInfo.mIntent);
+			startActivitySafe(appInfo.mIntent);
+		}
+	}
+	
+	private void startActivitySafe(Intent intent){
+		try{
+			getActivity().startActivity(intent);
+		}catch(Exception e){
+			
 		}
 	}
 
